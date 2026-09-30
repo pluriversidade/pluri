@@ -193,7 +193,7 @@ var GRUPOS = [
     url: "https://chat.whatsapp.com/B6FWVTaDXiw79NI6CP6RF8" },
   { nome: "Sebo 2", membros: 649, cat: "trocas",
     desc: "Compra, venda e troca de livros usados, acadêmicos ou não.",
-    url: "https://chat.whatsapp.com/CSIGvOvgbDNA3Q0nZ1jg4S" },
+    url: "https://chat.whatsapp.com/FQg85lti2LPLVeknXkJKGw" },
 
   /* ---- Brechó e vestuário ---- */
   { nome: "Bazar 1", membros: 1024, cat: "compras",
@@ -242,7 +242,7 @@ var GRUPOS = [
     url: "https://chat.whatsapp.com/HTFV0WVO9XC2y3IxLoUbSG" },
   { nome: "Free-lancers 7", membros: 76, cat: "trabalho",
     desc: "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    url: "https://chat.whatsapp.com/E36JYelgfzNCTPGIq1OIGL" },
+    url: "https://chat.whatsapp.com/BAwsWMLxMwP1MTq9RM1KZt" },
   { nome: "Estágios 1", membros: 1024, cat: "trabalho",
     desc: "Vagas de estágio abertas para quem ainda está na graduação.",
     url: "https://chat.whatsapp.com/FEoxKtC1ffGEJxkZSsMRw9" },
@@ -380,7 +380,7 @@ var GRUPOS = [
   /* ---- Idiomas ---- */
   { nome: "Inglês — conversation", membros: 663, cat: "idiomas",
     desc: "Prática de conversação em inglês entre estudantes.",
-    url: "https://chat.whatsapp.com/EBjlmd4XPGRLjqfa0262E6" },
+    url: "https://chat.whatsapp.com/GzdVWxLKy3W6ymZDe4h4g3" },
   { nome: "Espanhol — conversación", membros: 243, cat: "idiomas",
     desc: "Prática de conversação em espanhol entre estudantes.",
     url: "https://chat.whatsapp.com/Ed7k7CDa3jB7WNalAYZV5o" },
