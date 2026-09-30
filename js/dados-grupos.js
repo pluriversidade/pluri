@@ -67,7 +67,7 @@ var GRUPOS = [
     url: "https://chat.whatsapp.com/Lb7EpZmX91rGMDl9LftMFg" },
   { nome: "Venda de ingressos", membros: 1024, cat: "festas",
     desc: "Compra, venda e troca de ingressos de festa entre estudantes.",
-    url: "https://chat.whatsapp.com/B4fTwSdPTO5I2URYqxlktc" },
+    url: "https://chat.whatsapp.com/EkltUT5lhocERIMzXZdLeN" },
   { nome: "Venda de ingressos 2", membros: 657, cat: "festas",
     desc: "Compra, venda e troca de ingressos de festa entre estudantes.",
     url: "https://chat.whatsapp.com/BurXGfYKsdcCkCNEuxGcPM" },
@@ -383,12 +383,12 @@ var GRUPOS = [
     url: "https://chat.whatsapp.com/GzdVWxLKy3W6ymZDe4h4g3" },
   { nome: "Espanhol — conversación", membros: 243, cat: "idiomas",
     desc: "Prática de conversação em espanhol entre estudantes.",
-    url: "https://chat.whatsapp.com/Ed7k7CDa3jB7WNalAYZV5o" },
+    url: "https://chat.whatsapp.com/EDoRBNsyD5z0urTtsu34gd" },
 
   /* ---- Avisos e utilidades ---- */
   { nome: "Achados e perdidos", membros: 757, cat: "comunidade",
     desc: "Objetos perdidos e encontrados pelo campus.",
-    url: "https://chat.whatsapp.com/B7uU3AmkDkH1CknD1RYZl7" },
+    url: "https://chat.whatsapp.com/CYoT8u5gWZpDwAaILy30ZC" },
   { nome: "Adoção responsável", membros: 529, cat: "comunidade",
     desc: "Cães e gatos para adoção, com acompanhamento depois.",
     url: "https://chat.whatsapp.com/FAgHur34DPp2jQ11zjzU7E" },
