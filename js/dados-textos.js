@@ -110,10 +110,10 @@ var CONTATOS = {
   whatsappListas: "5531991579687",
 
   /* Recebe os avisos de grupo lotado e link quebrado. */
-  whatsappSuporte: "5531990795747",
+  whatsappSuporte: "5531991579687",
 
   /* Aparece no rodapé, escrito de um jeito fácil de ler. */
-  suporteEscrito: "31 99079-5747",
+  suporteEscrito: "5531991579687",
 
   /* A chave pix do botão de doação. */
   pix: "31991579687"
