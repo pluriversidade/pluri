@@ -25,7 +25,7 @@
 /* AS CATEGORIAS ──────────────────────────────────────────────────────────── */
 
 var CATEGORIAS = {
-  festas:    { nome: "Festas e ingressos",  cor: "#A34F76" },
+  festas:    { nome: "Festas e Ingressos",  cor: "#A34F76" },
   moradia:   { nome: "Repúblicas",          cor: "#2E7D53" },
   caronas:   { nome: "Grupos de Caronas Soltos", cor: "#3D6E8C" },
   caronas2:  { nome: "Comunidades de Carona de BH", cor: "#8A4B7D" },
