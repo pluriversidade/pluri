@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pluriversidade — repositório de grupos e festas universitárias</title>
+<title>Pluriversidade — grupos de WhatsApp e festas universitárias</title>
 <meta name="description" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
 <meta name="theme-color" content="#1F3347">
 <meta property="og:title" content="Grupos da UFMG">
@@ -164,39 +164,43 @@
 
   <div class="miolo marca">
 
-    <!-- O emblema: a comunidade em roda ao redor da logo. -->
-    <svg class="emblema" viewBox="-115 -115 230 230" role="img"
-         aria-label="Emblema: pessoas em roda ao redor da logo da Pluriversidade">
+    <!-- O emblema: a comunidade em roda ao redor do M.
+         ─────────────────────────────────────────────────────────────────
+         PARA TROCAR A IMAGEM DO CENTRO
+         Coloque o arquivo novo na pasta img/ e troque o nome no href logo
+         abaixo. Imagem mais larga que alta cai melhor nesse espaço.
+         ───────────────────────────────────────────────────────────────── -->
+    <svg class="emblema" viewBox="-100 -100 200 200" role="img"
+         aria-label="Emblema: pessoas em roda ao redor do M da UFMG">
       <defs>
-        <!-- Figura das pessoas bem maiores e encorpadas -->
+        <!-- A figura fica em pé em qualquer ponto da roda: rotate leva ao
+             lugar, translate afasta do centro, e o rotate negativo desfaz o
+             giro. Sem isso, metade das pessoas aparece de cabeça para baixo
+             e o emblema lê como confete. -->
         <g id="pessoa">
-          <circle cy="-13.5" r="9.5"/>
-          <path d="M0 -2.5 a14 14 0 0 1 14 14 v5.5 h-28 v-5.5
-                   a14 14 0 0 1 14 -14 z"/>
+          <circle cy="-9.5" r="6.4"/>
+          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8
+                   a9.2 9.2 0 0 1 9.2 -9.2 z"/>
         </g>
       </defs>
 
-      <!-- Fundo e borda expandidos -->
-      <circle r="104" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
-      <!-- Círculo branco central ampliado -->
-      <circle r="68" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
+      <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
+      <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
 
-      <!-- Roda de pessoas maior -->
       <g>
-        <use href="#pessoa" fill="#2E7D53" transform="rotate(0) translate(0 -72) rotate(0)"/>
-        <use href="#pessoa" fill="#B24232" transform="rotate(36) translate(0 -72) rotate(-36)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="rotate(72) translate(0 -72) rotate(-72)"/>
-        <use href="#pessoa" fill="#17201C" transform="rotate(108) translate(0 -72) rotate(-108)"/>
-        <use href="#pessoa" fill="#3D6E8C" transform="rotate(144) translate(0 -72) rotate(-144)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="rotate(180) translate(0 -72) rotate(-180)"/>
-        <use href="#pessoa" fill="#B24232" transform="rotate(216) translate(0 -72) rotate(-216)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="rotate(252) translate(0 -72) rotate(-252)"/>
-        <use href="#pessoa" fill="#17201C" transform="rotate(288) translate(0 -72) rotate(-288)"/>
-        <use href="#pessoa" fill="#3D6E8C" transform="rotate(324) translate(0 -72) rotate(-324)"/>
+        <use href="#pessoa" fill="#2E7D53" transform="rotate(0) translate(0 -73) rotate(0)"/>
+        <use href="#pessoa" fill="#B24232" transform="rotate(36) translate(0 -73) rotate(-36)"/>
+        <use href="#pessoa" fill="#C08A1E" transform="rotate(72) translate(0 -73) rotate(-72)"/>
+        <use href="#pessoa" fill="#17201C" transform="rotate(108) translate(0 -73) rotate(-108)"/>
+        <use href="#pessoa" fill="#3D6E8C" transform="rotate(144) translate(0 -73) rotate(-144)"/>
+        <use href="#pessoa" fill="#2E7D53" transform="rotate(180) translate(0 -73) rotate(-180)"/>
+        <use href="#pessoa" fill="#B24232" transform="rotate(216) translate(0 -73) rotate(-216)"/>
+        <use href="#pessoa" fill="#C08A1E" transform="rotate(252) translate(0 -73) rotate(-252)"/>
+        <use href="#pessoa" fill="#17201C" transform="rotate(288) translate(0 -73) rotate(-288)"/>
+        <use href="#pessoa" fill="#3D6E8C" transform="rotate(324) translate(0 -73) rotate(-324)"/>
       </g>
 
-      <!-- Logo do centro significativamente maior -->
-      <image href="img/LOGO-PLURI-02.png" x="-46" y="-46" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+      <image href="img/m-ufmg.png" x="-43" y="-19" width="86" height="38.4"/>
     </svg>
 
     <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
@@ -358,15 +362,12 @@
   </div>
 </footer>
 
-<!-- ================================= Modal para mídias das festas -->
-<div id="festa-modal" class="festa-modal" aria-hidden="true">
-  <div class="festa-modal__overlay" data-fechar-modal></div>
-  <div class="festa-modal__caixa">
-    <button type="button" class="festa-modal__fechar" aria-label="Fechar" data-fechar-modal>&times;</button>
-    <div id="festa-modal-conteudo" class="festa-modal__conteudo"></div>
-  </div>
-</div>
+<!-- A ordem importa: os arquivos de dados definem as informações, e o app.js
+     as usa para montar a página.
 
+     São scripts comuns, e não módulos ES, de propósito: assim a página também
+     abre com duplo clique, direto do arquivo. Módulo exige servidor — por
+     file:// o navegador bloqueia por CORS e a tela fica vazia. -->
 <script src="js/dados-textos.js"></script>
 <script src="js/dados-grupos.js"></script>
 <script src="js/dados-festas.js"></script>
