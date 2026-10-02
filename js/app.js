@@ -10,16 +10,6 @@
 
   /* ======================================================================
      CONFERÊNCIA DOS DADOS
-
-     Um erro de digitação num arquivo de dados — uma aspa, uma vírgula — faz
-     o navegador desistir do arquivo inteiro, e a página abriria vazia sem
-     dizer por quê. Aqui a gente confere o que chegou e mostra o problema em
-     português, na própria tela.
-
-     O aviso só aparece para quem está editando: no arquivo aberto do
-     computador ou num servidor de testes. Para quem visita a página
-     publicada, um item com defeito é simplesmente omitido, sem recado
-     técnico na frente.
      ====================================================================== */
 
   var editando =
@@ -54,7 +44,6 @@
   var temUnis      = existe("UNIVERSIDADES", window.UNIVERSIDADES, "js/dados-festas.js");
   var temParceiros = existe("PARCEIROS", window.PARCEIROS, "js/dados-parceiros.js");
 
-  /* Daqui para baixo, nada pode explodir por causa de um arquivo faltando. */
   var textos    = temTextos     ? TEXTOS        : {};
   var contatos  = temContatos   ? CONTATOS      : {};
   var grupos    = temGrupos     ? GRUPOS        : [];
@@ -64,10 +53,6 @@
   var parceiros = temParceiros  ? PARCEIROS     : [];
   var ajustes   = (typeof window.AJUSTES === "object" && AJUSTES) ? AJUSTES : {};
 
-  /* ------------------------------------------------------------- ajustes */
-
-  /* Quantos itens cabem numa página. Um número torto aqui quebraria as duas
-     listas de uma vez, então ele é conferido antes de valer. */
   var POR_PAGINA = 5;
 
   if (typeof ajustes.porPagina !== "undefined") {
@@ -99,13 +84,9 @@
     }
   }
 
-  /* A data em que a lista foi conferida. Vale para a tarja do alto e para
-     todo grupo que não trouxer uma data só dele. */
   var LISTA_CONFERIDA = "";
 
   if (typeof ajustes.listaConferidaEm !== "undefined" && ajustes.listaConferidaEm !== "") {
-    /* partesDaData é uma function declaration lá embaixo: o navegador já a
-       conhece aqui em cima, então dá para conferir a data agora mesmo. */
     if (partesDaData(ajustes.listaConferidaEm)) {
       LISTA_CONFERIDA = String(ajustes.listaConferidaEm);
     } else {
@@ -133,8 +114,6 @@
     return d.getFullYear() + "-" + dois(d.getMonth() + 1) + "-" + dois(d.getDate());
   }
 
-  /* Devolve null quando a data não existe no calendário — 31 de fevereiro
-     passa pelo formato, mas não pelo calendário. */
   function partesDaData(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));
     if (!m) return null;
@@ -148,13 +127,11 @@
     return { ano: ano, mes: mes, dia: dia, semana: d.getDay() };
   }
 
-  /* "2026-09-26" vira "26/set" — o formato curto do rodapé de cada card. */
   function dataCurta(iso) {
     var d = partesDaData(iso);
     return d ? d.dia + "/" + MESES[d.mes - 1] : "";
   }
 
-  /* "2026-09-26" vira "26/09/2026" — o formato da tarja do alto. */
   function dataLonga(iso) {
     var d = partesDaData(iso);
     return d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : "";
@@ -166,9 +143,6 @@
     return typeof url === "string" && /^https?:\/\/.+/.test(url.trim());
   }
 
-  /* Os textos vêm dos arquivos de dados e entram na página como HTML. Um
-     "&" ou um "<" numa descrição quebraria o card em silêncio; aqui eles
-     viram texto comum e aparecem como a pessoa escreveu. */
   function escapar(texto) {
     return String(texto)
       .replace(/&/g, "&amp;")
@@ -197,8 +171,6 @@
       return false;
     }
 
-    /* Data torta não derruba o grupo: ele aparece com a data geral da lista
-       e o aviso fica aqui para você arrumar quando puder. */
     if (g.atualizado && !partesDaData(g.atualizado)) {
       reclamar(
         "js/dados-grupos.js",
@@ -282,11 +254,70 @@
   }
 
   /* ======================================================================
-     AS PÁGINAS
+     MODAL DE MÍDIA (JANELA DE POP-UP PARA FLYER/VÍDEO)
+     ====================================================================== */
 
-     Uma lista com cem itens cansa o dedo e pesa no celular. Cada seção
-     mostra POR_PAGINA itens por vez e ganha dois botões de virar página.
-     A mesma peça serve para as festas e para os grupos.
+  var modalFlyer = null;
+  var modalConteudo = null;
+
+  function criarModal() {
+    if (modalFlyer) return;
+
+    modalFlyer = document.createElement("div");
+    modalFlyer.className = "festa-modal";
+    modalFlyer.setAttribute("aria-hidden", "true");
+
+    modalFlyer.innerHTML =
+      '<div class="festa-modal__overlay"></div>' +
+      '<div class="festa-modal__caixa">' +
+        '<button type="button" class="festa-modal__fechar" aria-label="Fechar">&times;</button>' +
+        '<div class="festa-modal__conteudo"></div>' +
+      '</div>';
+
+    document.body.appendChild(modalFlyer);
+    modalConteudo = modalFlyer.querySelector(".festa-modal__conteudo");
+
+    var fecharBtn = modalFlyer.querySelector(".festa-modal__fechar");
+    var overlay = modalFlyer.querySelector(".festa-modal__overlay");
+
+    fecharBtn.addEventListener("click", fecharModal);
+    overlay.addEventListener("click", fecharModal);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modalFlyer.classList.contains("festa-modal--ativo")) {
+        fecharModal();
+      }
+    });
+  }
+
+  function abrirModal(src, ehVideo) {
+    criarModal();
+    if (ehVideo) {
+      modalConteudo.innerHTML =
+        '<video src="' + src + '" controls autoplay playsinline class="festa-modal__midia"></video>';
+    } else {
+      modalConteudo.innerHTML =
+        '<img src="' + src + '" alt="Flyer da Festa" class="festa-modal__midia">';
+    }
+    modalFlyer.classList.add("festa-modal--ativo");
+    modalFlyer.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function fecharModal() {
+    if (!modalFlyer) return;
+    modalFlyer.classList.remove("festa-modal--ativo");
+    modalFlyer.setAttribute("aria-hidden", "true");
+    modalConteudo.innerHTML = "";
+    document.body.style.overflow = "";
+  }
+
+  function eVideo(arquivo) {
+    return /\.(mp4|webm|ogv|mov)$/i.test(arquivo || "");
+  }
+
+  /* ======================================================================
+     AS PÁGINAS
      ====================================================================== */
 
   var semMovimento = window.matchMedia &&
@@ -301,8 +332,6 @@
 
     var pagina = 1;
 
-    /* Virar a página deixando o dedo no meio da lista faria a pessoa voltar
-       rolando para achar o começo. */
     function subir() {
       if (!topo) return;
       topo.scrollIntoView({
@@ -321,14 +350,7 @@
     if (avancar) avancar.addEventListener("click", function () { andar(1); });
 
     return {
-
-      /* Trocar de filtro ou digitar na busca recomeça da primeira página:
-         ficar na página 7 de uma lista que agora tem 2 itens seria um vazio
-         sem explicação. */
       reiniciar: function () { pagina = 1; },
-
-      /* Recebe a lista inteira já filtrada, devolve só o pedaço da vez e
-         acerta os botões. */
       recortar: function (itens) {
         var ultima = Math.max(1, Math.ceil(itens.length / POR_PAGINA));
         if (pagina > ultima) pagina = ultima;
@@ -346,9 +368,6 @@
 
   /* ======================================================================
      OS TEXTOS
-
-     Cada trecho editável do HTML carrega um data-texto com o nome da chave.
-     Assim o HTML fica limpo e o arquivo de textos manda em tudo.
      ====================================================================== */
 
   function aplicarTextos() {
@@ -406,8 +425,6 @@
       );
     }).join("");
 
-    /* Com um parceiro só não há o que navegar: as bolinhas e o avanço
-       automático ficariam ali enganando o dedo. */
     if (parceirosBons.length < 2) {
       if (bolinhas) bolinhas.hidden = true;
       return;
@@ -419,9 +436,6 @@
     }).join("");
 
     var atual = 0;
-
-    /* Quem pediu menos movimento no sistema recebe o salto direto, sem o
-       deslizamento — e sem avanço automático nenhum. */
     var calmo = semMovimento;
 
     function irPara(i) {
@@ -448,8 +462,6 @@
       });
     });
 
-    /* O scroll manda: quem desliza com o dedo move o trilho direto, sem
-       passar por aqui, e as bolinhas precisam acompanhar assim mesmo. */
     var esperando;
     trilho.addEventListener("scroll", function () {
       clearTimeout(esperando);
@@ -469,8 +481,6 @@
       relogio = null;
     }
 
-    /* Quem acabou de tocar numa bolinha está escolhendo: avançar sozinho
-       logo em seguida seria tirar a página da mão da pessoa. */
     function adiar() {
       parar();
       setTimeout(tocar, 9000);
@@ -483,7 +493,6 @@
       trilho.addEventListener(evento, tocar);
     });
 
-    /* Fora da tela, não faz sentido continuar girando. */
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entradas) {
         entradas[0].isIntersecting ? tocar() : parar();
@@ -517,7 +526,6 @@
       topo:    "festas-titulo"
     }, function () { desenhar(); });
 
-    /* Festa que já passou some sozinha: ninguém precisa lembrar de apagar. */
     function futuras() {
       var hoje = hojeISO();
       return festasBoas
@@ -527,14 +535,11 @@
 
     var agenda = futuras();
 
-    /* Sem nenhuma festa futura, a seção inteira sai do caminho em vez de
-       ficar um título solto sobre um espaço vazio. */
     if (agenda.length === 0) {
       if (secao) secao.hidden = true;
       return 0;
     }
 
-    /* Só as faculdades que têm festa marcada viram botão. */
     var usadas = {};
     agenda.forEach(function (f) { usadas[f.uni] = true; });
 
@@ -588,6 +593,26 @@
                '" target="_blank" rel="noopener">' + texto + "</a>";
       };
 
+      /* Processamento da Mídia (Flyer ou Vídeo) */
+      var midiaHtml = "";
+      if (f.midia) {
+        var caminhoMidia = "img/" + f.midia;
+        var ehVid = eVideo(f.midia);
+
+        if (ehVid) {
+          midiaHtml =
+            '<div class="festa__midia" data-midia="' + caminhoMidia + '" data-video="true" title="Clique para ampliar">' +
+              '<video src="' + caminhoMidia + '#t=0.1" preload="metadata" muted></video>' +
+              '<span class="festa__play-icon">▶</span>' +
+            '</div>';
+        } else {
+          midiaHtml =
+            '<div class="festa__midia" data-midia="' + caminhoMidia + '" data-video="false" title="Clique para ampliar">' +
+              '<img src="' + caminhoMidia + '" alt="Flyer ' + f.titulo + '" loading="lazy">' +
+            '</div>';
+        }
+      }
+
       return (
         '<li class="festa" style="--cor:' + u.cor + '">' +
           '<div class="festa__data">' +
@@ -607,6 +632,7 @@
               botao(f.grupo, "Grupo", "grupo") +
             "</div>" +
           "</div>" +
+          midiaHtml +
         "</li>"
       );
     }
@@ -628,6 +654,16 @@
           ? "Nenhuma festa nesse dia. Tente outra data ou veja todas."
           : (textos.festasVazio || "Nenhuma festa por aqui.");
       }
+
+      /* Atribui os eventos de clique nas mídias para abrir o Modal */
+      var mídias = lista.querySelectorAll(".festa__midia");
+      Array.prototype.forEach.call(mídias, function (el) {
+        el.addEventListener("click", function () {
+          var src = el.getAttribute("data-midia");
+          var ehVid = el.getAttribute("data-video") === "true";
+          abrirModal(src, ehVid);
+        });
+      });
     }
 
     desenhar();
@@ -657,8 +693,6 @@
       topo:    "grupos-titulo"
     }, function () { desenhar(); });
 
-    /* "Brechó" encontra "brecho", e vice-versa: ninguém digita acento no
-       celular com pressa. */
     function simples(texto) {
       return String(texto).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
     }
@@ -667,10 +701,6 @@
       return n.toLocaleString("pt-BR");
     }
 
-    /* ---- o aviso de link quebrado ----
-       Link lotado ou revogado é o defeito mais comum de uma lista destas, e
-       quem descobre é sempre o visitante. O botão põe o nome do grupo na
-       mensagem: sem isso chega um "o link não funciona" sem dizer qual. */
     var numeroAviso = contatos.whatsappSuporte || contatos.whatsappListas || "";
 
     function botaoReportar(g) {
@@ -712,7 +742,6 @@
         membros = comPonto(g.membros) + " membros";
       }
 
-      /* A data do próprio grupo manda; sem ela, vale a data geral da lista. */
       var quando = dataCurta(g.atualizado) || dataCurta(LISTA_CONFERIDA);
       var conferido = quando
         ? '<span class="grupo__quando">' +
@@ -724,13 +753,9 @@
         ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>"
         : "";
 
-      /* A categoria e a contagem andam juntas com a bolinha: soltas, viram
-         itens separados do flex e a bolinha cai sozinha numa linha. */
       var onde = '<span class="grupo__onde"><i class="ponto"></i>' +
                  escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
-      /* O botão de reportar é irmão do link, nunca filho: botão dentro de
-         link é HTML inválido e o navegador desfaz a dupla do seu jeito. */
       return (
         '<li class="item" style="--cor:' + c.cor + '">' +
           '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
@@ -807,10 +832,6 @@
 
   /* ======================================================================
      OS DOIS BOTÕES
-
-     As duas seções ocupam o mesmo lugar na tela: quem chega vê uma, e a
-     outra fica a um toque de distância. Sem isso a pessoa que quer um grupo
-     precisaria rolar a agenda inteira de festas para chegar lá.
      ====================================================================== */
 
   function montarAbas(quantosGrupos, quantasFestas) {
@@ -826,8 +847,6 @@
     if (contaGrupos) contaGrupos.textContent = quantosGrupos ? String(quantosGrupos) : "";
     if (contaFestas) contaFestas.textContent = quantasFestas ? String(quantasFestas) : "";
 
-    /* Sem festa marcada não há segunda seção, e dois botões para uma coisa
-       só confundem mais do que ajudam. */
     if (!quantasFestas) {
       barra.hidden = true;
       if (secaoGrupos) secaoGrupos.hidden = false;
@@ -848,9 +867,6 @@
         if (escolhida && levarOFoco) a.botao.focus();
       });
 
-      /* O endereço passa a terminar em #festas ou #grupos, então o link
-         copiado abre direto na seção certa. replaceState em vez de mudar o
-         hash: mudar o hash empurraria a tela para baixo. */
       if (window.history && history.replaceState) {
         history.replaceState(null, "", "#" + id);
       }
@@ -860,8 +876,6 @@
       a.botao.addEventListener("click", function () { mostrar(a.id, false); });
     });
 
-    /* Seta para o lado troca de aba, que é como um leitor de tela espera que
-       uma fileira de abas funcione. */
     barra.addEventListener("keydown", function (e) {
       if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
       var atual = botaoGrupos.getAttribute("aria-selected") === "true" ? 0 : 1;
@@ -874,8 +888,6 @@
       return (pedido === "festas" || pedido === "grupos") ? pedido : "";
     }
 
-    /* Alguém pode chegar por um link com #festas no fim, ou editar o endereço
-       na barra sem recarregar a página. Nos dois casos a aba acompanha. */
     window.addEventListener("hashchange", function () {
       var pedido = pedidoNoEndereco();
       if (pedido) mostrar(pedido, false);
@@ -886,10 +898,6 @@
 
   /* ======================================================================
      A DATA DA ÚLTIMA ATUALIZAÇÃO
-
-     A tarja do alto não é digitada à mão: ela olha a data geral da lista e
-     as datas soltas dos grupos e mostra a mais recente das três dezenas de
-     possibilidades. Assim, conferir um link já atualiza a página inteira.
      ====================================================================== */
 
   function montarDataDaLista() {
@@ -900,8 +908,6 @@
 
     gruposBons.forEach(function (g) {
       if (!g.atualizado || !partesDaData(g.atualizado)) return;
-      /* Datas em ano-mês-dia se comparam como texto comum, e assim não há
-         fuso horário nenhum para atrapalhar. */
       if (g.atualizado > maisNova) maisNova = g.atualizado;
     });
 
@@ -938,8 +944,6 @@
      ====================================================================== */
 
   function montarContatos() {
-    /* O texto é montado aqui e codificado pelo navegador: escrever o link
-       já pronto à mão é onde nasce acento quebrado no WhatsApp. */
     function pedido(numero, texto) {
       return "https://wa.me/" + numero + "?text=" + encodeURIComponent(texto);
     }
@@ -970,7 +974,6 @@
       btSuporte.textContent = contatos.suporteEscrito || suporte;
     }
 
-    /* ---- o pix ---- */
     var botaoPix = document.getElementById("copiar-pix");
     var numeroPix = document.getElementById("pix-numero");
     var rotuloPix = document.getElementById("pix-rotulo");
@@ -987,8 +990,6 @@
       setTimeout(function () { rotuloPix.textContent = rotuloPadrao; }, 2400);
     }
 
-    /* Plano B na certa: navigator.clipboard só existe em HTTPS. Num link
-       aberto por http, ou num navegador antigo, o campo invisível resolve. */
     function copiarNoBraco(texto) {
       try {
         var campo = document.createElement("textarea");
@@ -1023,8 +1024,6 @@
   aplicarTextos();
   montarParceiros();
 
-  /* As duas seções contam quantos itens têm; os botões usam esses números e
-     somem quando não há festa nenhuma marcada. */
   var quantasFestas = montarFestas();
   var quantosGrupos = montarGrupos();
   montarAbas(quantosGrupos, quantasFestas);

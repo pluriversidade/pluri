@@ -114,7 +114,8 @@ var FESTAS = [
     descricao: "Organizada pelos centros acadêmicos. Horário e local confirmados na semana da festa.",
     ingresso: "",
     perfil: "https://instagram.com/exemplo",
-    grupo: "https://chat.whatsapp.com/exemplo"
+    grupo: "https://chat.whatsapp.com/exemplo",
+    midia: "banner_festa1.jpg" // ou "teaser.mp4"
   }
 
 ];
