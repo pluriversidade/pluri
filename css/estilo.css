@@ -1,21 +1,34 @@
+/* ------------------------------------------------------------------ capa --- */
+
+.capa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .marca {
-  margin-top: -60px; /* Puxa a imagem um pouco para cima do banner */
+  margin-top: -70px; /* Puxa a logo suavemente para cima da cena */
+  margin-bottom: 1rem; /* Empurra o título para BAIXO, impedindo que o site suba e desconfigure */
   position: relative;
   text-align: center;
   z-index: 10;
 }
 
 .emblema {
-  width: 210px; /* Tamanho ideal para o círculo de bonequinhos não estourar */
+  width: 200px;
+  max-width: 80vw;
   height: auto;
-  display: inline-block;
+  display: block;
+  margin: 0 auto;
   filter: drop-shadow(0 6px 16px rgba(23, 32, 28, .22));
 }
 
 .titulo {
-  margin: 0.2rem 0 0; /* Remove a sobreposição e dá o respiro correto ao título */
+  margin: 0;
   font-size: clamp(2rem, 8.5vw, 2.7rem);
   font-weight: 800;
   letter-spacing: -.02em;
   line-height: 1.05;
+  text-align: center;
 }
