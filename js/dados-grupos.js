@@ -71,6 +71,9 @@ var GRUPOS = [
   { nome: "Venda de ingressos 2", membros: 657, cat: "festas",
     desc: "Compra, venda e troca de ingressos de festa entre estudantes.",
     url: "https://chat.whatsapp.com/BurXGfYKsdcCkCNEuxGcPM" },
+   { nome: "Ressaca - UFMG", membros: 0, cat: "festas",
+    desc: "Grupo para você que foi em uma festa na ou da UFMG e precisa compartilhar o seu estado de saúde com outros ressacados.",
+    url: "https://chat.whatsapp.com/IKa32SEh4CJ1WvjoiAmk31" },
 
   /* ---- Repúblicas e Moradia ---- */
   { nome: "Repúblicas 1", membros: 1024, cat: "moradia",
