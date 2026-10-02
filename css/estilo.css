@@ -1,20 +1,19 @@
 .marca {
-  margin-top: -80px; /* Ajuste para subir a logo sobre o banner */
+  margin-top: -60px; /* Puxa a imagem um pouco para cima do banner */
   position: relative;
   text-align: center;
   z-index: 10;
 }
 
 .emblema {
-  width: 320px; /* Aumente este valor (ex: 360px, 400px) se quiser ainda maior */
-  max-width: 90vw; /* Garante que não vai estourar a tela no telemóvel */
+  width: 210px; /* Tamanho ideal para o círculo de bonequinhos não estourar */
   height: auto;
   display: inline-block;
   filter: drop-shadow(0 6px 16px rgba(23, 32, 28, .22));
 }
 
 .titulo {
-  margin: 1rem 0 0; /* Ajusta o respiro para o texto não encostar na logo */
+  margin: 0.2rem 0 0; /* Remove a sobreposição e dá o respiro correto ao título */
   font-size: clamp(2rem, 8.5vw, 2.7rem);
   font-weight: 800;
   letter-spacing: -.02em;
