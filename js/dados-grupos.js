@@ -159,7 +159,7 @@ var GRUPOS = [
   { nome: "Caronas - Barreiro - UFMG", membros: 339, cat: "caronas2",
     desc: "Comunidade de caronas com grupos da região Barreiro para a UFMG, reunindo subgrupos específicos dos bairros locais.",
     url: "https://chat.whatsapp.com/KhSNwPUXadLIEjpUnCpmKF" },
-  { nome: "Caronas - Noroeste" - UFMG", membros: 380, cat: "caronas2",
+  { nome: "Caronas - Noroeste - UFMG", membros: 380, cat: "caronas2",
     desc: "Comunidade de caronas com grupos da região Noroeste para a UFMG, reunindo subgrupos específicos dos bairros locais.",
     url: "https://chat.whatsapp.com/HSvSJbNEW186Wxz3sOjdfg" },
 
