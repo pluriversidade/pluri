@@ -63,7 +63,7 @@ var GRUPOS = [
     desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
     url: "https://chat.whatsapp.com/CwuNjzSvJIJLOSCM8Tb2zZ" },
   { nome: "Festas 6 - UFMG", membros: 184, cat: "festas",
-    desc: "Saídas combinadas de última hora: bar, show, praça, o que aparecer.",
+    desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
     url: "https://chat.whatsapp.com/Bp9ZBySZg96Jd4OLI9AU5H" }, 
   { nome: "Rolês espontâneos - UFMG", membros: 184, cat: "festas",
     desc: "Saídas combinadas de última hora: bar, show, praça, o que aparecer.",
