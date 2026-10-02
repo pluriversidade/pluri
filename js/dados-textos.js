@@ -13,8 +13,8 @@ var TEXTOS = {
 
   /* ---- O alto da página ---- */
   tarja:      "Uma página oferecida por CEDER",
-  titulo:     "Grupos da UFMG",
-  subtitulo:  "Inciativa independente. Entre nas comunidades do seu interesse.",
+  titulo:     "PLURIVERSIDADE",
+  subtitulo:  "Repositório de Festas e Grupos das maiores univerisdades do Brasil! Essa é uma inciativa independente. .",
 
   /* Só o começo da frase. A data vem sozinha dos AJUSTES, lá embaixo, para
      você não ter que lembrar de mudar em dois lugares. */
@@ -92,7 +92,7 @@ var AJUSTES = {
      da página e embaixo de cada grupo que não tiver uma data só dele.
 
      Toda vez que der uma repassada nos links, é só trocar esta linha. */
-  listaConferidaEm: "2026-09-26"
+  listaConferidaEm: "2026-10-02"
 
 };
 
