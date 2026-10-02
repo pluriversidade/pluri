@@ -39,6 +39,15 @@ var PARCEIROS = [
 
   {
     selo: "Espaço para parceria",
+    nome: "ROLÊS UNIVERSITÁIROS",
+    chamada: "O seu guia definitivo e a forma mais rápida de saber das melhores festas universitárias que vão rolar em BH e região metropolitana. Cobertura completa, energia alta e o verdadeiro espírito acadêmico reunido em um só lugar. Se liga no que tá rolando e não perca nenhum rolê!.",
+    botao: "Acesse AGORA nosso perfil do instagram",
+    link: "https://www.instagram.com/rolesuniversitariosoficial/",
+    logo: "img/logo-roles-1.png"
+  },
+
+  {
+    selo: "Espaço para parceria",
     nome: "Sua marca aqui",
     chamada: "Este espaço aparece para quem procura grupo da UFMG todos os dias. Fale com a gente para anunciar.",
     botao: "Quero anunciar",
