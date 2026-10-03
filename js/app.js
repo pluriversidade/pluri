@@ -211,44 +211,6 @@
       caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
     }, function () { desenhar(); });
 
-    // Criação do Modal Global para visualizar a mídia maior
-    var modal = document.getElementById("modal-midia");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "modal-midia";
-      modal.className = "modal-midia";
-      modal.hidden = true;
-      modal.innerHTML = 
-        '<div class="modal-midia__conteudo">' +
-          '<button type="button" class="modal-midia__fechar" aria-label="Fechar">&times;</button>' +
-          '<div class="modal-midia__container-midia"></div>' +
-        '</div>';
-      document.body.appendChild(modal);
-
-      var fecharModal = function() {
-        modal.hidden = true;
-        modal.querySelector(".modal-midia__container-midia").innerHTML = "";
-      };
-
-      modal.querySelector(".modal-midia__fechar").addEventListener("click", fecharModal);
-      modal.addEventListener("click", function(e) {
-        if (e.target === modal) fecharModal();
-      });
-      document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape") fecharModal();
-      });
-    }
-
-    function abrirMidia(src, ehVideo) {
-      var container = modal.querySelector(".modal-midia__container-midia");
-      if (ehVideo) {
-        container.innerHTML = '<video src="' + src + '" controls autoplay class="modal-midia__midia"></video>';
-      } else {
-        container.innerHTML = '<img src="' + src + '" alt="Flyer da festa" class="modal-midia__midia">';
-      }
-      modal.hidden = false;
-    }
-
     function diasFaltam(iso) {
       var p = partesDaData(iso);
       if (!p) return "";
@@ -262,67 +224,6 @@
       if (diff === 1) return "amanhã";
       return "faltam " + diff + " dias";
     }
-
-    function desenhar() {
-      var visiveis = festasBoas;
-      lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
-        var d = partesDaData(f.data);
-        var u = unis[f.uni] || { nome: f.uni || "" };
-        var corFesta = f.cor || "var(--terracota)";
-        var faltam = diasFaltam(f.data);
-
-        // Tratamento da miniatura (Imagem ou Vídeo)
-        var htmlMidia = "";
-        if (f.midia) {
-          var ehVideo = /\.(mp4|webm|ogg)$/i.test(f.midia);
-          if (ehVideo) {
-            htmlMidia = 
-              '<div class="festa__mini-container" data-src="' + f.midia + '" data-video="true">' +
-                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
-                '<span class="festa__play-icon">&#9658;</span>' +
-              '</div>';
-          } else {
-            htmlMidia = 
-              '<div class="festa__mini-container" data-src="' + f.midia + '" data-video="false">' +
-                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer" loading="lazy">' +
-              '</div>';
-          }
-        }
-
-        return (
-          '<li class="festa" style="--cor: ' + corFesta + '">' +
-            '<div class="festa__data">' +
-              '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
-              '<span class="festa__dia">' + dois(d.dia) + '</span>' +
-              (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
-            '</div>' +
-            '<div class="festa__corpo">' +
-              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
-              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
-              (f.descricao ? '<p class="festa__descricao">' + escapar(f.descricao) + '</p>' : '') +
-              '<div class="festa__links">' +
-                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
-                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo</a>' : '') +
-              '</div>' +
-            '</div>' +
-            htmlMidia +
-          '</li>'
-        );
-      }).join("");
-
-      // Adiciona eventos de clique nas miniaturas renderizadas
-      Array.prototype.forEach.call(lista.querySelectorAll(".festa__mini-container"), function(mini) {
-        mini.addEventListener("click", function() {
-          var src = mini.getAttribute("data-src");
-          var ehVideo = mini.getAttribute("data-video") === "true";
-          abrirMidia(src, ehVideo);
-        });
-      });
-    }
-
-    desenhar();
-    return festasBoas.length;
-  }
 
     function desenhar() {
       var visiveis = festasBoas;
