@@ -179,9 +179,9 @@ a { color: inherit; }
 .carrossel::-webkit-scrollbar { display: none; }
 
 .parceiro {
-  flex: 0 0 280px; /* Largura fixa para caber bonito em qualquer tela e permitir múltiplos cards */
-  max-width: 85vw; /* Garante que não estoure em celulares muito pequenos */
-  scroll-snap-align: start;
+  flex: 0 0 95%; /* Ocupa 95% da largura disponível do container */
+  max-width: 95vw;
+  scroll-snap-align: center; /* Centraliza o card perfeitamente ao rolar */
   background: var(--tinta);
   color: #F2EEE2;
   border-radius: 16px;
