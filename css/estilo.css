@@ -166,26 +166,28 @@ a { color: inherit; }
    trabalho que normalmente daria muito JavaScript, e sai mais suave. */
 .carrossel {
   display: flex;
+  gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   border-radius: 16px;
+  padding-bottom: 4px;
 }
 
 .carrossel::-webkit-scrollbar { display: none; }
 
 .parceiro {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
+  flex: 0 0 280px; /* Largura fixa para caber bonito em qualquer tela e permitir múltiplos cards */
+  max-width: 85vw; /* Garante que não estoure em celulares muito pequenos */
+  scroll-snap-align: start;
   background: var(--tinta);
   color: #F2EEE2;
   border-radius: 16px;
   padding: 1.15rem;
   position: relative;
   overflow: hidden;
-  min-height: 100%;
 }
 
 /* Um telhado de canto: assina sem repetir o logo inteiro. */
