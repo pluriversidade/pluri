@@ -47,6 +47,22 @@ var CATEGORIAS = {
 var GRUPOS = [
 
   /* ---- Festas e ingressos ---- */
+  { uni: "pucmg", nome: "Festas 1 - PUC-MG", membros: 1024, cat: "festas",
+    desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
+    url: "https://chat.whatsapp.com/KvPPdy2IoeOE2rSecrUwUf" },
+  
+  { uni: "pucmg", nome: "Festas 2 - PUC-MG", membros: 1024, cat: "festas",
+    desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
+    url: "https://chat.whatsapp.com/KvPPdy2IoeOE2rSecrUwUf" },
+
+  { uni: "ufjf", nome: "DESAPEGO 1 - UFJF", membros: 1024, cat: "festas",
+    desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
+    url: "https://chat.whatsapp.com/KvPPdy2IoeOE2rSecrUwUf" },
+
+  { uni: "usp", nome: "Festas 1 - UFMG", membros: 1024, cat: "festas",
+    desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
+    url: "https://chat.whatsapp.com/KvPPdy2IoeOE2rSecrUwUf" },
+
   { uni: "ufmg", nome: "Festas 1 - UFMG", membros: 1024, cat: "festas",
     desc: "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
     url: "https://chat.whatsapp.com/KvPPdy2IoeOE2rSecrUwUf" },
