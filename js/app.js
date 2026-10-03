@@ -195,7 +195,6 @@
 
     if (!lista) return 0;
 
-    // Valores padrão inicializados vazios para exibir todos os grupos
     var estadoSel = "";
     var cidadeSel = "";
     var uniSel = "";
@@ -205,6 +204,23 @@
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES_GRUPOS || {};
+
+    /* Helper para busca flexível de universidade (trata divergências como puc x pucmg) */
+    function obterUniData(key) {
+      if (!key) return null;
+      if (unisData[key]) return unisData[key];
+      if (key === "puc" && unisData["pucmg"]) return unisData["pucmg"];
+      if (key === "pucmg" && unisData["puc"]) return unisData["puc"];
+      return null;
+    }
+
+    function obterUniChave(key) {
+      if (!key) return "";
+      if (unisData[key]) return key;
+      if (key === "puc" && unisData["pucmg"]) return "pucmg";
+      if (key === "pucmg" && unisData["puc"]) return "puc";
+      return key;
+    }
 
     var paginas = fazerPaginas({
       caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde", topo: "grupos-titulo"
@@ -309,7 +325,7 @@
 
     function cartao(g) {
       var c = categorias[g.cat] || { nome: "Geral", cor: "#2E7D53" };
-      var u = unisData[g.uni] || { nome: "" };
+      var u = obterUniData(g.uni) || { nome: "" };
       var membros = g.membros ? comPonto(g.membros) + " membros" : "";
 
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
@@ -328,12 +344,12 @@
 
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
-        var uniDoGrupo = unisData[g.uni];
+        var uniDoGrupo = obterUniData(g.uni);
         var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
 
         var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
         var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        var bateUni    = !uniSel || g.uni === uniSel;
+        var bateUni    = !uniSel || g.uni === uniSel || obterUniChave(g.uni) === obterUniChave(uniSel);
         var bateCat    = filtroCat === "todos" || g.cat === filtroCat;
 
         var bateTermo  = termo === "" ||
@@ -389,7 +405,6 @@
       });
     }
 
-    // Inicialização da interface na ordem correta
     renderEstados();
     atualizarSelectCidades();
     atualizarSelectUnis();
