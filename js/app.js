@@ -599,7 +599,7 @@
 
     function cartao(f) {
       var d = partesDaData(f.data);
-      var u = unis[f.uni];
+      var u = unis[f.uni] || { nome: "", cor: "#2E7D53" };
       var faltam = diasRestantes(f.data);
       var faltamHtml = faltam
         ? '<span class="festa__faltam">' + faltam + '</span>'
@@ -675,8 +675,8 @@
       }
 
       /* Atribui os eventos de clique nas mídias para abrir o Modal */
-      var mídias = lista.querySelectorAll(".festa__midia");
-      Array.prototype.forEach.call(mídias, function (el) {
+      var midias = lista.querySelectorAll(".festa__midia");
+      Array.prototype.forEach.call(midias, function (el) {
         el.addEventListener("click", function () {
           var src = el.getAttribute("data-midia");
           var ehVid = el.getAttribute("data-video") === "true";
@@ -700,21 +700,22 @@
     var busca = document.getElementById("busca");
     var chips = document.getElementById("chips");
 
-    var selEstado = document.getElementById("select-estado");
-    var selCidade = document.getElementById("select-cidade");
-    var selUni = document.getElementById("select-uni");
+    /* Sincronizado com os IDs declarados no HTML (seletor-*) */
+    var selEstado = document.getElementById("seletor-estado");
+    var selCidade = document.getElementById("seletor-cidade");
+    var selUni = document.getElementById("seletor-universidade");
 
     if (!lista) return 0;
 
-    var estadoSel = "";
-    var cidadeSel = "";
-    var uniSel = "";
+    var estadoSel = selEstado ? selEstado.value : "";
+    var cidadeSel = selCidade ? selCidade.value : "";
+    var uniSel = selUni ? selUni.value : "";
     var filtroCat = "todos";
     var termo = "";
 
-    var estadosData = window.ESTADOS || [];
+    var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
-    var unisData = window.UNIVERSIDADES_GRUPOS || {};
+    var unisData = window.UNIVERSIDADES_GRUPOS || window.UNIVERSIDADES || {};
 
     var paginas = fazerPaginas({
       caixa:   "grupos-paginas",
@@ -732,13 +733,15 @@
       return n.toLocaleString("pt-BR");
     }
 
-    /* Popular Select de Estados */
-    if (selEstado) {
-      selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
-        estadosData.map(function (est) {
-          return '<option value="' + est.id + '">' + est.nome + '</option>';
+    /* Popular Select de Estados dinamicamente se houver dados cadastrados */
+    if (selEstado && Object.keys(estadosData).length > 0) {
+      selEstado.innerHTML = '<option value="">Todos os Estados</option>' +
+        Object.keys(estadosData).map(function (key) {
+          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
         }).join("");
+    }
 
+    if (selEstado) {
       selEstado.addEventListener("change", function () {
         estadoSel = selEstado.value;
         cidadeSel = "";
@@ -750,23 +753,21 @@
       });
     }
 
-    /* Atualizar Select de Cidades com base no Estado */
     function atualizarSelectCidades() {
-      if (!selCidade) return;
+      if (!selCidade || Object.keys(cidadesData).length === 0) return;
       if (!estadoSel) {
-        selCidade.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
-        selCidade.disabled = true;
+        selCidade.innerHTML = '<option value="">Todas as Cidades</option>';
         return;
       }
 
-      var listaCidades = cidadesData[estadoSel] || [];
+      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
+        return cidadesData[key].estado === estadoSel;
+      });
 
       selCidade.innerHTML = '<option value="">Todas as Cidades</option>' +
-        listaCidades.map(function (c) {
-          return '<option value="' + c.id + '">' + c.nome + '</option>';
+        cidadesFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
         }).join("");
-
-      selCidade.disabled = false;
     }
 
     if (selCidade) {
@@ -779,33 +780,21 @@
       });
     }
 
-    /* Atualizar Select de Universidades com base na Cidade/Estado */
     function atualizarSelectUnis() {
-      if (!selUni) return;
-      if (!estadoSel) {
-        selUni.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
-        selUni.disabled = true;
-        return;
-      }
+      if (!selUni || Object.keys(unisData).length === 0) return;
 
-      var listaUnis = [];
-      if (cidadeSel) {
-        listaUnis = unisData[cidadeSel] || [];
-      } else {
-        var cidadesDoEstado = cidadesData[estadoSel] || [];
-        cidadesDoEstado.forEach(function (c) {
-          if (unisData[c.id]) {
-            listaUnis = listaUnis.concat(unisData[c.id]);
-          }
-        });
-      }
+      var unisFiltradas = Object.keys(unisData).filter(function (key) {
+        var u = unisData[key];
+        var c = u.cidade ? cidadesData[u.cidade] : null;
+        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
+        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
+        return bateEstado && bateCidade;
+      });
 
       selUni.innerHTML = '<option value="">Todas as Universidades</option>' +
-        listaUnis.map(function (u) {
-          return '<option value="' + u.id + '">' + u.nome + '</option>';
+        unisFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
         }).join("");
-
-      selUni.disabled = false;
     }
 
     if (selUni) {
@@ -843,19 +832,9 @@
       );
     }
 
-    function obtermNomeUni(uniId) {
-      for (var c in unisData) {
-        var arr = unisData[c];
-        for (var i = 0; i < arr.length; i++) {
-          if (arr[i].id === uniId) return arr[i].nome;
-        }
-      }
-      return "";
-    }
-
     function cartao(g) {
       var c = categorias[g.cat] || { nome: "Geral", cor: "#2E7D53" };
-      var nomeUni = obtermNomeUni(g.universidade || g.uni);
+      var u = unisData[g.uni] || { nome: g.uni || "" };
       var etiqueta = "";
       var membros = "";
 
@@ -880,7 +859,7 @@
         : "";
 
       var onde = '<span class="grupo__onde"><i class="ponto"></i>' +
-                 (nomeUni ? nomeUni + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
+                 (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
       return (
         '<li class="item" style="--cor:' + c.cor + '">' +
@@ -900,13 +879,12 @@
 
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
-        var gEstado = g.estado;
-        var gCidade = g.cidade;
-        var gUni    = g.universidade || g.uni;
+        var uniDoGrupo = unisData[g.uni];
+        var cidDoGrupo = (uniDoGrupo && uniDoGrupo.cidade) ? cidadesData[uniDoGrupo.cidade] : null;
 
-        var bateEstado = !estadoSel || gEstado === estadoSel;
-        var bateCidade = !cidadeSel || gCidade === cidadeSel;
-        var bateUni    = !uniSel || gUni === uniSel;
+        var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel) || (g.estado === estadoSel);
+        var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel) || (g.cidade === cidadeSel);
+        var bateUni    = !uniSel || g.uni === uniSel;
         var bateCat    = filtroCat === "todos" || g.cat === filtroCat;
 
         var bateTermo  = termo === "" ||
@@ -967,7 +945,7 @@
   }
 
   /* ======================================================================
-     OS DOIS BOTÕES
+     OS DOIS BOTÕES (ABAS)
      ====================================================================== */
 
   function montarAbas(quantosGrupos, quantasFestas) {
