@@ -608,9 +608,10 @@
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
       var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
-      // Verifica se o grupo é administrado pela Pluriversidade
-      var seloAdmin = (g.admin || g.administrado || g.pluri) 
-        ? '<span class="grupo__etiqueta-admin">Pluriversidade</span>' 
+      // Verifica se o grupo possui etiqueta preenchida ou propriedades antigas equivalentes
+      var textoEtiqueta = g.etiqueta || ((g.admin || g.administrado || g.pluri) ? "Pluriversidade" : "");
+      var seloAdmin = textoEtiqueta 
+        ? '<span class="grupo__etiqueta-admin">' + escapar(textoEtiqueta) + '</span>' 
         : '';
 
       return (
