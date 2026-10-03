@@ -166,6 +166,39 @@
         '</article>'
       );
     }).join("");
+
+    // --- LÓGICA DO CARROSSEL AUTOMÁTICO ---
+    var velocidade = 4000; // Tempo em milissegundos (4 segundos por item/passo)
+    var intervalo = null;
+
+    function rolarProximo() {
+      // Se chegou ao final do scroll, volta para o começo (0), senão avança a largura de um card aproximada
+      if (trilho.scrollLeft + trilho.clientWidth >= trilho.scrollWidth - 10) {
+        trilho.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        trilho.scrollBy({ left: 300, behavior: 'smooth' });
+      }
+    }
+
+    function ligarCarrossel() {
+      if (!intervalo) {
+        intervalo = setInterval(rolarProximo, velocidade);
+      }
+    }
+
+    function desligarCarrossel() {
+      if (intervalo) {
+        clearInterval(intervalo);
+        intervalo = null;
+      }
+    }
+
+    // Inicia a rotação automática
+    ligarCarrossel();
+
+    // Pausa a rotação automática quando o mouse estiver em cima para facilitar a leitura do usuário
+    trilho.addEventListener("mouseenter", desligarCarrossel);
+    trilho.addEventListener("mouseleave", ligarCarrossel);
   }
 
   function montarFestas() {
