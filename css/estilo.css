@@ -410,6 +410,7 @@ a { color: inherit; }
   border-radius: 12px;
   box-shadow: var(--sombra);
   position: relative; /* Necessário para posicionar elementos filhos de forma absoluta (como a etiqueta) */
+  overflow: hidden;   /* Garante que elementos internos respeitem o arredondamento do card */
 }
 
 .grupo {
@@ -418,7 +419,7 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: .75rem 5rem .75rem .9rem; /* Adicionado padding-right maior para o título não bater na etiqueta */
+  padding: .75rem 6.5rem .75rem .9rem; /* Padding direito maior para o título não bater na etiqueta */
   border-radius: 11px 0 0 11px;
   text-decoration: none;
   color: inherit;
@@ -454,17 +455,16 @@ a { color: inherit; }
 
 .grupo__etiqueta-admin {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 1rem;     /* Alinhado na direita do card */
+  top: 0;          /* Grudado exatamente na parte superior */
+  right: 0;        /* Grudado na extremidade direita */
   display: inline-block;
   font-family: var(--mono);
   font-size: .62rem;
   letter-spacing: .08em;
   text-transform: uppercase;
-  padding: .12rem .4rem;
-  border-radius: 4px;
-  background: rgba(46, 125, 83, .12);
+  padding: .3rem .6rem;
+  border-radius: 0 11px 0 8px; /* Arredondamento estético acompanhando o canto do card */
+  background: rgba(46, 125, 83, .15);
   color: var(--verde);
   width: fit-content;
   z-index: 2;       /* Garante que fique acima de outros elementos */
