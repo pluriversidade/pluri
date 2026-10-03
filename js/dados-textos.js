@@ -25,7 +25,7 @@ var TEXTOS = {
   festasVazio:     "Nenhuma festa cadastrada para as próximas semanas.",
 
   /* ---- A seção dos grupos ---- */
-  gruposTitulo:    "Todos os grupos",
+  gruposTitulo:    "REPOSITÓRIO DE GRUPOS UNIVERSITÁRIOS",
   gruposSubtitulo: "Toque no grupo para entrar direto no WhatsApp. Link quebrado? Use o botão na beirada do card para nos avisar via whatsapp.",
   gruposBusca:     "Buscar grupo: república, bandeco, estágio…",
   gruposVazio:     "Nenhum grupo com esse nome. Tente outra palavra ou peça as outras listas mais abaixo.",
@@ -39,8 +39,8 @@ var TEXTOS = {
   listasTexto:    "Alimente-nos!",
   listaBotao:     "Quer incluir sua festa aqui?",
   listaBotaoNota: "Clique aqui para saber como adicionar sua festa em nosso repositório.",
-  caronasBotao:   "Quer indicar um grupo?",
-  caronasNota:    "Clique aqui para saber como adicionar seu grupo em nosso repositório.",
+  caronasBotao:   "Quer indicar um grupo já existente?",
+  caronasNota:    "Clique aqui para saber como adicionar um grupo já existente da sua universidade em nosso repositório.",
 
   /* ---- O bloco do pix ---- */
   apoioTitulo: "Ajude a manter os grupos",
