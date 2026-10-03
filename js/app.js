@@ -66,19 +66,6 @@
     return { ano: ano, mes: mes, dia: dia, semana: d.getDay() };
   }
 
-  function diasAte(iso) {
-    var p = partesDaData(iso);
-    if (!p) return "";
-    var hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    var alvo = new Date(p.ano, p.mes - 1, p.dia);
-    var diff = Math.round((alvo - hoje) / (1000 * 60 * 60 * 24));
-    if (diff < 0) return "";
-    if (diff === 0) return "HOJE";
-    if (diff === 1) return "1 DIA";
-    return diff + " DIAS";
-  }
-
   function pareceLink(url) {
     return typeof url === "string" && /^https?:\/\/.+/.test(url.trim());
   }
@@ -111,6 +98,36 @@
     html += "</ul>";
     caixa.innerHTML = html;
     caixa.hidden = false;
+  }
+
+  /* CONFIGURAR BOTÃO DE PIX */
+  function configurarPix() {
+    var botaoPix = document.getElementById("copiar-pix");
+    var pixNumero = document.getElementById("pix-numero");
+    var pixRotulo = document.getElementById("pix-rotulo");
+
+    // Pega a chave dos dados/contatos se existir, ou define um fallback padrão
+    var chavePix = (contatos && contatos.pix) ? contatos.pix : (window.CHAVE_PIX || "pix@pluri.com");
+
+    if (pixNumero) {
+      pixNumero.textContent = chavePix;
+    }
+
+    if (botaoPix) {
+      botaoPix.addEventListener("click", function () {
+        navigator.clipboard.writeText(chavePix).then(function () {
+          if (pixRotulo) {
+            var original = pixRotulo.textContent;
+            pixRotulo.textContent = "Chave copiada!";
+            setTimeout(function () {
+              pixRotulo.textContent = original;
+            }, 2500);
+          }
+        }).catch(function (err) {
+          console.error("Erro ao copiar Pix: ", err);
+        });
+      });
+    }
   }
 
   /* PAGINAÇÃO */
@@ -470,7 +487,6 @@
     return festasBoas.length;
   }
   
-  /* MONTAGEM DOS GRUPOS E FILTROS HIERÁRQUICOS */
   function montarGrupos() {
     var lista = document.getElementById("lista");
     var vazio = document.getElementById("vazio");
@@ -747,6 +763,7 @@
   }
 
   aplicarTextos();
+  configurarPix();
   montarParceiros();
   montarFestas();
   montarGrupos();
