@@ -233,8 +233,28 @@
         var faltam = diasFaltam(f.data);
         console.log("Festa:", f.titulo, "| Faltam:", faltam);
 
+        var temMidia = Boolean(f.midia);
+        var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
+        
+        var miniHtml = "";
+        if (temMidia) {
+          if (ehVideo) {
+            miniHtml = 
+              '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
+                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
+                '<span class="festa__play-icon">▶</span>' +
+              '</div>';
+          } else {
+            miniHtml = 
+              '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="imagem">' +
+                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer da festa" loading="lazy">' +
+              '</div>';
+          }
+        }
+
         return (
           '<li class="festa" style="--cor: ' + corFesta + '">' +
+            miniHtml +
             '<div class="festa__data">' +
               '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
@@ -255,6 +275,45 @@
     }
 
     desenhar();
+
+    // Lógica para abrir e fechar o modal de mídia das festas
+    var modal = document.getElementById("modal-midia");
+    var containerModalMidia = document.getElementById("modal-container-midia");
+    var botaoFecharModal = document.getElementById("modal-fechar");
+
+    if (lista && modal && containerModalMidia) {
+      lista.addEventListener("click", function (e) {
+        var miniContainer = e.target.closest(".festa__mini-container");
+        if (!miniContainer) return;
+
+        var arquivoMidia = miniContainer.getAttribute("data-midia");
+        var tipoMidia = miniContainer.getAttribute("data-tipo");
+
+        if (tipoMidia === "video") {
+          containerModalMidia.innerHTML = '<video class="modal-midia__midia" src="' + arquivoMidia + '" controls autoplay></video>';
+        } else {
+          containerModalMidia.innerHTML = '<img class="modal-midia__midia" src="' + arquivoMidia + '" alt="Flyer ampliado">';
+        }
+
+        modal.hidden = false;
+      });
+
+      function fecharModal() {
+        modal.hidden = true;
+        containerModalMidia.innerHTML = "";
+      }
+
+      if (botaoFecharModal) {
+        botaoFecharModal.addEventListener("click", fecharModal);
+      }
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          fecharModal();
+        }
+      });
+    }
+
     return festasBoas.length;
   }
   

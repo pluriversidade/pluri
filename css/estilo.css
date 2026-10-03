@@ -633,10 +633,9 @@ a { color: inherit; }
   border-radius: 12px;
   padding: .85rem .9rem;
   box-shadow: var(--sombra);
+  align-items: center;
 }
 
-/* O bloco da data lê como a folhinha de um calendário: o olho encontra o dia
-    antes de ler o nome da festa, que é como se procura festa. */
 .festa__data {
   flex: 0 0 auto;
   width: 62px;
@@ -768,18 +767,6 @@ a { color: inherit; }
 }
 
 /* ------------------------------------------------------------- flyer miniatura & modal --- */
-
-.festa {
-  display: flex;
-  gap: .9rem;
-  background: var(--papel);
-  border: 1px solid var(--regua);
-  border-left: 5px solid var(--cor, var(--terracota));
-  border-radius: 12px;
-  padding: .85rem .9rem;
-  box-shadow: var(--sombra);
-  align-items: center; /* Alinha os elementos verticalmente no card */
-}
 
 .festa__mini-container {
   flex: 0 0 68px;

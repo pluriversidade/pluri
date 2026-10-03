@@ -21,8 +21,9 @@
    ingresso   link de venda do ingresso. Deixe "" se ainda não tiver
    perfil     link do Instagram da festa. Deixe "" se não tiver
    grupo      link do grupo de WhatsApp da festa. Deixe "" se não tiver
+   midia      caminho da imagem ou vídeo do flyer (ex: "img/flyer.jpg" ou "img/teaser.mp4"). Deixe "" se não tiver.
 
-   Os três links são opcionais: o botão só aparece quando o link existe.
+   Os links e a mídia são opcionais: os botões/miniatura só aparecem quando preenchidos.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 
@@ -55,7 +56,8 @@ var UNIVERSIDADES = {
     descricao: "",
     ingresso: "",
     perfil: "",
-    grupo: ""
+    grupo: "",
+    midia: ""
   },
   
   */
@@ -70,7 +72,8 @@ var FESTAS = [
     descricao: "Três pistas, open de chopp até meia-noite. Galpão na Av. Antônio Carlos, perto do portão 2.",
     ingresso: "https://exemplo.com/ingresso",
     perfil: "https://instagram.com/exemplo",
-    grupo: "https://chat.whatsapp.com/exemplo"
+    grupo: "https://chat.whatsapp.com/exemplo",
+    midia: "img/banner_festa1.jpg"
   },
 
   {
@@ -81,7 +84,8 @@ var FESTAS = [
     descricao: "Sertanejo e funk em dois ambientes, no Coração Eucarístico. Lote promocional até sexta.",
     ingresso: "https://exemplo.com/ingresso",
     perfil: "https://instagram.com/exemplo",
-    grupo: ""
+    grupo: "",
+    midia: ""
   },
 
   {
@@ -92,7 +96,8 @@ var FESTAS = [
     descricao: "Quadrilha, quentão e forró pé de serra. Traje caipira opcional, mas bem-vindo.",
     ingresso: "",
     perfil: "https://instagram.com/exemplo",
-    grupo: "https://chat.whatsapp.com/exemplo"
+    grupo: "https://chat.whatsapp.com/exemplo",
+    midia: ""
   },
 
   {
@@ -103,7 +108,8 @@ var FESTAS = [
     descricao: "Line-up de DJs da casa até as cinco da manhã. Meia-entrada com carteirinha na portaria.",
     ingresso: "https://exemplo.com/ingresso",
     perfil: "",
-    grupo: "https://chat.whatsapp.com/exemplo"
+    grupo: "https://chat.whatsapp.com/exemplo",
+    midia: ""
   },
 
   {
@@ -115,7 +121,7 @@ var FESTAS = [
     ingresso: "",
     perfil: "https://instagram.com/exemplo",
     grupo: "https://chat.whatsapp.com/exemplo",
-    midia: "banner_festa1.jpg" // ou "teaser.mp4"
+    midia: ""
   }
 
 ];
