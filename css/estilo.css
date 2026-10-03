@@ -451,6 +451,20 @@ a { color: inherit; }
   flex: 0 0 auto;
 }
 
+.grupo__etiqueta-admin {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .12rem .4rem;
+  border-radius: 4px;
+  background: rgba(46, 125, 83, .12);
+  color: var(--verde);
+  margin-bottom: .3rem;
+  width: fit-content;
+}
+
 .etiqueta {
   font-family: var(--mono);
   font-size: .62rem;
