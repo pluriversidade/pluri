@@ -106,6 +106,18 @@
       <rect x="957" y="276" width="6" height="24"/>
     </g>
 
+    <!-- Carrinho passando na cidade (Animados pelas classes carro-a e carro-b) -->
+    <g class="carro-a" fill="#E8A55F">
+      <rect x="0" y="268" width="38" height="14" rx="4"/>
+      <circle cx="10" cy="285" r="4" fill="#17201C"/>
+      <circle cx="28" cy="285" r="4" fill="#17201C"/>
+    </g>
+    <g class="carro-b" fill="#B24232">
+      <rect x="0" y="265" width="44" height="15" rx="4"/>
+      <circle cx="12" cy="282" r="4.5" fill="#17201C"/>
+      <circle cx="32" cy="282" r="4.5" fill="#17201C"/>
+    </g>
+
     <rect x="0" y="282" width="1200" height="18" fill="#2A2F33"/>
     <g fill="#C9CBB8" opacity=".75">
       <rect x="30"   y="290" width="34" height="3" rx="1.5"/>
@@ -127,7 +139,7 @@
   </svg>
 
   <div class="miolo marca">
-    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema">
+    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema com comunidade em volta">
       <defs>
         <g id="pessoa">
           <circle cy="-9.5" r="6.4"/>
@@ -135,6 +147,19 @@
         </g>
       </defs>
       <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
+      
+      <!-- Bonequinhos em volta da logo -->
+      <g fill="#2E7D53" opacity="0.85">
+        <use href="#pessoa" transform="translate(0, -74) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(52, -52) rotate(45) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(74, 0) rotate(90) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(52, 52) rotate(135) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(0, 74) rotate(180) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(-52, 52) rotate(225) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(-74, 0) rotate(270) scale(0.9)"/>
+        <use href="#pessoa" transform="translate(-52, -52) rotate(315) scale(0.9)"/>
+      </g>
+
       <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
       <image href="img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
     </svg>
@@ -209,7 +234,6 @@
       <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
     </div>
 
-    <!-- Seletores Hierárquicos de Localização -->
     <div class="localizacao">
       <select class="seletor-local" id="select-estado" aria-label="Filtrar por Estado">
         <option value="">Selecione o Estado</option>
