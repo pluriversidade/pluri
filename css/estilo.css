@@ -618,36 +618,67 @@ a { color: inherit; }
 
 .festas {
   list-style: none;
-  margin: .4rem 0 0;
+  margin: .8rem 0 0;
   padding: 0;
   display: grid;
-  gap: .55rem;
+  gap: .6rem;
 }
 
 .festa {
   display: flex;
-  align-items: stretch;
+  gap: .9rem;
   background: var(--papel);
   border: 1px solid var(--regua);
   border-left: 5px solid var(--cor, var(--terracota));
   border-radius: 12px;
+  padding: .85rem .9rem;
   box-shadow: var(--sombra);
-  overflow: hidden;
 }
 
-.festa:hover { border-color: var(--cor, var(--terracota)); }
-
-.festa__corpo {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: .75rem .9rem;
-  text-decoration: none;
-  color: inherit;
-  min-height: 62px;
+/* O bloco da data lê como a folhinha de um calendário: o olho encontra o dia
+    antes de ler o nome da festa, que é como se procura festa. */
+.festa__data {
+  flex: 0 0 auto;
+  width: 62px;
+  text-align: center;
+  background: var(--fundo);
+  border-radius: 10px;
+  padding: .4rem .2rem .45rem;
+  align-self: flex-start;
 }
+
+.festa__semana,
+.festa__mes {
+  display: block;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+}
+
+.festa__dia {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--cor, var(--terracota));
+}
+
+.festa__faltam {
+  display: block;
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--cor, var(--terracota));
+  margin-top: 4px;
+  border-top: 1px dashed rgba(0, 0, 0, .1);
+  padding-top: 3px;
+}
+
+.festa__corpo { flex: 1 1 auto; min-width: 0; }
 
 .festa__uni {
   margin: 0;
@@ -658,59 +689,49 @@ a { color: inherit; }
   color: var(--cor, var(--terracota));
 }
 
+.festa__hora { color: var(--tinta-fraca); }
+
 .festa__titulo {
   margin: .15rem 0 .2rem;
-  font-size: 1rem;
-  font-weight: 650;
+  font-size: 1.06rem;
+  font-weight: 700;
   line-height: 1.25;
-  word-break: break-word;
 }
 
 .festa__descricao {
-  margin: 0 0 .4rem;
-  font-size: .85rem;
-  line-height: 1.4;
+  margin: 0 0 .6rem;
+  font-size: .88rem;
   color: var(--tinta-fraca);
-}
-
-.festa__rodape {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: .6rem;
-  margin-top: .3rem;
-  font-size: .78rem;
-  color: var(--tinta-fraca);
-  flex-wrap: wrap;
-}
-
-.festa__data {
-  font-family: var(--mono);
-  font-size: .66rem;
-  letter-spacing: .03em;
-  color: #8A938C;
 }
 
 .festa__links {
   display: flex;
+  flex-wrap: wrap;
   gap: .4rem;
-  align-items: center;
 }
 
 .festa__link {
-  font-family: var(--mono);
-  font-size: .7rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--terracota);
+  font-size: .82rem;
+  font-weight: 600;
   text-decoration: none;
+  padding: .45rem .8rem;
+  border-radius: 8px;
+  border: 1px solid var(--regua);
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
-  gap: .3rem;
-  padding: .2rem 0;
 }
 
-.festa__link:hover { text-decoration: underline; }
+.festa__link--ingresso {
+  background: var(--cor, var(--terracota));
+  border-color: var(--cor, var(--terracota));
+  color: #FFFFFF;
+}
+
+.festa__link--perfil,
+.festa__link--grupo { background: var(--fundo); }
+
+.festa__link:hover { border-color: var(--cor, var(--terracota)); }
 
 /* ------------------------------------------------------------- paginação --- */
 
