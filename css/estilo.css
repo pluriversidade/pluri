@@ -964,20 +964,39 @@ a { color: inherit; }
   position: relative;
   box-shadow: 0 10px 35px rgba(0,0,0,0.3);
   text-align: left;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-comissario__titulo {
-  margin: 0 0 1rem;
+  margin: 0 0 0.8rem;
   font-size: 1.35rem;
   font-weight: 800;
   color: var(--noite);
   text-align: center;
 }
 
+/* Container do Vídeo de IA no Pop-up */
+.modal-comissario__video-container {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #000;
+  aspect-ratio: 16 / 9;
+}
+
+.modal-comissario__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .modal-comissario__texto {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--tinta-fraca);
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.8rem;
   line-height: 1.5;
 }
 
