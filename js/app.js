@@ -137,6 +137,20 @@
     return d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : "";
   }
 
+  function diasRestantes(iso) {
+    var p = partesDaData(iso);
+    var h = partesDaData(hojeISO());
+    if (!p || !h) return "";
+    var dataFesta = Date.UTC(p.ano, p.mes - 1, p.dia);
+    var dataHoje = Date.UTC(h.ano, h.mes - 1, h.dia);
+    var diffDias = Math.round((dataFesta - dataHoje) / 86400000);
+
+    if (diffDias === 0) return "hoje";
+    if (diffDias === 1) return "falta 1 dia";
+    if (diffDias > 1) return "faltam " + diffDias + " dias";
+    return "";
+  }
+
   /* ------------------------------------------------- conferências de item */
 
   function pareceLink(url) {
@@ -586,6 +600,10 @@
     function cartao(f) {
       var d = partesDaData(f.data);
       var u = unis[f.uni];
+      var faltam = diasRestantes(f.data);
+      var faltamHtml = faltam
+        ? '<span class="festa__faltam">' + faltam + '</span>'
+        : '';
 
       var botao = function (link, texto, tipo) {
         if (!pareceLink(link)) return "";
@@ -619,6 +637,7 @@
             '<span class="festa__semana">' + SEMANA[d.semana] + "</span>" +
             '<strong class="festa__dia">' + d.dia + "</strong>" +
             '<span class="festa__mes">' + MESES[d.mes - 1] + "</span>" +
+            faltamHtml +
           "</div>" +
           '<div class="festa__corpo">' +
             '<p class="festa__uni">' + u.nome +

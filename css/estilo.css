@@ -292,9 +292,6 @@ a { color: inherit; }
 /* ------------------------------------------------------------- botoes abas --- */
 /* ------------------------------------------------------- os dois botões --- */
 
-/* Os dois botões vivem dentro de uma cápsula, no meio da página. A cápsula
-   tem a largura do conteúdo — não a da tela — e o "margin: auto" dos lados é
-   o que centraliza. */
 .abas {
   display: flex;
   justify-content: center;
@@ -330,8 +327,6 @@ a { color: inherit; }
 
 .aba:hover:not([aria-selected="true"]) { color: var(--tinta); }
 
-/* O escolhido vira a pastilha escura; o outro fica só texto. Assim dá para
-   ver qual dos dois está aberto sem ler as duas palavras. */
 .aba[aria-selected="true"] {
   background: var(--tinta);
   color: #F5F1E6;
@@ -354,18 +349,12 @@ a { color: inherit; }
   color: #F5F1E6;
 }
 
-/* Sem número — nenhuma festa cadastrada, por exemplo — a bolinha não deixa
-   um caroço vazio do lado do nome. */
 .aba__conta:empty { display: none; }
 
-/* O foco desenha a volta da cápsula inteira, não a do botão quadrado. */
 .aba:focus-visible { border-radius: 999px; }
 
-/* A seção escolhida começa logo abaixo dos botões, sem o respiro de sempre. */
 .abas + .secao { margin-top: 1.4rem; }
 
-/* O atributo hidden manda mais do que qualquer display daqui: sem esta
-   linha, uma seção escondida pelo javascript voltaria a aparecer. */
 [hidden] { display: none !important; }
 /* ---------------------------------------------------------------- seções --- */
 
@@ -386,8 +375,6 @@ a { color: inherit; }
 
 /* ------------------------------------------------------ virar de página --- */
 
-/* A mesma cápsula dos dois botões de cima, agora com a contagem no meio: a
-   página inteira passa a ter um jeito só de dizer "escolha aqui". */
 .paginas {
   display: flex;
   align-items: center;
@@ -426,8 +413,6 @@ a { color: inherit; }
   color: var(--verde);
 }
 
-/* A seta se adianta um fio no passar do mouse — o empurrãozinho que diz para
-   que lado a lista vai andar. */
 .pagina > span[aria-hidden] {
   font-size: 1.05em;
   line-height: 1;
@@ -437,15 +422,11 @@ a { color: inherit; }
 .pagina:hover:not(:disabled) > span[aria-hidden]:first-child { transform: translateX(-2px); }
 .pagina:hover:not(:disabled) > span[aria-hidden]:last-child  { transform: translateX(2px); }
 
-/* Botão apagado em vez de sumido: assim a fileira não dança de lugar a cada
-   virada de página, e continua claro que existe um começo e um fim. */
 .pagina:disabled {
   opacity: .3;
   cursor: default;
 }
 
-/* A contagem é uma etiqueta, não um botão. A largura mínima segura o texto
-   no lugar quando "1 de 4" vira "10 de 21". */
 .paginas__onde {
   flex: 0 0 auto;
   min-width: 7.5em;
@@ -457,7 +438,6 @@ a { color: inherit; }
   text-align: center;
 }
 
-/* Em tela bem estreita a cápsula aperta o cinto em vez de vazar para fora. */
 @media (max-width: 370px) {
   .pagina { padding: .5rem .6rem; font-size: .86rem; }
   .paginas__onde { min-width: 6.5em; padding: 0 .1rem; }
@@ -529,11 +509,9 @@ a { color: inherit; }
   box-shadow: var(--sombra);
 }
 
-/* O bloco da data lê como a folhinha de um calendário: o olho encontra o dia
-   antes de ler o nome da festa, que é como se procura festa. */
 .festa__data {
   flex: 0 0 auto;
-  width: 52px;
+  width: 62px;
   text-align: center;
   background: var(--fundo);
   border-radius: 10px;
@@ -557,6 +535,20 @@ a { color: inherit; }
   font-weight: 800;
   line-height: 1.05;
   color: var(--cor, var(--terracota));
+}
+
+.festa__faltam {
+  display: block;
+  margin-top: .3rem;
+  padding-top: .25rem;
+  border-top: 1px dashed var(--regua);
+  font-family: var(--mono);
+  font-size: .58rem;
+  line-height: 1.1;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--cor, var(--terracota));
+  font-weight: 700;
 }
 
 .festa__corpo { flex: 1 1 auto; min-width: 0; }
@@ -642,7 +634,6 @@ a { color: inherit; }
   transform: scale(1.06);
 }
 
-/* Ícone de play sobreposto aos vídeos */
 .festa__play-icon {
   position: absolute;
   inset: 0;
@@ -816,8 +807,6 @@ a { color: inherit; }
   background: var(--papel);
   color: var(--tinta-fraca);
   cursor: pointer;
-  /* 44px é o tamanho mínimo de um alvo de toque que o polegar acerta sem
-     tentar duas vezes. */
   min-height: 44px;
 }
 
@@ -846,9 +835,6 @@ a { color: inherit; }
   gap: .55rem;
 }
 
-/* O card é o conjunto: o link grande ocupa quase tudo, e o aviso de link
-   quebrado fica numa tira estreita na borda direita. O botão precisa ser
-   irmão do link, e não filho, porque botão dentro de link é HTML inválido. */
 .item {
   display: flex;
   align-items: stretch;
@@ -861,9 +847,6 @@ a { color: inherit; }
 
 .item:hover { border-color: var(--cor, var(--verde)); }
 
-/* O conteúdo empilha: nome, descrição, dados e, por último, a linha que
-   junta a data de conferência com o "entrar". Em coluna, a descrição usa a
-   largura inteira do card em vez de espremer entre dois blocos. */
 .grupo {
   flex: 1 1 auto;
   min-width: 0;
@@ -916,8 +899,6 @@ a { color: inherit; }
   transition: background-color .16s ease, color .16s ease;
 }
 
-/* Discreto até alguém precisar dele: quem está procurando grupo não deve
-   tropeçar num alerta vermelho em cada linha da lista. */
 .reportar:hover,
 .reportar:focus-visible {
   background: #F6E4E1;
@@ -964,8 +945,6 @@ a { color: inherit; }
 .etiqueta--lotado { background: #F6E4E1; color: var(--terracota); }
 .etiqueta--novo   { background: #E4F0E9; color: var(--verde); }
 
-/* Quando este grupo foi conferido pela última vez. Fica no fim da linha e
-   em letra menor: é informação de confiança, não de destaque. */
 .grupo__quando {
   font-family: var(--mono);
   font-size: .66rem;
@@ -1085,12 +1064,10 @@ a { color: inherit; }
 
 @media (min-width: 560px) {
   .grupo__nome { font-size: 1.05rem; }
-  .festa__data { width: 58px; }
+  .festa__data { width: 68px; }
   .festa__titulo { font-size: 1.12rem; }
 }
 
-/* Quem pediu menos movimento no sistema vê a rua parada e o carrossel sem
-   deslizamento animado. */
 @media (prefers-reduced-motion: reduce) {
   .carro-a,
   .carro-b { animation: none; }
