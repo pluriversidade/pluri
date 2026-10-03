@@ -1,33 +1,66 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    AS FESTAS
+   ═══════════════════════════════════════════════════════════════════════════
+
+   COMO ADICIONAR UMA FESTA
+   Copie um bloco inteiro, da chave { até a vírgula depois do }, cole embaixo
+   e troque as informações. Não precisa se preocupar com a ordem: a página
+   coloca sempre a festa mais próxima em primeiro lugar.
+
+   FESTA QUE JÁ ACONTECEU SOME SOZINHA
+   Passou a data, ela deixa de aparecer na página. Não precisa apagar nada —
+   mas se quiser limpar o arquivo de vez em quando, fique à vontade.
+
+   O QUE VAI EM CADA CAMPO
+   data       o dia da festa, no formato ano-mês-dia: "2026-10-17"
+              (sempre quatro números, traço, dois, traço, dois)
+   hora       opcional. "22h", "23h30", ou deixe "" para não mostrar
+   uni        a universidade, escolhida da lista logo abaixo
+   titulo     o nome da festa
+   descricao  uma ou duas frases. É um bom lugar para dizer o local
+   ingresso   link de venda do ingresso. Deixe "" se ainda não tiver
+   perfil     link do Instagram da festa. Deixe "" se não tiver
+   grupo      link do grupo de WhatsApp da festa. Deixe "" se não tiver
+   midia      caminho da imagem ou vídeo do flyer (ex: "img/flyer.jpg" ou "img/teaser.mp4"). Deixe "" se não tiver.
+
+   Os links e a mídia são opcionais: os botões/miniatura só aparecem quando preenchidos.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-var ESTADOS = {
-  MG: { nome: "Minas Gerais" },
-  SP: { nome: "São Paulo" }
-};
-
-var CIDADES = {
-  bh: { nome: "Belo Horizonte", estado: "MG" },
-  uberlandia: { nome: "Uberlândia", estado: "MG" },
-  campinas: { nome: "Campinas", estado: "SP" }
-};
 
 /* AS UNIVERSIDADES ─────────────────────────────────────────────────────────
-   Cada universidade agora aponta para a sua respectiva cidade.
-   ═══════════════════════════════════════════════════════════════════════════ */
+   Cada uma vira um botão de filtro. Para acrescentar uma faculdade, copie
+   uma linha e troque. A palavra da esquerda (ufmg, puc…) é o apelido usado
+   nas festas lá embaixo, no campo uni — precisa ser igual nos dois lugares,
+   sem acento e sem espaço.                                                  */
 
 var UNIVERSIDADES = {
-  ufmg:    { nome: "UFMG",         cor: "#B24232", cidade: "bh" },
-  puc:     { nome: "PUC Minas",    cor: "#3D6E8C", cidade: "bh" },
-  faminas: { nome: "Faminas",      cor: "#2E7D53", cidade: "bh" },
-  newton:  { nome: "Newton Paiva", cor: "#C08A1E", cidade: "bh" },
-  fumec:   { nome: "FUMEC",        cor: "#e0214a", cidade: "bh" },
-  una:     { nome: "UNA",          cor: "#6B5B95", cidade: "bh" }
+  ufmg:    { nome: "UFMG",         cor: "#B24232" },
+  puc:     { nome: "PUC Minas",    cor: "#3D6E8C" },
+  faminas: { nome: "Faminas",      cor: "#2E7D53" },
+  newton:  { nome: "Newton Paiva", cor: "#C08A1E" },
+  fumec:   { nome: "FUMEC",        cor: "#e0214a" },
+  una:     { nome: "UNA",          cor: "#6B5B95" }
 };
 
 
-/* AS FESTAS ──────────────────────────────────────────────────────────────── */
+/* AS FESTAS ────────────────────────────────────────────────────────────────
+
+   ATENÇÃO: as festas abaixo são só exemplos, para você ver o formato
+   funcionando. Apague todas e coloque as de verdade.                        
+   
+     {
+    data: "",
+    hora: "",
+    uni: "",
+    titulo: "",
+    descricao: "",
+    ingresso: "",
+    perfil: "",
+    grupo: "",
+    midia: ""
+  },
+  
+  */
 
 var FESTAS = [
 
