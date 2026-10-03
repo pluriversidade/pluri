@@ -187,7 +187,7 @@
       if (diff < 0) return "passou";
       if (diff === 0) return "hoje";
       if (diff === 1) return "amanhã";
-      return diff + " dias";
+      return "faltam " + diff + " dias";
     }
 
     function desenhar() {
