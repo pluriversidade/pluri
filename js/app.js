@@ -195,7 +195,7 @@
 
     if (!lista) return 0;
 
-    // Valores padrão iniciais exigidos
+    // Valores padrão desejados
     var estadoSel = "MG";
     var cidadeSel = "bh";
     var uniSel = "ufmg";
@@ -216,17 +216,17 @@
 
     function comPonto(n) { return n.toLocaleString("pt-BR"); }
 
-    /* Popula Select de Estados */
+    /* Popula Estados */
     function renderEstados() {
       if (!selEstado) return;
       selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
         Object.keys(estadosData).map(function (key) {
-          var marcado = key === estadoSel ? ' selected' : '';
-          return '<option value="' + key + '"' + marcado + '>' + estadosData[key].nome + '</option>';
+          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
         }).join("");
+      selEstado.value = estadoSel;
     }
 
-    /* Popula Select de Cidades conforme Estado selecionado */
+    /* Popula Cidades */
     function atualizarSelectCidades() {
       if (!selCidade) return;
       if (!estadoSel) {
@@ -242,14 +242,14 @@
 
       selCidade.innerHTML = '<option value="">Todas as Cidades</option>' +
         cidadesFiltradas.map(function (key) {
-          var marcado = key === cidadeSel ? ' selected' : '';
-          return '<option value="' + key + '"' + marcado + '>' + cidadesData[key].nome + '</option>';
+          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
         }).join("");
 
       selCidade.disabled = false;
+      selCidade.value = cidadeSel;
     }
 
-    /* Popula Select de Universidades conforme Estado/Cidade selecionados */
+    /* Popula Universidades */
     function atualizarSelectUnis() {
       if (!selUni) return;
       if (!estadoSel) {
@@ -269,14 +269,14 @@
 
       selUni.innerHTML = '<option value="">Todas as Universidades</option>' +
         unisFiltradas.map(function (key) {
-          var marcado = key === uniSel ? ' selected' : '';
-          return '<option value="' + key + '"' + marcado + '>' + unisData[key].nome + '</option>';
+          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
         }).join("");
 
       selUni.disabled = false;
+      selUni.value = uniSel;
     }
 
-    /* Listeners para Interação do Usuário */
+    /* Eventos de alteração dos selects */
     if (selEstado) {
       selEstado.addEventListener("change", function () {
         estadoSel = selEstado.value;
@@ -313,14 +313,14 @@
       var membros = g.membros ? comPonto(g.membros) + " membros" : "";
 
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
-      var onde = '<span class="grupo__meta"><span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span></span>";
+      var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
       return (
         '<li class="item" style="--cor:' + c.cor + '">' +
           '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
             '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
             desc +
-            onde +
+            '<span class="grupo__meta">' + onde + "</span>" +
           "</a>" +
         "</li>"
       );
@@ -389,7 +389,7 @@
       });
     }
 
-    // Execução da Inicialização Encadeada
+    // Inicialização da interface na ordem correta
     renderEstados();
     atualizarSelectCidades();
     atualizarSelectUnis();
@@ -398,7 +398,7 @@
     return gruposBons.length;
   }
 
-  function montarAbas(quantosGrupos, quantasFestas) {
+  function montarAbas() {
     var botaoGrupos = document.getElementById("aba-grupos");
     var botaoFestas = document.getElementById("aba-festas");
     var secaoGrupos = document.getElementById("secao-grupos");
@@ -435,9 +435,9 @@
 
   aplicarTextos();
   montarParceiros();
-  var quantasFestas = montarFestas();
-  var quantosGrupos = montarGrupos();
-  montarAbas(quantosGrupos, quantasFestas);
+  montarFestas();
+  montarGrupos();
+  montarAbas();
   montarPainel();
   mostrarProblemas();
 })();
