@@ -608,13 +608,11 @@
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
       var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
-      // Verifica se o grupo possui etiqueta preenchida ou propriedades antigas equivalentes
       var textoEtiqueta = g.etiqueta || ((g.admin || g.administrado || g.pluri) ? "Pluriversidade" : "");
       var seloAdmin = textoEtiqueta 
         ? '<span class="grupo__etiqueta-admin">' + escapar(textoEtiqueta) + '</span>' 
         : '';
 
-      // Mensagem personalizada para o WhatsApp
       var textoZap = 'Oi, estou enviando esta mensagem para avisar que o link do grupo "' + g.nome + '" está quebrado, você pode me mandar o link aqui?';
       var linkReportar = 'https://wa.me/5531991579687?text=' + encodeURIComponent(textoZap);
 
