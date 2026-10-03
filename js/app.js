@@ -220,9 +220,27 @@
       return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    var estadoSel = "";
-    var cidadeSel = "";
-    var uniSel = "";
+var estadosData = window.ESTADOS || {};
+    var cidadesData = window.CIDADES || {};
+    var unisData = window.UNIVERSIDADES || {};
+
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // Padrão: Minas Gerais, Belo Horizonte e UFMG
+    var estadoSel = Object.keys(estadosData).find(function(k) {
+      return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
+    }) || "MG";
+
+    var cidadeSel = Object.keys(cidadesData).find(function(k) {
+      return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
+    }) || "bh";
+
+    var uniSel = Object.keys(unisData).find(function(k) {
+      return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
+    }) || "ufmg";
+    
     var dataFiltroSel = "";
 
     var paginas = fazerPaginas({
