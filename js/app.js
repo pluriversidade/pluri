@@ -206,10 +206,11 @@
     var lista = document.getElementById("festas-lista");
     if (!lista) return 0;
 
-    var selEstadoFesta = document.getElementById("select-estado-festa");
-    var selCidadeFesta = document.getElementById("select-cidade-festa");
-    var selUniFesta    = document.getElementById("select-uni-festa");
-    var buscaFesta     = document.getElementById("busca-festa");
+    // IDs corrigidos para corresponder ao HTML (-festas)
+    var selEstadoFesta = document.getElementById("select-estado-festas");
+    var selCidadeFesta = document.getElementById("select-cidade-festas");
+    var selUniFesta    = document.getElementById("select-uni-festas");
+    var buscaFesta     = document.getElementById("festas-dia"); // Ajustado para o campo de data ou busca se houver
 
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
@@ -222,7 +223,7 @@
     var estadoSel = "";
     var cidadeSel = "";
     var uniSel = "";
-    var termo = "";
+    var dataFiltroSel = "";
 
     var paginas = fazerPaginas({
       caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
@@ -230,7 +231,7 @@
 
     function renderEstadosFesta() {
       if (!selEstadoFesta) return;
-      selEstadoFesta.innerHTML = '<option value="">Todos os Estados</option>' +
+      selEstadoFesta.innerHTML = '<option value="">Selecione o Estado</option>' +
         Object.keys(estadosData).map(function (key) {
           return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
         }).join("");
@@ -240,8 +241,8 @@
     function atualizarSelectCidadesFesta() {
       if (!selCidadeFesta) return;
       if (!estadoSel) {
-        selCidadeFesta.innerHTML = '<option value="">Todas as Cidades</option>';
-        selCidadeFesta.disabled = false;
+        selCidadeFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selCidadeFesta.disabled = true;
         cidadeSel = "";
         return;
       }
@@ -261,9 +262,9 @@
 
     function atualizarSelectUnisFesta() {
       if (!selUniFesta) return;
-      if (!estadoSel && !cidadeSel) {
-        selUniFesta.innerHTML = '<option value="">Todas as Universidades</option>';
-        selUniFesta.disabled = false;
+      if (!estadoSel) {
+        selUniFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selUniFesta.disabled = true;
         uniSel = "";
         return;
       }
@@ -316,8 +317,21 @@
     }
 
     if (buscaFesta) {
-      buscaFesta.addEventListener("input", function () {
-        termo = simples(buscaFesta.value.trim());
+      buscaFesta.addEventListener("change", function () {
+        dataFiltroSel = buscaFesta.value;
+        var btnLimpar = document.getElementById("festas-limpar");
+        if (btnLimpar) btnLimpar.hidden = !dataFiltroSel;
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
+
+    var btnLimparData = document.getElementById("festas-limpar");
+    if (btnLimparData) {
+      btnLimparData.addEventListener("click", function () {
+        if (buscaFesta) buscaFesta.value = "";
+        dataFiltroSel = "";
+        btnLimparData.hidden = true;
         paginas.reiniciar();
         desenhar();
       });
@@ -345,13 +359,9 @@
         var bateEstado = !estadoSel || (cidDaFesta && cidDaFesta.estado === estadoSel);
         var bateCidade = !cidadeSel || (uniDaFesta && uniDaFesta.cidade === cidadeSel);
         var bateUni = !uniSel || f.uni === uniSel || simples(f.uni) === simples(uniSel);
+        var bateData = !dataFiltroSel || f.data === dataFiltroSel;
 
-        var bateTermo = termo === "" ||
-          simples(f.titulo).indexOf(termo) !== -1 ||
-          simples(f.descricao || "").indexOf(termo) !== -1 ||
-          (uniDaFesta && simples(uniDaFesta.nome).indexOf(termo) !== -1);
-
-        return bateEstado && bateCidade && bateUni && bateTermo;
+        return bateEstado && bateCidade && bateUni && bateData;
       });
 
       lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
@@ -399,6 +409,12 @@
           '</li>'
         );
       }).join("");
+
+      var elVazio = document.getElementById("festas-vazio");
+      if (elVazio) {
+        elVazio.textContent = "Nenhuma festa encontrada para os filtros selecionados.";
+        elVazio.hidden = visiveis.length > 0;
+      }
     }
 
     renderEstadosFesta();
@@ -406,7 +422,6 @@
     atualizarSelectUnisFesta();
     desenhar();
 
-    // Lógica para abrir e fechar o modal de mídia das festas
     var modal = document.getElementById("modal-midia");
     var containerModalMidia = document.getElementById("modal-container-midia");
     var botaoFecharModal = document.getElementById("modal-fechar");
@@ -485,7 +500,7 @@
     var termo = "";
 
     var paginas = fazerPaginas({
-      caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde", topo: "grupos-titulo"
+      caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde"
     }, function () { desenhar(); });
 
     function comPonto(n) { return n.toLocaleString("pt-BR"); }
@@ -620,15 +635,17 @@
       });
 
       lista.innerHTML = paginas.recortar(visiveis).map(cartao).join("");
-      vazio.hidden = visiveis.length > 0;
+      if (vazio) vazio.hidden = visiveis.length > 0;
 
       var pessoas = visiveis.reduce(function (soma, g) {
         return soma + (typeof g.membros === "number" ? g.membros : 0);
       }, 0);
 
-      contagem.textContent = visiveis.length === 0
-        ? ""
-        : visiveis.length + " grupos · " + comPonto(pessoas) + " pessoas";
+      if (contagem) {
+        contagem.textContent = visiveis.length === 0
+          ? ""
+          : visiveis.length + " grupos · " + comPonto(pessoas) + " pessoas";
+      }
     }
 
     var usadas = {};
@@ -640,21 +657,23 @@
         .map(function (id) { return { id: id, nome: categorias[id].nome }; })
     );
 
-    chips.innerHTML = botoes.map(function (b, i) {
-      return '<button type="button" class="chip" data-cat="' + b.id + '"' +
-             ' aria-pressed="' + (i === 0) + '">' + b.nome + "</button>";
-    }).join("");
+    if (chips) {
+      chips.innerHTML = botoes.map(function (b, i) {
+        return '<button type="button" class="chip" data-cat="' + b.id + '"' +
+               ' aria-pressed="' + (i === 0) + '">' + b.nome + "</button>";
+      }).join("");
 
-    Array.prototype.forEach.call(chips.children, function (b) {
-      b.addEventListener("click", function () {
-        filtroCat = b.getAttribute("data-cat");
-        Array.prototype.forEach.call(chips.children, function (o) {
-          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+      Array.prototype.forEach.call(chips.children, function (b) {
+        b.addEventListener("click", function () {
+          filtroCat = b.getAttribute("data-cat");
+          Array.prototype.forEach.call(chips.children, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          paginas.reiniciar();
+          desenhar();
         });
-        paginas.reiniciar();
-        desenhar();
       });
-    });
+    }
 
     if (busca) {
       busca.addEventListener("input", function () {
