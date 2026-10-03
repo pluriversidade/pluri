@@ -635,8 +635,10 @@
       return (
         '<li class="item" style="--cor:' + c.cor + '">' +
           '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
-            seloAdmin +
-            '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
+            '<div class="grupo__topo-linha">' +
+              '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
+              seloAdmin +
+            '</div>' +
             desc +
             '<span class="grupo__meta">' + onde + "</span>" +
           "</a>" +
@@ -646,7 +648,7 @@
         "</li>"
       );
     }
-
+    
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
         var uniDoGrupo = unisData[g.uni];
