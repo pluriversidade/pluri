@@ -426,8 +426,8 @@
               '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
               (f.descricao ? '<p class="festa__descricao">' + escapar(f.descricao) + '</p>' : '') +
               '<div class="festa__links">' +
-                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
-                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo</a>' : '') +
+                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">COMPRAR INGRESSO</a>' : '') +
+                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">GRUPO DE COMISSÁRIOS</a>' : '') +
               '</div>' +
             '</div>' +
             miniHtml +
