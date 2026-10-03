@@ -17,10 +17,6 @@
 
 <!-- ================================================================ capa -->
 <header class="capa">
-
-  <!-- A cena do entardecer. Desenhada aqui mesmo, em vetor: não há imagem
-       para baixar, então a página abre instantânea num 4G ruim — que é como
-       quase todo mundo vai chegar, por um link no WhatsApp. -->
   <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice"
        role="img" aria-label="Ilustração de uma cidade ao entardecer, com casas, prédios e carros">
     <defs>
@@ -39,20 +35,13 @@
 
     <rect width="1200" height="300" fill="url(#ceu)"/>
 
-    <!-- O sol fica inteiro acima da crista, e dentro do trecho que aparece
-         na tela do celular — a cena é cortada pelas laterais ali, e o sol
-         mais à direita ficava de fora. Embaixo da crista, a serra
-         semitransparente deixava o círculo aparecer por dentro da montanha,
-         como se fosse um buraco. -->
     <circle cx="790" cy="112" r="104" fill="url(#brilho)"/>
     <circle cx="790" cy="112" r="26" fill="#FFD07A"/>
 
-    <!-- A serra que fecha o horizonte de Belo Horizonte. Opaca: é rocha. -->
     <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150
              L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z"
           fill="#4B4560"/>
 
-    <!-- Prédios do campus, com as luzes acesas. -->
     <g fill="#2B3A34">
       <rect x="60"   y="172" width="74" height="128" rx="3"/>
       <rect x="150"  y="196" width="52" height="104" rx="3"/>
@@ -77,7 +66,6 @@
       <rect x="1090" y="220" width="9" height="11" rx="1.5"/>
     </g>
 
-    <!-- As repúblicas. -->
     <g>
       <rect x="250" y="214" width="96" height="86" rx="4" fill="#F0EADC"/>
       <path d="M238 216 L298 176 L358 216 Z" fill="#B24232"/>
@@ -109,7 +97,6 @@
       <rect x="828" y="274" width="22" height="26" rx="2" fill="#7A5A46"/>
     </g>
 
-    <!-- Árvores entre as casas. -->
     <g fill="#2E4A38">
       <circle cx="372" cy="262" r="20"/>
       <circle cx="650" cy="266" r="17"/>
@@ -123,7 +110,6 @@
       <rect x="957" y="276" width="6" height="24"/>
     </g>
 
-    <!-- A rua. -->
     <rect x="0" y="282" width="1200" height="18" fill="#2A2F33"/>
     <g fill="#C9CBB8" opacity=".75">
       <rect x="30"   y="290" width="34" height="3" rx="1.5"/>
@@ -143,7 +129,6 @@
       <rect x="1150" y="290" width="34" height="3" rx="1.5"/>
     </g>
 
-    <!-- As caronas. -->
     <g class="carro-a">
       <path d="M0 282 h72 a6 6 0 0 0 6-6 v-10 a6 6 0 0 0-6-6 h-12 l-10-12 h-30
                l-8 12 h-12 a6 6 0 0 0-6 6 v10 a6 6 0 0 0 6 6 Z"
@@ -163,8 +148,6 @@
   </svg>
 
   <div class="miolo marca">
-
-    <!-- O emblema: a comunidade em roda ao redor do M. -->
     <svg class="emblema" viewBox="-100 -100 200 200" role="img"
          aria-label="Emblema: pessoas em roda ao redor do M da UFMG">
       <defs>
@@ -265,22 +248,18 @@
       <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
     </div>
 
-    <!-- Seletores de localização e universidade -->
+    <!-- Seletores de localização e universidade gerados dinamicamente via JS -->
     <div class="localizacao">
       <select class="seletor-local" id="seletor-estado" aria-label="Filtrar por Estado">
-        <option value="MG" selected>Minas Gerais</option>
-        <option value="SP">São Paulo</option>
+        <option value="">Todos os Estados</option>
       </select>
 
       <select class="seletor-local" id="seletor-cidade" aria-label="Filtrar por Cidade">
-        <option value="Belo Horizonte" selected>Belo Horizonte</option>
-        <option value="Contagem">Contagem</option>
-        <option value="Juiz de Fora">Juiz de Fora</option>
+        <option value="">Todas as Cidades</option>
       </select>
 
       <select class="seletor-local" id="seletor-universidade" aria-label="Filtrar por Universidade">
         <option value="">Todas as Universidades</option>
-        <option value="UFMG" selected>UFMG</option>
       </select>
     </div>
 
@@ -289,6 +268,7 @@
            data-texto-dica="gruposBusca"
            placeholder="Buscar grupo…">
 
+    <!-- Categorias renderizadas pelo app.js em formato de chips -->
     <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
     <p class="contagem" id="contagem"></p>
 
