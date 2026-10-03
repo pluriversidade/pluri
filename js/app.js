@@ -202,27 +202,76 @@
     trilho.addEventListener("mouseleave", ligarCarrossel);
   }
 
-  function montarFestas() {
-    var lista = document.getElementById("festas-lista");
-    if (!lista) return 0;
+  function desenhar() {
+      var visiveis = festasBoas;
+      lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
+        var d = partesDaData(f.data);
+        var u = unis[f.uni] || { nome: f.uni || "" };
+        var corFesta = f.cor || "var(--terracota)";
+        var faltam = diasFaltam(f.data);
 
-    var paginas = fazerPaginas({
-      caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
-    }, function () { desenhar(); });
+        // Verifica se a festa tem mídia (foto ou vídeo)
+        var temMidia = f.midia && typeof f.midia === "string";
+        var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
+        
+        var miniHtml = "";
+        if (temMidia) {
+          if (ehVideo) {
+            miniHtml = 
+              '<div class="festa__mini-container" onclick="abrirModalMidia(\'video\', \'' + f.midia + '\')">' +
+                '<video class="festa__mini-media" src="' + f.midia + '"></video>' +
+                '<div class="festa__play-icon">▶</div>' +
+              '</div>';
+          } else {
+            miniHtml = 
+              '<div class="festa__mini-container" onclick="abrirModalMidia(\'imagem\', \'' + f.midia + '\')">' +
+                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer da festa" loading="lazy">' +
+              '</div>';
+          }
+        }
 
-    function diasFaltam(iso) {
-      var p = partesDaData(iso);
-      if (!p) return "";
-      var dFesta = new Date(p.ano, p.mes - 1, p.dia);
-      var dHoje = new Date();
-      dHoje.setHours(0, 0, 0, 0);
-      dFesta.setHours(0, 0, 0, 0);
-      var diff = Math.round((dFesta - dHoje) / (1000 * 60 * 60 * 24));
-      if (diff < 0) return "passou";
-      if (diff === 0) return "hoje";
-      if (diff === 1) return "amanhã";
-      return "faltam " + diff + " dias";
+        return (
+          '<li class="festa" style="--cor: ' + corFesta + '">' +
+            miniHtml +
+            '<div class="festa__data">' +
+              '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
+              '<span class="festa__dia">' + dois(d.dia) + '</span>' +
+              (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
+            '</div>' +
+            '<div class="festa__corpo">' +
+              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
+              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+              (f.descricao ? '<p class="festa__descricao">' + escapar(f.descricao) + '</p>' : '') +
+              '<div class="festa__links">' +
+                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
+                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo</a>' : '') +
+              '</div>' +
+            '</div>' +
+          '</li>'
+        );
+      }).join("");
     }
+
+    window.abrirModalMidia = function(tipo, url) {
+  var modal = document.getElementById("modal-midia");
+  var corpo = document.getElementById("modal-midia-corpo");
+  if (!modal || !corpo) return;
+
+  if (tipo === "video") {
+    corpo.innerHTML = '<video class="modal-midia__midia" src="' + url + '" controls autoplay></video>';
+  } else {
+    corpo.innerHTML = '<img class="modal-midia__midia" src="' + url + '" alt="Flyer ampliado">';
+  }
+  modal.hidden = false;
+};
+
+window.fecharModalMidia = function() {
+  var modal = document.getElementById("modal-midia");
+  var corpo = document.getElementById("modal-midia-corpo");
+  if (!modal || !corpo) return;
+  modal.hidden = true;
+  corpo.innerHTML = "";
+};
 
     function desenhar() {
       var visiveis = festasBoas;
