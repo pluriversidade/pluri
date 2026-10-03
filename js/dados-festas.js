@@ -26,7 +26,7 @@
    Os links e a mídia são opcionais: os botões/miniatura só aparecem quando preenchidos.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-
+   
 /* AS UNIVERSIDADES ─────────────────────────────────────────────────────────
    Cada uma vira um botão de filtro. Para acrescentar uma faculdade, copie
    uma linha e troque. A palavra da esquerda (ufmg, puc…) é o apelido usado
@@ -34,12 +34,12 @@
    sem acento e sem espaço.                                                  */
 
 var UNIVERSIDADES = {
-  ufmg:    { nome: "UFMG",         cor: "#B24232" },
-  puc:     { nome: "PUC Minas",    cor: "#3D6E8C" },
-  faminas: { nome: "Faminas",      cor: "#2E7D53" },
-  newton:  { nome: "Newton Paiva", cor: "#C08A1E" },
-  fumec:   { nome: "FUMEC",        cor: "#e0214a" },
-  una:     { nome: "UNA",          cor: "#6B5B95" }
+  ufmg:    { nome: "UFMG",         cor: "#B24232", cidade: "bh" },
+  puc:     { nome: "PUC Minas",    cor: "#3D6E8C", cidade: "bh" },
+  faminas: { nome: "Faminas",      cor: "#2E7D53", cidade: "bh" },
+  newton:  { nome: "Newton Paiva", cor: "#C08A1E", cidade: "bh" },
+  fumec:   { nome: "FUMEC",        cor: "#e0214a", cidade: "bh" },
+  una:     { nome: "UNA",          cor: "#6B5B95", cidade: "bh" }
 };
 
 
@@ -61,6 +61,17 @@ var UNIVERSIDADES = {
   },
   
   */
+
+var ESTADOS = {
+  MG: { nome: "Minas Gerais" },
+  SP: { nome: "São Paulo" }
+};
+
+var CIDADES = {
+  bh: { nome: "Belo Horizonte", estado: "MG" },
+  uberlandia: { nome: "Uberlândia", estado: "MG" },
+  campinas: { nome: "Campinas", estado: "SP" }
+};
 
 var FESTAS = [
 
