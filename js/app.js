@@ -57,11 +57,6 @@
 
   function dois(n) { return n < 10 ? "0" + n : String(n); }
 
-  function hojeISO() {
-    var d = new Date();
-    return d.getFullYear() + "-" + dois(d.getMonth() + 1) + "-" + dois(d.getDate());
-  }
-
   function partesDaData(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));
     if (!m) return null;
@@ -195,6 +190,7 @@
 
     if (!lista) return 0;
 
+    // Inicia sem filtros para garantir a exibição inicial de todos os grupos
     var estadoSel = "";
     var cidadeSel = "";
     var uniSel = "";
@@ -205,16 +201,8 @@
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES_GRUPOS || {};
 
-    /* Helper para busca flexível de universidade (trata divergências como puc x pucmg) */
-    function obterUniData(key) {
-      if (!key) return null;
-      if (unisData[key]) return unisData[key];
-      if (key === "puc" && unisData["pucmg"]) return unisData["pucmg"];
-      if (key === "pucmg" && unisData["puc"]) return unisData["puc"];
-      return null;
-    }
-
-    function obterUniChave(key) {
+    /* Normaliza chaves com pequenas diferenças (ex: puc x pucmg) */
+    function normalizarChaveUni(key) {
       if (!key) return "";
       if (unisData[key]) return key;
       if (key === "puc" && unisData["pucmg"]) return "pucmg";
@@ -235,7 +223,7 @@
     /* Popula Estados */
     function renderEstados() {
       if (!selEstado) return;
-      selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
+      selEstado.innerHTML = '<option value="">Todos os Estados</option>' +
         Object.keys(estadosData).map(function (key) {
           return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
         }).join("");
@@ -246,8 +234,8 @@
     function atualizarSelectCidades() {
       if (!selCidade) return;
       if (!estadoSel) {
-        selCidade.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
-        selCidade.disabled = true;
+        selCidade.innerHTML = '<option value="">Todas as Cidades</option>';
+        selCidade.disabled = false;
         cidadeSel = "";
         return;
       }
@@ -268,9 +256,9 @@
     /* Popula Universidades */
     function atualizarSelectUnis() {
       if (!selUni) return;
-      if (!estadoSel) {
-        selUni.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
-        selUni.disabled = true;
+      if (!estadoSel && !cidadeSel) {
+        selUni.innerHTML = '<option value="">Todas as Universidades</option>';
+        selUni.disabled = false;
         uniSel = "";
         return;
       }
@@ -278,7 +266,7 @@
       var unisFiltradas = Object.keys(unisData).filter(function (key) {
         var u = unisData[key];
         var c = cidadesData[u.cidade];
-        var bateEstado = c && c.estado === estadoSel;
+        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
         var bateCidade = !cidadeSel || u.cidade === cidadeSel;
         return bateEstado && bateCidade;
       });
@@ -324,8 +312,9 @@
     }
 
     function cartao(g) {
+      var keyU = normalizarChaveUni(g.uni);
       var c = categorias[g.cat] || { nome: "Geral", cor: "#2E7D53" };
-      var u = obterUniData(g.uni) || { nome: "" };
+      var u = unisData[keyU] || { nome: "" };
       var membros = g.membros ? comPonto(g.membros) + " membros" : "";
 
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
@@ -344,12 +333,13 @@
 
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
-        var uniDoGrupo = obterUniData(g.uni);
+        var keyU = normalizarChaveUni(g.uni);
+        var uniDoGrupo = unisData[keyU];
         var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
 
         var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
         var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        var bateUni    = !uniSel || g.uni === uniSel || obterUniChave(g.uni) === obterUniChave(uniSel);
+        var bateUni    = !uniSel || keyU === normalizarChaveUni(uniSel);
         var bateCat    = filtroCat === "todos" || g.cat === filtroCat;
 
         var bateTermo  = termo === "" ||
