@@ -164,19 +164,10 @@
 
   <div class="miolo marca">
 
-    <!-- O emblema: a comunidade em roda ao redor do M.
-         ─────────────────────────────────────────────────────────────────
-         PARA TROCAR A IMAGEM DO CENTRO
-         Coloque o arquivo novo na pasta img/ e troque o nome no href logo
-         abaixo. Imagem mais larga que alta cai melhor nesse espaço.
-         ───────────────────────────────────────────────────────────────── -->
+    <!-- O emblema: a comunidade em roda ao redor do M. -->
     <svg class="emblema" viewBox="-100 -100 200 200" role="img"
          aria-label="Emblema: pessoas em roda ao redor do M da UFMG">
       <defs>
-        <!-- A figura fica em pé em qualquer ponto da roda: rotate leva ao
-             lugar, translate afasta do centro, e o rotate negativo desfaz o
-             giro. Sem isso, metade das pessoas aparece de cabeça para baixo
-             e o emblema lê como confete. -->
         <g id="pessoa">
           <circle cy="-9.5" r="6.4"/>
           <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8
@@ -204,15 +195,11 @@
 
     <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
     <p class="subtitulo" data-texto="subtitulo">Brechó, sebo, bandeco, caronas, idiomas e o que mais a comunidade inventar.</p>
-    <!-- A data sai sozinha dos dados: listaConferidaEm, nos AJUSTES, ou a
-         mais recente das datas de grupo, se alguma for mais nova. -->
     <p class="atualizado" id="atualizado" hidden></p>
   </div>
 </header>
 
 <div class="miolo">
-  <!-- Aparece só para quem está editando, quando algum arquivo de dados tem
-       erro de digitação. Quem visita a página publicada nunca vê isso. -->
   <div class="diagnostico" id="diagnostico" hidden></div>
 </div>
 
@@ -225,8 +212,6 @@
   </section>
 
   <!-- =============================================== os dois botões -->
-  <!-- Um de cada vez: clicar num deles mostra a seção inteira e guarda a
-       outra. Os nomes saem de dados-textos.js, em abaGrupos e abaFestas. -->
   <nav class="abas" id="abas" role="tablist" aria-label="Escolher o que ver">
     <button class="aba" type="button" role="tab" id="aba-grupos"
             aria-controls="secao-grupos" aria-selected="true">
@@ -241,8 +226,6 @@
   </nav>
 
   <!-- ========================================================= festas -->
-  <!-- Começa escondida para não piscar na tela antes dos botões decidirem
-       qual das duas seções aparece. -->
   <section class="secao" id="secao-festas" role="tabpanel" aria-labelledby="aba-festas" tabindex="-1" hidden>
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
@@ -260,7 +243,6 @@
     <ul class="festas" id="festas-lista"></ul>
     <p class="vazio" id="festas-vazio" hidden></p>
 
-    <!-- Aparece sozinho quando há mais festas do que cabem numa página. -->
     <nav class="paginas" id="festas-paginas" aria-label="Páginas das festas" hidden>
       <button class="pagina" type="button" id="festas-voltar">
         <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
@@ -283,6 +265,19 @@
       <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
     </div>
 
+    <!-- Seletores de localização e universidade -->
+    <div class="localizacao">
+      <select class="seletor-local" id="seletor-estado" aria-label="Filtrar por Estado">
+        <option value="">Todos os Estados</option>
+      </select>
+      <select class="seletor-local" id="seletor-cidade" aria-label="Filtrar por Cidade">
+        <option value="">Todas as Cidades</option>
+      </select>
+      <select class="seletor-local" id="seletor-universidade" aria-label="Filtrar por Universidade">
+        <option value="">Todas as Universidades</option>
+      </select>
+    </div>
+
     <input class="busca" id="busca" type="search" autocomplete="off"
            aria-label="Buscar grupo pelo nome"
            data-texto-dica="gruposBusca"
@@ -294,7 +289,6 @@
     <ul class="lista" id="lista"></ul>
     <p class="vazio" id="vazio" data-texto="gruposVazio" hidden></p>
 
-    <!-- Aparece sozinho quando há mais grupos do que cabem numa página. -->
     <nav class="paginas" id="grupos-paginas" aria-label="Páginas dos grupos" hidden>
       <button class="pagina" type="button" id="grupos-voltar">
         <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
@@ -361,12 +355,6 @@
   </div>
 </footer>
 
-<!-- A ordem importa: os arquivos de dados definem as informações, e o app.js
-     as usa para montar a página.
-
-     São scripts comuns, e não módulos ES, de propósito: assim a página também
-     abre com duplo clique, direto do arquivo. Módulo exige servidor — por
-     file:// o navegador bloqueia por CORS e a tela fica vazia. -->
 <script src="js/dados-textos.js"></script>
 <script src="js/dados-grupos.js"></script>
 <script src="js/dados-festas.js"></script>
