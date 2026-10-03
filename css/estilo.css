@@ -634,6 +634,7 @@ a { color: inherit; }
   padding: .85rem .9rem;
   box-shadow: var(--sombra);
   align-items: center;
+  justify-content: space-between; /* Adicionar isso caso queira distanciar os blocos */
 }
 
 .festa__data {

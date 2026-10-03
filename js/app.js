@@ -254,7 +254,6 @@
 
         return (
           '<li class="festa" style="--cor: ' + corFesta + '">' +
-            miniHtml +
             '<div class="festa__data">' +
               '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
@@ -269,6 +268,7 @@
                 (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo</a>' : '') +
               '</div>' +
             '</div>' +
+            miniHtml +
           '</li>'
         );
       }).join("");
