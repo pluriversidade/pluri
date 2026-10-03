@@ -199,6 +199,20 @@
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
 
+    <div class="localizacao">
+      <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
+        <option value="">Selecione o Estado</option>
+      </select>
+
+      <select class="seletor-local" id="select-cidade-festas" aria-label="Filtrar por Cidade" disabled>
+        <option value="">Selecione primeiro o Estado</option>
+      </select>
+
+      <select class="seletor-local" id="select-uni-festas" aria-label="Filtrar por Universidade" disabled>
+        <option value="">Selecione primeiro o Estado</option>
+      </select>
+    </div>
+
     <div class="chips" id="festas-chips" role="group" aria-label="Universidades"></div>
 
     <div class="linha-data">

@@ -206,9 +206,122 @@
     var lista = document.getElementById("festas-lista");
     if (!lista) return 0;
 
+    var selEstadoFesta = document.getElementById("select-estado-festa");
+    var selCidadeFesta = document.getElementById("select-cidade-festa");
+    var selUniFesta    = document.getElementById("select-uni-festa");
+    var buscaFesta     = document.getElementById("busca-festa");
+
+    var estadosData = window.ESTADOS || {};
+    var cidadesData = window.CIDADES || {};
+    var unisData = window.UNIVERSIDADES || {};
+
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    var estadoSel = "";
+    var cidadeSel = "";
+    var uniSel = "";
+    var termo = "";
+
     var paginas = fazerPaginas({
       caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
     }, function () { desenhar(); });
+
+    function renderEstadosFesta() {
+      if (!selEstadoFesta) return;
+      selEstadoFesta.innerHTML = '<option value="">Todos os Estados</option>' +
+        Object.keys(estadosData).map(function (key) {
+          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
+        }).join("");
+      selEstadoFesta.value = estadoSel;
+    }
+
+    function atualizarSelectCidadesFesta() {
+      if (!selCidadeFesta) return;
+      if (!estadoSel) {
+        selCidadeFesta.innerHTML = '<option value="">Todas as Cidades</option>';
+        selCidadeFesta.disabled = false;
+        cidadeSel = "";
+        return;
+      }
+
+      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
+        return cidadesData[key].estado === estadoSel;
+      });
+
+      selCidadeFesta.innerHTML = '<option value="">Todas as Cidades</option>' +
+        cidadesFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
+        }).join("");
+
+      selCidadeFesta.disabled = false;
+      selCidadeFesta.value = cidadeSel;
+    }
+
+    function atualizarSelectUnisFesta() {
+      if (!selUniFesta) return;
+      if (!estadoSel && !cidadeSel) {
+        selUniFesta.innerHTML = '<option value="">Todas as Universidades</option>';
+        selUniFesta.disabled = false;
+        uniSel = "";
+        return;
+      }
+
+      var unisFiltradas = Object.keys(unisData).filter(function (key) {
+        var u = unisData[key];
+        var c = cidadesData[u.cidade];
+        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
+        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
+        return bateEstado && bateCidade;
+      });
+
+      selUniFesta.innerHTML = '<option value="">Todas as Universidades</option>' +
+        unisFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
+        }).join("");
+
+      selUniFesta.disabled = false;
+      selUniFesta.value = uniSel;
+    }
+
+    if (selEstadoFesta) {
+      selEstadoFesta.addEventListener("change", function () {
+        estadoSel = selEstadoFesta.value;
+        cidadeSel = "";
+        uniSel = "";
+        atualizarSelectCidadesFesta();
+        atualizarSelectUnisFesta();
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (selCidadeFesta) {
+      selCidadeFesta.addEventListener("change", function () {
+        cidadeSel = selCidadeFesta.value;
+        uniSel = "";
+        atualizarSelectUnisFesta();
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (selUniFesta) {
+      selUniFesta.addEventListener("change", function () {
+        uniSel = selUniFesta.value;
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (buscaFesta) {
+      buscaFesta.addEventListener("input", function () {
+        termo = simples(buscaFesta.value.trim());
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
 
     function diasFaltam(iso) {
       var p = partesDaData(iso);
@@ -225,13 +338,27 @@
     }
 
     function desenhar() {
-      var visiveis = festasBoas;
+      var visiveis = festasBoas.filter(function (f) {
+        var uniDaFesta = unisData[f.uni];
+        var cidDaFesta = uniDaFesta ? cidadesData[uniDaFesta.cidade] : null;
+
+        var bateEstado = !estadoSel || (cidDaFesta && cidDaFesta.estado === estadoSel);
+        var bateCidade = !cidadeSel || (uniDaFesta && uniDaFesta.cidade === cidadeSel);
+        var bateUni = !uniSel || f.uni === uniSel || simples(f.uni) === simples(uniSel);
+
+        var bateTermo = termo === "" ||
+          simples(f.titulo).indexOf(termo) !== -1 ||
+          simples(f.descricao || "").indexOf(termo) !== -1 ||
+          (uniDaFesta && simples(uniDaFesta.nome).indexOf(termo) !== -1);
+
+        return bateEstado && bateCidade && bateUni && bateTermo;
+      });
+
       lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
         var d = partesDaData(f.data);
         var u = unis[f.uni] || { nome: f.uni || "" };
         var corFesta = f.cor || "var(--terracota)";
         var faltam = diasFaltam(f.data);
-        console.log("Festa:", f.titulo, "| Faltam:", faltam);
 
         var temMidia = Boolean(f.midia);
         var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
@@ -274,6 +401,9 @@
       }).join("");
     }
 
+    renderEstadosFesta();
+    atualizarSelectCidadesFesta();
+    atualizarSelectUnisFesta();
     desenhar();
 
     // Lógica para abrir e fechar o modal de mídia das festas
