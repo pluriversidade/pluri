@@ -452,6 +452,9 @@ a { color: inherit; }
 }
 
 .grupo__etiqueta-admin {
+  position: absolute;
+  top: 1rem;       /* Distância do topo do card */
+  right: 1rem;     /* Distância da direita do card */
   display: inline-block;
   font-family: var(--mono);
   font-size: .62rem;
@@ -461,8 +464,9 @@ a { color: inherit; }
   border-radius: 4px;
   background: rgba(46, 125, 83, .12);
   color: var(--verde);
-  margin-bottom: .3rem;
+  margin-bottom: 0; /* Remove a margem antiga se houver */
   width: fit-content;
+  z-index: 2;       /* Garante que fique acima de outros elementos */
 }
 
 .etiqueta {
