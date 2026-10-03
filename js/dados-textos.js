@@ -35,9 +35,9 @@ var TEXTOS = {
   reportarMensagem: "Oi! O link do grupo NOME está quebrado, vi na página dos Grupos da UFMG.",
 
   /* ---- O bloco das outras listas ---- */
-  listasTitulo:   "Quer incluir sua festa aqui?",
-  listasTexto:    "Os grupos que não estão aqui vêm por WhatsApp, é só pedir.",
-  listaBotao:     "Pedir a lista completa",
+  listasTitulo:   "A PLURIVERSIDADE É DE TODOS NÓS!",
+  listasTexto:    "Alimente-nos!",
+  listaBotao:     "Quer incluir sua festa aqui?",
   listaBotaoNota: "Clique aqui para saber como adicionar sua festa em nosso repositório.",
   caronasBotao:   "Quer indicar um grupo?",
   caronasNota:    "Clique aqui para saber como adicionar seu grupo em nosso repositório.",
