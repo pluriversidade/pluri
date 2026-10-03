@@ -37,7 +37,7 @@ var UNIVERSIDADES = {
   puc:     { nome: "PUC Minas",    cor: "#3D6E8C" },
   faminas: { nome: "Faminas",      cor: "#2E7D53" },
   newton:  { nome: "Newton Paiva", cor: "#C08A1E" },
-  newton:  { nome: "FUMEC", cor: "#e0214a" },
+  fumec:   { nome: "FUMEC",        cor: "#e0214a" },
   una:     { nome: "UNA",          cor: "#6B5B95" }
 };
 
