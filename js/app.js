@@ -167,8 +167,26 @@
       var visiveis = festasBoas;
       lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
         var d = partesDaData(f.data);
-        var u = unis[f.uni];
-        return '<li class="festa"><h3 class="festa__titulo">' + f.titulo + '</h3><p>' + u.nome + ' - ' + d.dia + '/' + MESES[d.mes - 1] + '</p></li>';
+        var u = unis[f.uni] || { nome: f.uni || "" };
+        var corFesta = f.cor || "var(--terracota)";
+
+        return (
+          '<li class="festa" style="--cor: ' + corFesta + '">' +
+            '<div class="festa__data">' +
+              '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
+              '<span class="festa__dia">' + dois(d.dia) + '</span>' +
+            '</div>' +
+            '<div class="festa__corpo">' +
+              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
+              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+              (f.descricao ? '<p class="festa__descricao">' + escapar(f.descricao) + '</p>' : '') +
+              '<div class="festa__links">' +
+                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
+                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo</a>' : '') +
+              '</div>' +
+            '</div>' +
+          '</li>'
+        );
       }).join("");
     }
 
