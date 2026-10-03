@@ -58,12 +58,12 @@ a { color: inherit; }
   height: clamp(210px, 36vw, 290px);
 }
 
-.carro-a { animation: atravessa 34s linear infinite; }
-.carro-b { animation: atravessa 52s linear infinite; animation-delay: -18s; }
+.carro-a { animation: atravessa 26s linear infinite; }
+.carro-b { animation: atravessa 38s linear infinite; animation-delay: -14s; }
 
 @keyframes atravessa {
-  from { transform: translateX(-260px); }
-  to   { transform: translateX(1420px); }
+  0%   { transform: translateX(-100px); }
+  100% { transform: translateX(1300px); }
 }
 
 .marca {
