@@ -197,6 +197,7 @@
         var u = unis[f.uni] || { nome: f.uni || "" };
         var corFesta = f.cor || "var(--terracota)";
         var faltam = diasFaltam(f.data);
+        console.log("Festa:", f.titulo, "| Faltam:", faltam);
 
         return (
           '<li class="festa" style="--cor: ' + corFesta + '">' +
