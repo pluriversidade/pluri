@@ -190,33 +190,36 @@
 
     if (!lista) return 0;
 
-    // Inicia sem filtros para garantir a exibição inicial de todos os grupos
-    var estadoSel = "";
-    var cidadeSel = "";
-    var uniSel = "";
-    var filtroCat = "todos";
-    var termo = "";
-
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES_GRUPOS || {};
 
-    /* Normaliza chaves com pequenas diferenças (ex: puc x pucmg) */
-    function normalizarChaveUni(key) {
-      if (!key) return "";
-      if (unisData[key]) return key;
-      if (key === "puc" && unisData["pucmg"]) return "pucmg";
-      if (key === "pucmg" && unisData["puc"]) return "puc";
-      return key;
+    // Função para tratar texto de busca de forma insensível a maiúsculas/acentos
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
+
+    // Tenta encontrar a chave do Estado padrão (MG)
+    var estadoSel = Object.keys(estadosData).find(function(k) {
+      return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
+    }) || "MG";
+
+    // Tenta encontrar a chave da Cidade padrão (BH)
+    var cidadeSel = Object.keys(cidadesData).find(function(k) {
+      return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
+    }) || "bh";
+
+    // Tenta encontrar a chave da Universidade padrão (UFMG)
+    var uniSel = Object.keys(unisData).find(function(k) {
+      return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
+    }) || "ufmg";
+
+    var filtroCat = "todos";
+    var termo = "";
 
     var paginas = fazerPaginas({
       caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde", topo: "grupos-titulo"
     }, function () { desenhar(); });
-
-    function simples(texto) {
-      return String(texto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
 
     function comPonto(n) { return n.toLocaleString("pt-BR"); }
 
@@ -312,9 +315,8 @@
     }
 
     function cartao(g) {
-      var keyU = normalizarChaveUni(g.uni);
       var c = categorias[g.cat] || { nome: "Geral", cor: "#2E7D53" };
-      var u = unisData[keyU] || { nome: "" };
+      var u = unisData[g.uni] || { nome: g.uni || "" };
       var membros = g.membros ? comPonto(g.membros) + " membros" : "";
 
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
@@ -333,16 +335,25 @@
 
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
-        var keyU = normalizarChaveUni(g.uni);
-        var uniDoGrupo = unisData[keyU];
+        var uniDoGrupo = unisData[g.uni];
         var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
 
+        // Validação Inteligente / Tolerante
         var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
         var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        var bateUni    = !uniSel || keyU === normalizarChaveUni(uniSel);
-        var bateCat    = filtroCat === "todos" || g.cat === filtroCat;
+        
+        // Verifica se a uni do grupo bate por chave (ex: 'ufmg') ou pelo texto simples
+        var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
+        
+        // Se uniDoGrupo não foi encontrada mas não há filtro rigoroso de uni, aceita
+        if (!uniDoGrupo && !uniSel && !cidadeSel && !estadoSel) {
+          bateEstado = true;
+          bateCidade = true;
+          bateUni = true;
+        }
 
-        var bateTermo  = termo === "" ||
+        var bateCat = filtroCat === "todos" || g.cat === filtroCat;
+        var bateTermo = termo === "" ||
           simples(g.nome).indexOf(termo) !== -1 ||
           simples(g.desc || "").indexOf(termo) !== -1;
 
