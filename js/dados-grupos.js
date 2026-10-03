@@ -431,7 +431,7 @@ var GRUPOS = [
     desc: "Sorteios, cupons e parcerias com comércios da cidade.",
     url: "https://chat.whatsapp.com/HTJZE7DiqqJIYoFfJftxSV" },
   { nome: "Links de grupos - UFMG", membros: 679, cat: "comunidade", estado: "MG", cidade: "bh", universidade: "ufmg",
-    desc: "Onde circulam os links dos outros grupos da comunidade.",
+    desc: "Onde circulan os links dos outros grupos da comunidade.",
     url: "https://chat.whatsapp.com/BAF4tv4MYOnBUEfEmwkdxf" },
   { nome: "Divulgadores e moderadores - UFMG", membros: 53, cat: "comunidade", estado: "MG", cidade: "bh", universidade: "ufmg",
     desc: "Coordenação de quem ajuda a administrar os grupos.",

@@ -1092,7 +1092,7 @@
     }
 
     var btSuporte = document.getElementById("suporte");
-    if (btSuporte && suporte) {
+    if (btSuporte e suporte) {
       btSuporte.href = "https://wa.me/" + suporte;
       btSuporte.textContent = contatos.suporteEscrito || suporte;
     }
