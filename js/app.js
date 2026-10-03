@@ -176,19 +176,34 @@
       caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
     }, function () { desenhar(); });
 
+    function diasFaltam(iso) {
+      var p = partesDaData(iso);
+      if (!p) return "";
+      var dFesta = new Date(p.ano, p.mes - 1, p.dia);
+      var dHoje = new Date();
+      dHoje.setHours(0, 0, 0, 0);
+      dFesta.setHours(0, 0, 0, 0);
+      var diff = Math.round((dFesta - dHoje) / (1000 * 60 * 60 * 24));
+      if (diff < 0) return "passou";
+      if (diff === 0) return "hoje";
+      if (diff === 1) return "amanhã";
+      return diff + " dias";
+    }
+
     function desenhar() {
       var visiveis = festasBoas;
       lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
         var d = partesDaData(f.data);
         var u = unis[f.uni] || { nome: f.uni || "" };
         var corFesta = f.cor || "var(--terracota)";
+        var faltam = diasFaltam(f.data);
 
         return (
           '<li class="festa" style="--cor: ' + corFesta + '">' +
             '<div class="festa__data">' +
               '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
-              (diasAte(f.data) ? '<span class="festa__faltam">' + diasAte(f.data) + '</span>' : '') +
+              (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
             '</div>' +
             '<div class="festa__corpo">' +
               '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
@@ -207,7 +222,7 @@
     desenhar();
     return festasBoas.length;
   }
-
+  
   /* MONTAGEM DOS GRUPOS E FILTROS HIERÁRQUICOS */
   function montarGrupos() {
     var lista = document.getElementById("lista");
