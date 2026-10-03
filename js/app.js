@@ -206,10 +206,11 @@
     var lista = document.getElementById("festas-lista");
     if (!lista) return 0;
 
+    // IDs corrigidos para corresponder ao HTML (-festas)
     var selEstadoFesta = document.getElementById("select-estado-festas");
     var selCidadeFesta = document.getElementById("select-cidade-festas");
     var selUniFesta    = document.getElementById("select-uni-festas");
-    var buscaFesta     = document.getElementById("festas-dia");
+    var buscaFesta     = document.getElementById("festas-dia"); // Ajustado para o campo de data ou busca se houver
 
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
@@ -219,6 +220,15 @@
       return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
+var estadosData = window.ESTADOS || {};
+    var cidadesData = window.CIDADES || {};
+    var unisData = window.UNIVERSIDADES || {};
+
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // Padrão: Minas Gerais, Belo Horizonte e UFMG
     var estadoSel = Object.keys(estadosData).find(function(k) {
       return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
     }) || "MG";
@@ -608,12 +618,8 @@
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
       var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
-      // Verifica se o grupo é administrado pela Pluriversidade
-      var ehPluri = g.pluri === true; 
-      var classePluri = ehPluri ? " item--pluri" : "";
-
       return (
-        '<li class="item' + classePluri + '" style="--cor:' + c.cor + '">' +
+        '<li class="item" style="--cor:' + c.cor + '">' +
           '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
             '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
             desc +
