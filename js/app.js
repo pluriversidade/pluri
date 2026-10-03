@@ -158,7 +158,6 @@
     if (!trilho || parceirosBons.length === 0) return;
 
     trilho.innerHTML = parceirosBons.map(function (p) {
-      // Tenta pegar a imagem de diferentes propriedades possíveis no objeto do parceiro
       var imgSrc = p.logo || p.imagem || p.foto || "";
 
       return (
@@ -174,7 +173,7 @@
       );
     }).join("");
 
-    var velocidade = 4000; // Tempo em milissegundos (4 segundos)
+    var velocidade = 4000;
     var intervalo = null;
 
     function rolarProximo() {
@@ -277,22 +276,18 @@
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES_GRUPOS || {};
 
-    // Função para tratar texto de busca de forma insensível a maiúsculas/acentos
     function simples(texto) {
       return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    // Tenta encontrar a chave do Estado padrão (MG)
     var estadoSel = Object.keys(estadosData).find(function(k) {
       return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
     }) || "MG";
 
-    // Tenta encontrar a chave da Cidade padrão (BH)
     var cidadeSel = Object.keys(cidadesData).find(function(k) {
       return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
     }) || "bh";
 
-    // Tenta encontrar a chave da Universidade padrão (UFMG)
     var uniSel = Object.keys(unisData).find(function(k) {
       return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
     }) || "ufmg";
@@ -306,7 +301,6 @@
 
     function comPonto(n) { return n.toLocaleString("pt-BR"); }
 
-    /* Popula Estados */
     function renderEstados() {
       if (!selEstado) return;
       selEstado.innerHTML = '<option value="">Todos os Estados</option>' +
@@ -316,7 +310,6 @@
       selEstado.value = estadoSel;
     }
 
-    /* Popula Cidades */
     function atualizarSelectCidades() {
       if (!selCidade) return;
       if (!estadoSel) {
@@ -339,7 +332,6 @@
       selCidade.value = cidadeSel;
     }
 
-    /* Popula Universidades */
     function atualizarSelectUnis() {
       if (!selUni) return;
       if (!estadoSel && !cidadeSel) {
@@ -366,7 +358,6 @@
       selUni.value = uniSel;
     }
 
-    /* Eventos de alteração dos selects */
     if (selEstado) {
       selEstado.addEventListener("change", function () {
         estadoSel = selEstado.value;
@@ -421,14 +412,10 @@
         var uniDoGrupo = unisData[g.uni];
         var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
 
-        // Validação Inteligente / Tolerante
         var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
         var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        
-        // Verifica se a uni do grupo bate por chave (ex: 'ufmg') ou pelo texto simples
         var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
         
-        // Se uniDoGrupo não foi encontrada mas não há filtro rigoroso de uni, aceita
         if (!uniDoGrupo && !uniSel && !cidadeSel && !estadoSel) {
           bateEstado = true;
           bateCidade = true;
@@ -455,7 +442,6 @@
         : visiveis.length + " grupos · " + comPonto(pessoas) + " pessoas";
     }
 
-    /* Categorias (Chips) */
     var usadas = {};
     gruposBons.forEach(function (g) { usadas[g.cat] = true; });
 
