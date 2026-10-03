@@ -568,3 +568,156 @@ a { color: inherit; }
   display: inline-block;
   padding: .2rem 0;
 }
+
+/* ---------------------------------------------------------------- festas --- */
+
+.linha-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-bottom: .8rem;
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-radius: 12px;
+  padding: .6rem .9rem;
+}
+
+.rotulo-data {
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.linha-data__campos {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.campo-data {
+  font-family: var(--sans);
+  font-size: .88rem;
+  padding: .4rem .6rem;
+  border: 1px solid var(--regua);
+  border-radius: 8px;
+  background: var(--fundo);
+  color: var(--tinta);
+}
+
+.limpar-data {
+  background: transparent;
+  border: 0;
+  color: var(--terracota);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: .2rem .4rem;
+}
+
+.limpar-data:hover { text-decoration: underline; }
+
+.festas {
+  list-style: none;
+  margin: .4rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: .6rem;
+}
+
+.festa {
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-radius: 12px;
+  padding: .9rem 1rem;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.festa__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: .5rem;
+}
+
+.festa__nome {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.festa__data {
+  font-family: var(--mono);
+  font-size: .75rem;
+  background: rgba(178, 66, 50, .09);
+  color: var(--terracota);
+  padding: .2rem .5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.festa__detalhes {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--tinta-fraca);
+}
+
+.festa__rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: .2rem;
+  padding-top: .4rem;
+  border-top: 1px dashed var(--regua);
+  font-size: .82rem;
+}
+
+.festa__local {
+  color: var(--tinta-fraca);
+}
+
+.festa__link {
+  color: var(--verde);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.festa__link:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------- paginação --- */
+
+.paginas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.2rem;
+  padding: .5rem 0;
+}
+
+.pagina {
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-radius: 10px;
+  padding: .5rem 1rem;
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--tinta);
+  cursor: pointer;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.pagina:hover { border-color: var(--verde); }
+
+.paginas__onde {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--tinta-fraca);
+}
