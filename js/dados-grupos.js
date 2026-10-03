@@ -95,20 +95,12 @@ var GRUPOS = [
     url: "https://chat.whatsapp.com/IKa32SEh4CJ1WvjoiAmk31" },
 
   /* ---- Repúblicas e Moradia ---- */
-  {
-    uni: "ufmg", nome: "Repúblicas 1 - UFMG", membros: 1024, cat: "moradia",
+  { uni: "ufmg", nome: "Repúblicas 1 - UFMG", membros: 1024, cat: "moradia",
     desc: "Vagas, quartos e repúblicas para alugar em Belo Horizonte.",
-    url: "https://chat.whatsapp.com/CJ9181tWVpV1c1GdSTgxww"
-    pluri: true
-  },
-    
-  {
-    uni: "ufmg", nome: "Repúblicas 2 - UFMG", membros: 842, cat: "moradia",
+    url: "https://chat.whatsapp.com/CJ9181tWVpV1c1GdSTgxww" },
+  { uni: "ufmg", nome: "Repúblicas 2 - UFMG", membros: 842, cat: "moradia",
     desc: "Vagas, quartos e repúblicas para alugar em Belo Horizonte.",
-    url: "https://chat.whatsapp.com/FdgBFBR2SJv6iwQw7D2kG7"
-    pluri: true
-  },
-
+    url: "https://chat.whatsapp.com/FdgBFBR2SJv6iwQw7D2kG7" },
   { uni: "ufmg", nome: "Repúblicas 3 - UFMG", membros: 0, cat: "moradia",
     desc: "Vagas, quartos e repúblicas para alugar em Belo Horizonte.",
     url: "https://chat.whatsapp.com/HvIJnFaeP70KMqpyDRY5P7" },
