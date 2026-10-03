@@ -627,7 +627,7 @@
             '<span class="grupo__meta">' + onde + "</span>" +
           "</a>" +
           '<a class="reportar" href="' + linkReportar + '" target="_blank" rel="noopener" title="Reportar link quebrado">' +
-            '⚠️' +
+            '🔗' +
           '</a>' +
         "</li>"
       );
