@@ -59,19 +59,6 @@
 
   function partesDaData(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));
-
-  function diasAte(iso) {
-    var p = partesDaData(iso);
-    if (!p) return "";
-    var hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    var alvo = new Date(p.ano, p.mes - 1, p.dia);
-    var diff = Math.round((alvo - hoje) / (1000 * 60 * 60 * 24));
-    if (diff < 0) return "";
-    if (diff === 0) return "HOJE";
-    if (diff === 1) return "1 DIA";
-    return diff + " DIAS";
-  }
     if (!m) return null;
     var ano = Number(m[1]), mes = Number(m[2]), dia = Number(m[3]);
     var d = new Date(ano, mes - 1, dia);
@@ -188,7 +175,6 @@
             '<div class="festa__data">' +
               '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
-              (diasAte(f.data) ? '<span class="festa__faltam">' + diasAte(f.data) + '</span>' : '') +
             '</div>' +
             '<div class="festa__corpo">' +
               '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
