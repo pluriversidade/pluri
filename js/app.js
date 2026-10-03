@@ -160,10 +160,6 @@
     trilho.innerHTML = parceirosBons.map(function (p) {
       return (
         '<article class="parceiro">' +
-          '<div class="parceiro__topo">' +
-            (p.logo ? '<img class="parceiro__logo" src="' + p.logo + '" alt="" loading="lazy">' : '') +
-            (p.selo ? '<p class="parceiro__selo">' + p.selo + '</p>' : '') +
-          '</div>' +
           '<h2 class="parceiro__nome">' + p.nome + '</h2>' +
           '<p class="parceiro__chamada">' + (p.chamada || "") + '</p>' +
           '<a class="parceiro__cta" href="' + p.link + '" target="_blank" rel="noopener">' + (p.botao || "Saber mais") + '</a>' +
@@ -175,6 +171,7 @@
     var intervalo = null;
 
     function rolarProximo() {
+      // Se chegou ao fim do carrossel, volta para o início (0), senão avança 292px (largura do card + gap)
       if (trilho.scrollLeft + trilho.clientWidth >= trilho.scrollWidth - 10) {
         trilho.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
@@ -195,8 +192,10 @@
       }
     }
 
-    // Inicia o movimento automático e pausa com o mouse em cima
+    // Inicia o movimento automático
     ligarCarrossel();
+
+    // Pausa quando o mouse estiver em cima para o usuário conseguir ler ou clicar
     trilho.addEventListener("mouseenter", desligarCarrossel);
     trilho.addEventListener("mouseleave", ligarCarrossel);
   }
