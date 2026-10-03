@@ -733,6 +733,116 @@ a { color: inherit; }
 
 .festa__link:hover { border-color: var(--cor, var(--terracota)); }
 
+/* ------------------------------------------------------------- flyer miniatura & modal --- */
+
+.festa {
+  display: flex;
+  gap: .9rem;
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-left: 5px solid var(--cor, var(--terracota));
+  border-radius: 12px;
+  padding: .85rem .9rem;
+  box-shadow: var(--sombra);
+  align-items: center; /* Alinha os elementos verticalmente no card */
+}
+
+.festa__mini-container {
+  flex: 0 0 68px;
+  height: 88px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: #000;
+  border: 1px solid var(--regua);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.festa__mini-container:hover {
+  transform: scale(1.03);
+  box-shadow: var(--sombra);
+}
+
+.festa__mini-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.festa__play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: .8rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Modal de Visualização em Tela Cheia */
+.modal-midia {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-midia[hidden] {
+  display: none !important;
+}
+
+.modal-midia__conteudo {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-midia__midia {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  background: #111;
+}
+
+.modal-midia__fechar {
+  position: absolute;
+  top: -42px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 .5rem;
+  line-height: 1;
+}
+
+.modal-midia__fechar:hover {
+  color: var(--terracota);
+}
+
 /* ------------------------------------------------------------- paginação --- */
 
 .paginas {
