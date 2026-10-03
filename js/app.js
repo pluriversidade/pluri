@@ -166,59 +166,6 @@
         '</article>'
       );
     }).join("");
-
-    var velocidade = 4000; // Tempo em milissegundos (4 segundos)
-    var intervalo = null;
-
-    function rolarProximo() {
-      // Se chegou ao fim do carrossel, volta para o início (0), senão avança 292px (largura do card + gap)
-      if (trilho.scrollLeft + trilho.clientWidth >= trilho.scrollWidth - 10) {
-        trilho.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        trilho.scrollBy({ left: 292, behavior: 'smooth' });
-      }
-    }
-
-    function ligarCarrossel() {
-      if (!intervalo) {
-        intervalo = setInterval(rolarProximo, velocidade);
-      }
-    }
-
-    function desligarCarrossel() {
-      if (intervalo) {
-        clearInterval(intervalo);
-        intervalo = null;
-      }
-    }
-
-    // Inicia o movimento automático
-    ligarCarrossel();
-
-    // Pausa quando o mouse estiver em cima para o usuário conseguir ler ou clicar
-    trilho.addEventListener("mouseenter", desligarCarrossel);
-    trilho.addEventListener("mouseleave", ligarCarrossel);
-  }
-
-    function ligarCarrossel() {
-      if (!intervalo) {
-        intervalo = setInterval(rolarProximo, velocidade);
-      }
-    }
-
-    function desligarCarrossel() {
-      if (intervalo) {
-        clearInterval(intervalo);
-        intervalo = null;
-      }
-    }
-
-    // Inicia a rotação automática
-    ligarCarrossel();
-
-    // Pausa a rotação automática quando o mouse estiver em cima para facilitar a leitura do usuário
-    trilho.addEventListener("mouseenter", desligarCarrossel);
-    trilho.addEventListener("mouseleave", ligarCarrossel);
   }
 
   function montarFestas() {
