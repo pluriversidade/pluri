@@ -195,10 +195,10 @@
 
     if (!lista) return 0;
 
-    // Valores padrão desejados
-    var estadoSel = "MG";
-    var cidadeSel = "bh";
-    var uniSel = "ufmg";
+    // Valores padrão inicializados vazios para exibir todos os grupos
+    var estadoSel = "";
+    var cidadeSel = "";
+    var uniSel = "";
     var filtroCat = "todos";
     var termo = "";
 
