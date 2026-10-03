@@ -253,7 +253,7 @@
     return festasBoas.length;
   }
 
-  /* MONTAGEM DOS GRUPOS E FILTROS HIERÁRQUICOS */
+ /* MONTAGEM DOS GRUPOS E FILTROS HIERÁRQUICOS */
   function montarGrupos() {
     var lista = document.getElementById("lista");
     var vazio = document.getElementById("vazio");
@@ -267,9 +267,10 @@
 
     if (!lista) return 0;
 
-    var estadoSel = "";
-    var cidadeSel = "";
-    var uniSel = "";
+    // 1. Define os valores padrão iniciais
+    var estadoSel = "MG";
+    var cidadeSel = "bh";
+    var uniSel = "ufmg";
     var filtroCat = "todos";
     var termo = "";
 
@@ -287,12 +288,14 @@
 
     function comPonto(n) { return n.toLocaleString("pt-BR"); }
 
-    /* Popula Estado */
+    /* Popula Estado e define o valor padrão */
     if (selEstado) {
       selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
         Object.keys(estadosData).map(function (key) {
           return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
         }).join("");
+
+      selEstado.value = estadoSel; // Marca MG como selecionado
 
       selEstado.addEventListener("change", function () {
         estadoSel = selEstado.value;
@@ -304,6 +307,78 @@
         desenhar();
       });
     }
+
+    /* Popula Cidades a partir do Estado */
+    function atualizarSelectCidades() {
+      if (!selCidade) return;
+      if (!estadoSel) {
+        selCidade.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selCidade.disabled = true;
+        return;
+      }
+
+      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
+        return cidadesData[key].estado === estadoSel;
+      });
+
+      selCidade.innerHTML = '<option value="">Todas as Cidades</option>' +
+        cidadesFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
+        }).join("");
+
+      selCidade.disabled = false;
+      selCidade.value = cidadeSel; // Marca Belo Horizonte se estiver disponível
+    }
+
+    if (selCidade) {
+      selCidade.addEventListener("change", function () {
+        cidadeSel = selCidade.value;
+        uniSel = "";
+        atualizarSelectUnis();
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
+
+    /* Popula Universidades a partir da Cidade/Estado */
+    function atualizarSelectUnis() {
+      if (!selUni) return;
+      if (!estadoSel) {
+        selUni.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selUni.disabled = true;
+        return;
+      }
+
+      var unisFiltradas = Object.keys(unisData).filter(function (key) {
+        var u = unisData[key];
+        var c = cidadesData[u.cidade];
+        var bateEstado = c && c.estado === estadoSel;
+        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
+        return bateEstado && bateCidade;
+      });
+
+      selUni.innerHTML = '<option value="">Todas as Universidades</option>' +
+        unisFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
+        }).join("");
+
+      selUni.disabled = false;
+      selUni.value = uniSel; // Marca UFMG se estiver disponível
+    }
+
+    if (selUni) {
+      selUni.addEventListener("change", function () {
+        uniSel = selUni.value;
+        paginas.reiniciar();
+        desenhar();
+      });
+    }
+
+    // 2. Inicializa as opções encadeadas com os valores padrão
+    atualizarSelectCidades();
+    atualizarSelectUnis();
+
+    /* Restante das funções (cartao, desenhar, chips, busca)... */
 
     /* Popula Cidades a partir do Estado */
     function atualizarSelectCidades() {
