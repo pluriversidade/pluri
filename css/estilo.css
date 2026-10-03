@@ -864,37 +864,3 @@ a { color: inherit; }
 .modal-midia__fechar:hover {
   color: var(--terracota);
 }
-
-/* ------------------------------------------------------------- selo pluriversidade --- */
-
-.item--pluri {
-  position: relative;
-  overflow: hidden; /* Garante que a linguinha não ultrapasse as bordas arredondadas do card */
-}
-
-/* O fundo da linguinha (bandeirinha no canto) */
-.item--pluri::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 28px;
-  height: 28px;
-  background: var(--terracota); /* Cor do selo (você pode trocar para outra variável) */
-  border-bottom-right-radius: 100%;
-  z-index: 2;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-/* A letra P dentro da linguinha */
-.item--pluri::after {
-  content: "P";
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  z-index: 3;
-}
