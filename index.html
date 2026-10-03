@@ -17,8 +17,7 @@
 
 <!-- ================================================================ capa -->
 <header class="capa">
-  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice"
-       role="img" aria-label="Ilustração de uma cidade ao entardecer, com casas, prédios e carros">
+  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Ilustração de uma cidade ao entardecer">
     <defs>
       <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%"   stop-color="#1F3347"/>
@@ -34,13 +33,10 @@
     </defs>
 
     <rect width="1200" height="300" fill="url(#ceu)"/>
-
     <circle cx="790" cy="112" r="104" fill="url(#brilho)"/>
     <circle cx="790" cy="112" r="26" fill="#FFD07A"/>
 
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150
-             L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z"
-          fill="#4B4560"/>
+    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#4B4560"/>
 
     <g fill="#2B3A34">
       <rect x="60"   y="172" width="74" height="128" rx="3"/>
@@ -128,51 +124,18 @@
       <rect x="1070" y="290" width="34" height="3" rx="1.5"/>
       <rect x="1150" y="290" width="34" height="3" rx="1.5"/>
     </g>
-
-    <g class="carro-a">
-      <path d="M0 282 h72 a6 6 0 0 0 6-6 v-10 a6 6 0 0 0-6-6 h-12 l-10-12 h-30
-               l-8 12 h-12 a6 6 0 0 0-6 6 v10 a6 6 0 0 0 6 6 Z"
-            fill="#2E7D53" transform="translate(0 -6)"/>
-      <circle cx="16" cy="280" r="6" fill="#1B2224"/>
-      <circle cx="58" cy="280" r="6" fill="#1B2224"/>
-      <circle cx="76" cy="266" r="3" fill="#FFE6A8"/>
-    </g>
-    <g class="carro-b">
-      <path d="M0 282 h64 a5 5 0 0 0 5-5 v-9 a5 5 0 0 0-5-5 h-11 l-9-11 h-26
-               l-7 11 h-11 a5 5 0 0 0-5 5 v9 a5 5 0 0 0 5 5 Z"
-            fill="#C08A1E" transform="translate(0 -6)"/>
-      <circle cx="15" cy="280" r="5.5" fill="#1B2224"/>
-      <circle cx="53" cy="280" r="5.5" fill="#1B2224"/>
-      <circle cx="69" cy="267" r="2.6" fill="#FFE6A8"/>
-    </g>
   </svg>
 
   <div class="miolo marca">
-    <svg class="emblema" viewBox="-100 -100 200 200" role="img"
-         aria-label="Emblema: pessoas em roda ao redor do M da UFMG">
+    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema">
       <defs>
         <g id="pessoa">
           <circle cy="-9.5" r="6.4"/>
-          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8
-                   a9.2 9.2 0 0 1 9.2 -9.2 z"/>
+          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8 a9.2 9.2 0 0 1 9.2 -9.2 z"/>
         </g>
       </defs>
-
       <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
       <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
-
-      <g>
-        <use href="#pessoa" fill="#2E7D53" transform="rotate(0) translate(0 -73) rotate(0)"/>
-        <use href="#pessoa" fill="#B24232" transform="rotate(36) translate(0 -73) rotate(-36)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="rotate(72) translate(0 -73) rotate(-72)"/>
-        <use href="#pessoa" fill="#17201C" transform="rotate(108) translate(0 -73) rotate(-108)"/>
-        <use href="#pessoa" fill="#3D6E8C" transform="rotate(144) translate(0 -73) rotate(-144)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="rotate(180) translate(0 -73) rotate(-180)"/>
-        <use href="#pessoa" fill="#B24232" transform="rotate(216) translate(0 -73) rotate(-216)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="rotate(252) translate(0 -73) rotate(-252)"/>
-        <use href="#pessoa" fill="#17201C" transform="rotate(288) translate(0 -73) rotate(-288)"/>
-        <use href="#pessoa" fill="#3D6E8C" transform="rotate(324) translate(0 -73) rotate(-324)"/>
-      </g>
       <image href="img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
     </svg>
 
@@ -188,27 +151,25 @@
 
 <main class="miolo">
 
-  <!-- ====================================================== parceiros -->
+  <!-- parceiros -->
   <section class="secao-parceiros" id="secao-parceiros" aria-label="Parceiros">
     <div class="carrossel" id="parceiros"></div>
     <div class="bolinhas" id="parceiros-bolinhas" role="tablist" aria-label="Escolher parceiro"></div>
   </section>
 
-  <!-- =============================================== os dois botões -->
+  <!-- abas -->
   <nav class="abas" id="abas" role="tablist" aria-label="Escolher o que ver">
-    <button class="aba" type="button" role="tab" id="aba-grupos"
-            aria-controls="secao-grupos" aria-selected="true">
+    <button class="aba" type="button" role="tab" id="aba-grupos" aria-controls="secao-grupos" aria-selected="true">
       <span class="aba__nome" data-texto="abaGrupos">Grupos</span>
       <span class="aba__conta" id="aba-grupos-conta"></span>
     </button>
-    <button class="aba" type="button" role="tab" id="aba-festas"
-            aria-controls="secao-festas" aria-selected="false" tabindex="-1">
+    <button class="aba" type="button" role="tab" id="aba-festas" aria-controls="secao-festas" aria-selected="false" tabindex="-1">
       <span class="aba__nome" data-texto="abaFestas">Festas</span>
       <span class="aba__conta" id="aba-festas-conta"></span>
     </button>
   </nav>
 
-  <!-- ========================================================= festas -->
+  <!-- festas -->
   <section class="secao" id="secao-festas" role="tabpanel" aria-labelledby="aba-festas" tabindex="-1" hidden>
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
@@ -237,7 +198,7 @@
     </nav>
   </section>
 
-  <!-- ========================================================= grupos -->
+  <!-- grupos -->
   <section class="secao" id="secao-grupos" role="tabpanel" aria-labelledby="aba-grupos" tabindex="-1">
     <h2 class="secao__titulo" id="grupos-titulo" data-texto="gruposTitulo">Todos os grupos</h2>
     <p class="secao__nota" data-texto="gruposSubtitulo">Toque no grupo para entrar direto no WhatsApp.</p>
@@ -248,18 +209,18 @@
       <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
     </div>
 
-    <!-- Seletores de localização e universidade gerados dinamicamente via JS -->
+    <!-- Seletores Hierárquicos de Localização -->
     <div class="localizacao">
-      <select class="seletor-local" id="seletor-estado" aria-label="Filtrar por Estado">
-        <option value="">Todos os Estados</option>
+      <select class="seletor-local" id="select-estado" aria-label="Filtrar por Estado">
+        <option value="">Selecione o Estado</option>
       </select>
 
-      <select class="seletor-local" id="seletor-cidade" aria-label="Filtrar por Cidade">
-        <option value="">Todas as Cidades</option>
+      <select class="seletor-local" id="select-cidade" aria-label="Filtrar por Cidade" disabled>
+        <option value="">Selecione primeiro o Estado</option>
       </select>
 
-      <select class="seletor-local" id="seletor-universidade" aria-label="Filtrar por Universidade">
-        <option value="">Todas as Universidades</option>
+      <select class="seletor-local" id="select-uni" aria-label="Filtrar por Universidade" disabled>
+        <option value="">Selecione primeiro o Estado</option>
       </select>
     </div>
 
@@ -268,7 +229,6 @@
            data-texto-dica="gruposBusca"
            placeholder="Buscar grupo…">
 
-    <!-- Categorias renderizadas pelo app.js em formato de chips -->
     <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
     <p class="contagem" id="contagem"></p>
 
@@ -286,7 +246,7 @@
     </nav>
   </section>
 
-  <!-- ================================================ outras listas -->
+  <!-- blocos adicionais -->
   <section class="bloco">
     <h2 data-texto="listasTitulo">Faltou alguma coisa?</h2>
     <p data-texto="listasTexto">Os grupos que não estão aqui vêm por WhatsApp, é só pedir.</p>
@@ -302,7 +262,6 @@
     </a>
   </section>
 
-  <!-- =========================================================== pix -->
   <section class="bloco">
     <h2 data-texto="apoioTitulo">Ajude a manter os grupos</h2>
     <p data-texto="apoioTexto">Administrar mais de cem grupos toma tempo e paciência.</p>
@@ -320,14 +279,10 @@
 
 </main>
 
-<!-- ============================================================== rodapé -->
 <footer class="rodape">
-  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice"
-       aria-hidden="true" focusable="false">
+  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
     <rect width="1200" height="300" fill="#1F3347"/>
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150
-             L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z"
-          fill="#17232E"/>
+    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#17232E"/>
   </svg>
 
   <div class="rodape__texto">
