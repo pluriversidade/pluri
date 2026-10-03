@@ -206,13 +206,12 @@
     var lista = document.getElementById("festas-lista");
     if (!lista) return 0;
 
-    // IDs corrigidos para corresponder ao HTML (-festas)
     var selEstadoFesta = document.getElementById("select-estado-festas");
     var selCidadeFesta = document.getElementById("select-cidade-festas");
     var selUniFesta    = document.getElementById("select-uni-festas");
-    var buscaFesta     = document.getElementById("festas-dia"); // Ajustado para o campo de data ou busca se houver
+    var buscaFesta     = document.getElementById("festas-dia");
 
-var estadosData = window.ESTADOS || {};
+    var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES || {};
 
@@ -220,7 +219,6 @@ var estadosData = window.ESTADOS || {};
       return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    // Padrão: Minas Gerais, Belo Horizonte e UFMG
     var estadoSel = Object.keys(estadosData).find(function(k) {
       return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
     }) || "MG";
@@ -610,9 +608,15 @@ var estadosData = window.ESTADOS || {};
       var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
       var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
 
+      // Verifica se o grupo é administrado pela Pluriversidade
+      var seloAdmin = (g.admin || g.administrado || g.pluri) 
+        ? '<span class="grupo__etiqueta-admin">Pluriversidade</span>' 
+        : '';
+
       return (
         '<li class="item" style="--cor:' + c.cor + '">' +
           '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
+            seloAdmin +
             '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
             desc +
             '<span class="grupo__meta">' + onde + "</span>" +
