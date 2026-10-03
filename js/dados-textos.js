@@ -8,25 +8,25 @@ var TEXTOS = {
   titulo:     "PLURIVERSIDADE",
   subtitulo:  "Repositório de Festas e Grupos das maiores universidades do Brasil! Essa é uma iniciativa independente.",
 
-  atualizado: "Atualizada em",
+  atualizado: "Atualizado em",
 
   /* ---- Os dois botões que escolhem o que aparece ---- */
-  abaGrupos: "Grupos",
-  abaFestas: "Festas",
+  abaGrupos: "GRUPOS",
+  abaFestas: "FESTAS",
 
   /* ---- Os botões de passar de página ---- */
   paginaAnterior: "anterior",
   paginaProxima:  "próxima",
 
   /* ---- A seção das festas ---- */
-  festasTitulo:    "Festas universitárias",
-  festasSubtitulo: "As próximas primeiro. Escolha a faculdade ou procure por um dia.",
-  festasFiltroDia: "Ver um dia específico",
+  festasTitulo:    "AGENDA DE FESTAS",
+  festasSubtitulo: "Utilize o filtro para achar a festas que você procura.",
+  festasFiltroDia: "Achar festa por dia específico:",
   festasVazio:     "Nenhuma festa cadastrada para as próximas semanas.",
 
   /* ---- A seção dos grupos ---- */
   gruposTitulo:    "Todos os grupos",
-  gruposSubtitulo: "Toque no grupo para entrar direto no WhatsApp. Link quebrado? Use o botão na beirada do card.",
+  gruposSubtitulo: "Toque no grupo para entrar direto no WhatsApp. Link quebrado? Use o botão na beirada do card para nos avisar via whatsapp.",
   gruposBusca:     "Buscar grupo: república, bandeco, estágio…",
   gruposVazio:     "Nenhum grupo com esse nome. Tente outra palavra ou peça as outras listas mais abaixo.",
   gruposConferido: "conferido em",
@@ -35,12 +35,12 @@ var TEXTOS = {
   reportarMensagem: "Oi! O link do grupo NOME está quebrado, vi na página dos Grupos da UFMG.",
 
   /* ---- O bloco das outras listas ---- */
-  listasTitulo:   "Faltou alguma coisa?",
+  listasTitulo:   "Quer incluir sua festa aqui?",
   listasTexto:    "Os grupos que não estão aqui vêm por WhatsApp, é só pedir.",
   listaBotao:     "Pedir a lista completa",
-  listaBotaoNota: "todos os grupos da UFMG",
-  caronasBotao:   "Pedir a lista de caronas",
-  caronasNota:    "grupos de carona da UFMG",
+  listaBotaoNota: "Clique aqui para saber como adicionar sua festa em nosso repositório.",
+  caronasBotao:   "Quer indicar um grupo?",
+  caronasNota:    "Clique aqui para saber como adicionar seu grupo em nosso repositório.",
 
   /* ---- O bloco do pix ---- */
   apoioTitulo: "Ajude a manter os grupos",
@@ -50,8 +50,8 @@ var TEXTOS = {
   sugerirNota:  "falar no privado",
 
   /* ---- O rodapé ---- */
-  rodapeAviso: "Grupo lotado ou link quebrado? Avise no WhatsApp",
-  rodapeIsencao: "Página independente, mantida pela comunidade. Sem vínculo com a administração da UFMG."
+  rodapeAviso: "www.pluriversidade.com.br",
+  rodapeIsencao: "Página independente, sem vínculo com a administração de nenhuma instituição pública."
 };
 
 var AJUSTES = {
