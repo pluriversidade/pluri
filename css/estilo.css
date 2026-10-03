@@ -895,3 +895,96 @@ a { color: inherit; }
 .modal-midia__fechar:hover {
   color: var(--terracota);
 }
+
+/* ------------------------------------------------------------- ESTILOS CARD COMISSÁRIO & POP-UP --- */
+
+.card-comissario-estatico {
+  background: var(--papel);
+  border: 2px solid var(--ambar);
+  border-radius: 14px;
+  padding: 1.25rem 1.1rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  box-shadow: var(--sombra);
+}
+
+.card-comissario-estatico__titulo {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--noite);
+  letter-spacing: -0.01em;
+}
+
+.card-comissario-estatico__chamada {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--tinta-fraca);
+}
+
+/* Botão com mudança gradual de cor (Gradiente Animado) */
+.botao-gradiente-animado {
+  display: inline-block;
+  width: 100%;
+  background: linear-gradient(270deg, #B24232, #C08A1E, #2E7D53, #B24232);
+  background-size: 600% 600%;
+  color: #FFFFFF;
+  font-weight: 750;
+  font-size: 1rem;
+  text-decoration: none;
+  padding: 0.85rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  min-height: 48px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: mudancaGradualCor 8s ease infinite;
+  font-family: var(--sans);
+}
+
+.botao-gradiente-animado:hover {
+  opacity: 0.95;
+}
+
+@keyframes mudancaGradualCor {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Estilos específicos para o Modal de Comissário */
+.modal-comissario__conteudo {
+  background: var(--papel);
+  color: var(--tinta);
+  border-radius: 16px;
+  padding: 2rem 1.5rem 1.5rem;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+  text-align: left;
+}
+
+.modal-comissario__titulo {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--noite);
+  text-align: center;
+}
+
+.modal-comissario__texto {
+  font-size: 0.92rem;
+  color: var(--tinta-fraca);
+  margin-bottom: 0.9rem;
+  line-height: 1.5;
+}
+
+.modal-comissario__texto strong {
+  color: var(--tinta);
+}
+
+.modal-comissario__cta {
+  margin-top: 1rem;
+}

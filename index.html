@@ -204,6 +204,13 @@
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
 
+    <!-- CARD ÚNICO E ESTÁTICO PARA CAPTAÇÃO DE COMISSÁRIOS -->
+    <div class="card-comissario-estatico">
+      <h3 class="card-comissario-estatico__titulo">QUER SER COMISSÁRIO?</h3>
+      <p class="card-comissario-estatico__chamada">Ganhe ingressos e benefícios divulgando festas universitárias.</p>
+      <button class="botao-gradiente-animado" id="btn-abrir-popup-comissario" type="button">QUERO SER COMISSÁRIO</button>
+    </div>
+
     <div class="localizacao">
       <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
         <option value="">Selecione o Estado</option>
@@ -348,11 +355,55 @@
   </div>
 </div>
 
+<!-- POP-UP / MODAL DO COMISSÁRIO -->
+<div class="modal-midia" id="modal-comissario" hidden>
+  <div class="modal-comissario__conteudo">
+    <button class="modal-midia__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
+    <h2 class="modal-comissario__titulo">Seja um Comissário Pluri!</h2>
+    <p class="modal-comissario__texto">
+      Toda festa universitária precisa de pessoas que, além de divulgar o evento, precisam de pessoas para de fato vender ingressos para a comissão organizadora do evento poder de fato viabilizar a festa, contratando os serviços, o local da festa, etc.
+    </p>
+    <p class="modal-comissario__texto">
+      Então nós, da <strong>Pluriversidade</strong>, somos a ponte do organizador e da equipe que vai divulgar e vender os ingressos da festa em troca de comissão em forma de ingressos da festa para seus comissários.
+    </p>
+    <a class="botao-gradiente-animado modal-comissario__cta" href="https://forms.gle/SEU_LINK_DO_FORM_AQUI" target="_blank" rel="noopener">QUERO SER COMISSÁRIO</a>
+  </div>
+</div>
+
 <script src="js/dados-textos.js"></script>
 <script src="js/dados-grupos.js"></script>
 <script src="js/dados-festas.js"></script>
 <script src="js/dados-parceiros.js"></script>
 <script src="js/app.js"></script>
+
+<!-- SCRIPT PARA CONTROLAR O POP-UP DO COMISSÁRIO -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btnAbrir = document.getElementById("btn-abrir-popup-comissario");
+    var modalComissario = document.getElementById("modal-comissario");
+    var btnFechar = document.getElementById("modal-comissario-fechar");
+
+    if (btnAbrir && modalComissario) {
+      btnAbrir.addEventListener("click", function () {
+        modalComissario.hidden = false;
+      });
+    }
+
+    if (btnFechar && modalComissario) {
+      btnFechar.addEventListener("click", function () {
+        modalComissario.hidden = true;
+      });
+    }
+
+    if (modalComissario) {
+      modalComissario.addEventListener("click", function (e) {
+        if (e.target === modalComissario) {
+          modalComissario.hidden = true;
+        }
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
