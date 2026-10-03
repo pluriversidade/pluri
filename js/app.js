@@ -212,14 +212,6 @@
     var selUniFesta    = document.getElementById("select-uni-festas");
     var buscaFesta     = document.getElementById("festas-dia"); // Ajustado para o campo de data ou busca se houver
 
-    var estadosData = window.ESTADOS || {};
-    var cidadesData = window.CIDADES || {};
-    var unisData = window.UNIVERSIDADES || {};
-
-    function simples(texto) {
-      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-
 var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES || {};
