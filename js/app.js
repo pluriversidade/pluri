@@ -614,6 +614,10 @@
         ? '<span class="grupo__etiqueta-admin">' + escapar(textoEtiqueta) + '</span>' 
         : '';
 
+      // Mensagem personalizada para o WhatsApp
+      var textoZap = 'Oi, estou enviando esta mensagem para avisar que o link do grupo "' + g.nome + '" está quebrado, você pode me mandar o link aqui?';
+      var linkReportar = 'https://wa.me/5531991579687?text=' + encodeURIComponent(textoZap);
+
       return (
         '<li class="item" style="--cor:' + c.cor + '">' +
           '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
@@ -622,6 +626,9 @@
             desc +
             '<span class="grupo__meta">' + onde + "</span>" +
           "</a>" +
+          '<a class="reportar" href="' + linkReportar + '" target="_blank" rel="noopener" title="Reportar link quebrado">' +
+            '⚠️' +
+          '</a>' +
         "</li>"
       );
     }

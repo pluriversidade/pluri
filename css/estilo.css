@@ -402,25 +402,23 @@ a { color: inherit; }
 }
 
 .item {
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 1fr 46px;
   background: var(--papel);
   border: 1px solid var(--regua);
   border-left: 5px solid var(--cor, var(--verde));
   border-radius: 12px;
   box-shadow: var(--sombra);
-  position: relative; /* Necessário para posicionar elementos filhos de forma absoluta (como a etiqueta) */
-  overflow: hidden;   /* Garante que elementos internos respeitem o arredondamento do card */
+  position: relative;
+  overflow: hidden;
 }
 
 .grupo {
-  flex: 1 1 auto;
-  min-width: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: .75rem 6.5rem .75rem .9rem; /* Padding direito maior para o título não bater na etiqueta */
-  border-radius: 11px 0 0 11px;
+  padding: .75rem .9rem;
   text-decoration: none;
   color: inherit;
   min-height: 62px;
@@ -433,6 +431,14 @@ a { color: inherit; }
   font-weight: 650;
   font-size: 1rem;
   line-height: 1.25;
+  padding-right: 7rem;
+}
+
+.grupo__desc {
+  display: block;
+  font-size: .88rem;
+  margin-top: .2rem;
+  color: var(--tinta);
 }
 
 .grupo__meta {
@@ -455,19 +461,19 @@ a { color: inherit; }
 
 .grupo__etiqueta-admin {
   position: absolute;
-  top: 0;          /* Grudado exatamente na parte superior */
-  right: 0;        /* Grudado na extremidade direita */
+  top: 0;
+  right: 0;
   display: inline-block;
   font-family: var(--mono);
   font-size: .62rem;
   letter-spacing: .08em;
   text-transform: uppercase;
   padding: .3rem .6rem;
-  border-radius: 0 11px 0 8px; /* Arredondamento estético acompanhando o canto do card */
+  border-radius: 0 11px 0 8px;
   background: rgba(46, 125, 83, .15);
   color: var(--verde);
   width: fit-content;
-  z-index: 2;       /* Garante que fique acima de outros elementos */
+  z-index: 2;
 }
 
 .etiqueta {
@@ -483,8 +489,6 @@ a { color: inherit; }
 .etiqueta--novo   { background: #E4F0E9; color: var(--verde); }
 
 .reportar {
-  flex: 0 0 auto;
-  width: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -492,6 +496,15 @@ a { color: inherit; }
   border-radius: 0 11px 11px 0;
   color: #A8AFA8;
   text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  font-size: .9rem;
+}
+
+.reportar:hover {
+  background: #F6E4E1;
+  color: var(--terracota);
 }
 
 .vazio {
