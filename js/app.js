@@ -1,8 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    O FUNCIONAMENTO DA PÁGINA
-
-   Este arquivo não precisa ser editado para incluir grupos, festas ou
-   parceiros. Tudo isso mora nos arquivos dados-*.js, ao lado deste.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -599,7 +596,7 @@
 
     function cartao(f) {
       var d = partesDaData(f.data);
-      var u = unis[f.uni];
+      var u = unis[f.uni] || { nome: "", cor: "#2E7D53" };
       var faltam = diasRestantes(f.data);
       var faltamHtml = faltam
         ? '<span class="festa__faltam">' + faltam + '</span>'
@@ -611,7 +608,6 @@
                '" target="_blank" rel="noopener">' + texto + "</a>";
       };
 
-      /* Processamento da Mídia (Flyer ou Vídeo) */
       var midiaHtml = "";
       if (f.midia) {
         var caminhoMidia = "img/" + f.midia;
@@ -674,7 +670,6 @@
           : (textos.festasVazio || "Nenhuma festa por aqui.");
       }
 
-      /* Atribui os eventos de clique nas mídias para abrir o Modal */
       var mídias = lista.querySelectorAll(".festa__midia");
       Array.prototype.forEach.call(mídias, function (el) {
         el.addEventListener("click", function () {
@@ -690,7 +685,7 @@
   }
 
   /* ======================================================================
-     OS GRUPOS (COM FILTROS HIERÁRQUICOS DE ESTADO, CIDADE E UNIVERSIDADE)
+     OS GRUPOS
      ====================================================================== */
 
   function montarGrupos() {
@@ -732,7 +727,6 @@
       return n.toLocaleString("pt-BR");
     }
 
-    /* Popular Select de Estados */
     if (selEstado) {
       selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
         Object.keys(estadosData).map(function (key) {
@@ -750,7 +744,6 @@
       });
     }
 
-    /* Atualizar Select de Cidades com base no Estado */
     function atualizarSelectCidades() {
       if (!selCidade) return;
       if (!estadoSel) {
@@ -781,7 +774,6 @@
       });
     }
 
-    /* Atualizar Select de Universidades com base na Cidade/Estado */
     function atualizarSelectUnis() {
       if (!selUni) return;
       if (!estadoSel) {
@@ -1092,7 +1084,7 @@
     }
 
     var btSuporte = document.getElementById("suporte");
-    if (btSuporte e suporte) {
+    if (btSuporte && suporte) {
       btSuporte.href = "https://wa.me/" + suporte;
       btSuporte.textContent = contatos.suporteEscrito || suporte;
     }
