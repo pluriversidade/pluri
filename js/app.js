@@ -638,6 +638,17 @@
       selUni.value = uniSel;
     }
 
+    function rolarParaCards() {
+      if (!divChips) return;
+      var rect = divChips.getBoundingClientRect();
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      var targetY = scrollTop + rect.top - 100;
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth"
+      });
+    }
+
     function montarChips() {
       if (!divChips) return;
 
@@ -658,7 +669,7 @@
             (imgUrl ? '<img class="chip-img" src="' + imgUrl + '" alt="" loading="lazy">' : '') +
             '<span class="chip-nome">' + escapar(cat.nome) + '</span>' +
           '</button>' +
-          '<button class="btn-share-cat" type="button" data-share-cat="' + key + '" title="Compartilhar Categoria no WhatsApp">📲</button>' +
+          '<button class="btn-share-cat" type="button" data-share-cat="' + key + '" title="Compartilhar Categoria no WhatsApp">💬</button>' +
           '</div>';
       });
 
@@ -670,6 +681,9 @@
           montarChips();
           paginas.reiniciar();
           desenhar();
+          if (catSel) {
+            rolarParaCards();
+          }
         });
       });
 
@@ -680,7 +694,20 @@
           var catObj = categorias[keyCat];
           var nomeCat = catObj ? catObj.nome : keyCat;
           var urlShare = location.origin + location.pathname + "#grupos/" + keyCat;
-          var msg = encodeURIComponent("Ei! Confira os grupos de *" + nomeCat + "* no site da Pluriversidade: " + urlShare);
+          
+          var nomeUni = "universidade";
+          if (selUni && selUni.value && unisData[selUni.value]) {
+            nomeUni = unisData[selUni.value].nome;
+          } else if (uniSel && unisData[uniSel]) {
+            nomeUni = unisData[uniSel].nome;
+          }
+          var uniMaiuscula = nomeUni.toUpperCase();
+
+          var msgTexto = "*Ei*, confira a categoria *" + nomeCat + "* que contém vários grupos do whatsapp da " + nomeUni + ", no site da *Pluriversidade*, acredito que algum desses grupos vá te interessar!:\n" +
+            urlShare + "\n\n" +
+            "*Faça sua parte*, ajude a promover os grupos da *" + uniMaiuscula + "* compartilhando essa mensagem em outros grupos da " + nomeUni + ".";
+
+          var msg = encodeURIComponent(msgTexto);
           window.open("https://wa.me/?text=" + msg, "_blank");
         });
       });
@@ -691,6 +718,11 @@
       montarChips();
       paginas.reiniciar();
       desenhar();
+      if (catSel) {
+        setTimeout(function () {
+          rolarParaCards();
+        }, 300);
+      }
     };
 
     if (selEstado) {
