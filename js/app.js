@@ -778,11 +778,9 @@
 
     function verificarHash() {
       var rawHash = location.hash.toLowerCase().replace(/\/$/, "");
-      
-      if (rawHash === "#grupos" || rawHash.indexOf("#grupos/") === 0) {
-        alternar(false, false);
-      } else {
-        // Por padrão abre na aba festas (cobre #festas, #festas/slug, ou hash vazio)
+
+      if (rawHash === "#festas" || rawHash.indexOf("#festas/") === 0) {
+        // Abre na aba festas se especificamente indicado no hash
         alternar(true, false);
 
         if (rawHash.indexOf("#festas/") === 0) {
@@ -810,6 +808,9 @@
             }, 300);
           }
         }
+      } else {
+        // Por padrão abre SEMPRE na aba grupos (URL inicial limpa ou #grupos)
+        alternar(false, false);
       }
     }
 
