@@ -12,6 +12,7 @@
    mas se quiser limpar o arquivo de vez em quando, fique à vontade.
 
    O QUE VAI EM CADA CAMPO
+   id         identificador único da festa (usado no link direto/compartilhamento, ex: "pip-ufmg")
    data       o dia da festa, no formato ano-mês-dia: "2026-10-17"
               (sempre quatro números, traço, dois, traço, dois)
    hora       opcional. "22h", "23h30", ou deixe "" para não mostrar
@@ -49,6 +50,7 @@ var UNIVERSIDADES = {
    funcionando. Apague todas e coloque as de verdade.                        
    
      {
+    id: "",
     data: "",
     hora: "",
     uni: "",
@@ -76,6 +78,7 @@ var CIDADES = {
 var FESTAS = [
 
   {
+    id: "pip-ufmg",
     data: "2026-10-03",
     hora: "22h",
     uni: "ufmg",
@@ -88,6 +91,7 @@ var FESTAS = [
   },
 
   {
+    id: "baile-do-coracao",
     data: "2026-10-11",
     hora: "23h",
     uni: "puc",
@@ -100,6 +104,7 @@ var FESTAS = [
   },
 
   {
+    id: "arraiá-fora-de-epoca",
     data: "2026-10-24",
     hora: "21h30",
     uni: "faminas",
@@ -112,6 +117,7 @@ var FESTAS = [
   },
 
   {
+    id: "virada-newton",
     data: "2026-11-07",
     hora: "22h",
     uni: "newton",
@@ -124,6 +130,7 @@ var FESTAS = [
   },
 
   {
+    id: "festa-encerramento-semestre",
     data: "2026-11-21",
     hora: "",
     uni: "ufmg",

@@ -424,6 +424,7 @@
 
         var temMidia = Boolean(f.midia);
         var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
+        var idFesta = f.id || simples(f.titulo).replace(/\s+/g, '-');
         
         var miniHtml = "";
         if (temMidia) {
@@ -444,7 +445,7 @@
         var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
         return (
-          '<li class="festa" style="--cor:' + corFesta + '">' +
+          '<li class="festa" id="festa-' + idFesta + '" style="--cor:' + corFesta + '">' +
             '<div class="festa__data">' +
               '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
@@ -459,12 +460,31 @@
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
                 (pareceLink(f.grupo) ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo WhatsApp</a>' : '') +
+                '<button type="button" class="festa__link festa__link--compartilhar" data-festa-id="' + idFesta + '">Compartilhar</button>' +
               '</div>' +
             '</div>' +
             miniHtml +
           '</li>'
         );
       }).join("");
+
+      // Adiciona eventos aos botões de compartilhar
+      Array.prototype.forEach.call(lista.querySelectorAll(".festa__link--compartilhar"), function (btn) {
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-festa-id");
+          var urlCompleta = window.location.origin + window.location.pathname + "#festa-" + id;
+          
+          navigator.clipboard.writeText(urlCompleta).then(function () {
+            var textoOriginal = btn.textContent;
+            btn.textContent = "Link copiado!";
+            setTimeout(function () {
+              btn.textContent = textoOriginal;
+            }, 2000);
+          }).catch(function (err) {
+            console.error("Erro ao copiar link: ", err);
+          });
+        });
+      });
 
       var vazio = document.getElementById("festas-vazio");
       if (vazio) vazio.hidden = visiveis.length > 0;
@@ -746,7 +766,13 @@
 
     function verificarHash() {
       var hash = location.hash.toLowerCase();
-      if (hash === "#grupos" || hash.indexOf("grupo") !== -1) {
+      if (hash.indexOf("festa-") !== -1) {
+        alternar(true, false);
+        setTimeout(function () {
+          var el = document.querySelector(hash);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      } else if (hash === "#grupos" || hash.indexOf("grupo") !== -1) {
         alternar(false, false);
       } else {
         // Por padrão abre na aba festas
