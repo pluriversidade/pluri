@@ -90,12 +90,20 @@
     return p && p.nome && pareceLink(p.link);
   });
 
-  function mostrarProblemas() {
+function mostrarProblemas() {
     var caixa = document.getElementById("diagnostico");
     if (!caixa || !editando || problemas.length === 0) return;
+
+    // Coloque aqui o link do seu Formulário do Google
+    var linkFormulario = "https://docs.google.com/forms/d/e/SEU_FORMULARIO_AQUI/viewform";
+
     var html = "<strong>" + problemas.length + " coisas para arrumar</strong><ul>";
     problemas.forEach(function (p) { html += "<li>" + p.texto + "</li>"; });
     html += "</ul>";
+    
+    // Botão/Link adicionado abaixo da lista de problemas
+    html += '<a class="btn-diagnostico-form" href="' + linkFormulario + '" target="_blank" rel="noopener">PREENCHER FORMULÁRIO</a>';
+
     caixa.innerHTML = html;
     caixa.hidden = false;
   }
