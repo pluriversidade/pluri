@@ -507,24 +507,29 @@
           var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : f.data;
           var horaFormatada = f.hora ? " : " + f.hora : "";
 
+          // Descrição da festa
+          var descricaoFesta = f.descricao || f.desc || "";
+
           // Linha condicional para compra de ingresso (somente se houver link válido)
           var linhaIngresso = pareceLink(f.ingresso)
             ? "\n\n*Comprar ingresso:* " + f.ingresso
             : "";
 
+          // Link para ser comissário
           var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
           var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
           // Linha de comissário / revenda
           var linhaRevenda = "\n\n*Revenda ingressos da festa:* " + linkComissario;
 
-          // Montagem do texto final
+          // Montagem do texto final conforme especificação
           var textoCompartilhamento =
-            "Ei, achei uma festa e resolvi compartilhar ela!\n" +
+            "*Ei*, achei essa festa e resolvi *compartilhar* a informação útil!\n" +
             urlCard + "\n\n" +
             "#############\n\n" +
             "*" + f.titulo.toUpperCase() + "*\n" +
             "*" + dataFormatada + "*" + horaFormatada +
+            (descricaoFesta ? "\n\n" + descricaoFesta : "") +
             linhaIngresso +
             linhaRevenda + "\n\n" +
             "*Pluriversidade.com.br*\n" +
