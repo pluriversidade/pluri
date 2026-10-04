@@ -460,9 +460,9 @@
         var tipoMidia = miniContainer.getAttribute("data-tipo");
 
         if (tipoMidia === "video") {
-          containerModalMidia.innerHTML = '<video class="modal-midia__midia" src="' + arquivoMidia + '" controls autoplay playsinline style="max-height: 80vh; max-width: 100%; aspect-ratio: 9 / 16; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;"></video>';
+          containerModalMidia.innerHTML = '<video class="modal-midia__midia" src="' + arquivoMidia + '" controls autoplay></video>';
         } else {
-          containerModalMidia.innerHTML = '<img class="modal-midia__midia" src="' + arquivoMidia + '" alt="Flyer ampliado" style="max-height: 80vh; max-width: 100%; object-fit: contain; border-radius: 8px; display: block; margin: 0 auto;">';
+          containerModalMidia.innerHTML = '<img class="modal-midia__midia" src="' + arquivoMidia + '" alt="Flyer ampliado">';
         }
 
         modal.hidden = false;
