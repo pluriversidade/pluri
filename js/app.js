@@ -80,7 +80,7 @@
   }
 
   function escapar(texto) {
-    return String(texto)
+    return String(texto || "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -779,15 +779,28 @@
         return bateEstado && bateCidade && bateUni && bateCat && bateBusca;
       });
 
-      // Número padrão de suporte WhatsApp caso não venha no objeto contatos
-      var suporteNum = (contatos && contatos.whatsapp) ? contatos.whatsapp : "5531991579687";
-
       lista.innerHTML = paginas.recortar(visiveis).map(function (g) {
         var cat = categorias[g.cat] || {};
         var corCat = cat.cor || "var(--verde)";
 
-        var msgReport = encodeURIComponent("Olá, o grupo '" + g.nome + "' está com o link quebrado ou lotado.");
-        var linkReport = "https://wa.me/" + suporteNum + "?text=" + msgReport;
+        /* Identificação de Universidade e Cidade para a mensagem de erro */
+        var uniObj = unisData[g.uni] || {};
+        var nomeUni = uniObj.nome || g.uni || "Não informada";
+        var cidObj = uniObj.cidade ? cidadesData[uniObj.cidade] : null;
+        var nomeCidade = cidObj ? cidObj.nome : "Não informada";
+
+        /* Geração segura da URL do botão de reportar erro com Universidade e Cidade */
+        var suporteBase = contatos.suporte || "https://wa.me/5531991579687";
+        var msgReport = encodeURIComponent("Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + " - " + nomeCidade + ") está com problemas ou com link quebrado.");
+        var linkReport = "";
+
+        if (suporteBase.indexOf("text=") !== -1) {
+          linkReport = suporteBase;
+        } else if (suporteBase.indexOf("?") !== -1) {
+          linkReport = suporteBase + "&text=" + msgReport;
+        } else {
+          linkReport = suporteBase + "?text=" + msgReport;
+        }
 
         return (
           '<li class="item" style="--cor:' + corCat + '">' +
@@ -845,7 +858,7 @@
   }
 
   /* -------------------------------------------------------------------------
-     GERENCIAMENTO DAS ABAS (GRUPOS x FESTAS) E ROLAGEM DE DIRETA
+     GERENCIAMENTO DAS ABAS (GRUPOS x FESTAS) E ROLAGEM DIRETA
      ------------------------------------------------------------------------- */
   function configurarAbas() {
     var abaGrupos = document.getElementById("aba-grupos");
