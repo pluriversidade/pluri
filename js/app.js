@@ -673,7 +673,7 @@
               '</div>' +
             '</a>' +
             '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
-              '⚠️️' +
+              '⚠' +
             '</a>' +
           '</li>'
         );
@@ -746,10 +746,11 @@
 
     function verificarHash() {
       var hash = location.hash.toLowerCase();
-      if (hash === "#festas" || hash.indexOf("festa") !== -1) {
-        alternar(true, false);
-      } else if (hash === "#grupos" || hash.indexOf("grupo") !== -1) {
+      if (hash === "#grupos" || hash.indexOf("grupo") !== -1) {
         alternar(false, false);
+      } else {
+        // Por padrão abre na aba festas
+        alternar(true, false);
       }
     }
 
