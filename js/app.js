@@ -456,6 +456,9 @@
 
         var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
+        var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+        var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
+
         return (
           '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
             '<div class="festa__data">' +
@@ -471,7 +474,7 @@
               '<div class="festa__links">' +
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
-                (pareceLink(f.grupo) ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo WhatsApp</a>' : '') +
+                '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">seja um comissário dessa festa</a>' +
                 '<button class="festa__link btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '">🔗 Compartilhar</button>' +
               '</div>' +
             '</div>' +
