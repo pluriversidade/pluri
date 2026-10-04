@@ -57,7 +57,7 @@ a { color: inherit; }
 
 .capa { position: relative; overflow: hidden; }
 
-/* Capa com altura aumentada em aproximadamente 50% mantendo o formato horizontal */
+/* Capa com altura aumentada mantendo formato horizontal */
 .topo-video-container {
   position: relative;
   width: 100%;
@@ -97,7 +97,6 @@ a { color: inherit; }
 }
 
 .marca {
-  /* Ajustado o margin-top proporcionalmente à redução de 35% do emblema */
   margin-top: -48px;
   position: relative;
   text-align: center;
@@ -105,7 +104,6 @@ a { color: inherit; }
 }
 
 .emblema {
-  /* Reduzido em 35% (de 148px para 96px) */
   width: 96px;
   height: 96px;
   filter: drop-shadow(0 6px 16px rgba(23, 32, 28, .22));
@@ -388,55 +386,97 @@ a { color: inherit; }
   max-width: 100%;
 }
 
+/* ---------------------------------------------------- chips de categorias --- */
+
+/* Grade de 2 colunas para organizar as categorias */
 .chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: .5rem;
   padding: .7rem 0 .2rem;
   margin: 0;
-  max-width: 100%;
+  width: 100%;
+}
+
+/* O primeiro botão ("Todas as Categorias") ocupa as 2 colunas */
+.chip-grupo--todas {
+  grid-column: span 2;
 }
 
 .chip-grupo {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: .3rem;
-}
-
-.chip {
-  flex: 0 0 auto;
-  font-family: var(--sans);
-  font-size: .84rem;
-  padding: .45rem .85rem;
-  border-radius: 999px;
-  border: 1px solid var(--regua);
+  justify-content: space-between;
   background: var(--papel);
-  color: var(--tinta-fraca);
-  cursor: pointer;
-  min-height: 44px;
+  border: 1px solid var(--regua);
+  border-radius: 12px;
+  padding: .4rem .6rem;
+  gap: .4rem;
+  min-height: 46px;
+  box-shadow: var(--sombra);
+  transition: border-color .2s ease, background-color .2s ease;
 }
 
-.chip[aria-pressed="true"] {
+.chip-grupo[aria-pressed="true"] {
   background: var(--tinta);
   border-color: var(--tinta);
   color: #F5F1E6;
+}
+
+.chip-conteudo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: var(--sans);
+  font-size: .85rem;
   font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+}
+
+.chip-img {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: 0 0 35px;
+  background: var(--fundo);
+}
+
+.chip-nome {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
 }
 
 .btn-share-cat {
   font-family: var(--sans);
-  font-size: .9rem;
-  padding: .45rem .65rem;
-  border-radius: 999px;
+  font-size: .85rem;
+  padding: .2rem .4rem;
+  border-radius: 8px;
   border: 1px solid var(--regua);
-  background: var(--papel);
+  background: var(--fundo);
   color: var(--tinta);
   cursor: pointer;
-  min-height: 44px;
+  min-height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   transition: background-color .2s ease;
+}
+
+.chip-grupo[aria-pressed="true"] .btn-share-cat {
+  background: rgba(255, 255, 255, .15);
+  border-color: rgba(255, 255, 255, .25);
+  color: #FFFFFF;
 }
 
 .btn-share-cat:hover {

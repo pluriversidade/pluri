@@ -489,40 +489,30 @@
       var contaAba = document.getElementById("aba-festas-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
 
-      // Adiciona listener para os botões de compartilhar com geração dinâmica da mensagem
       Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-festa"), function (btn) {
         btn.addEventListener("click", function () {
           var slug = btn.getAttribute("data-slug");
           var urlCard = location.origin + location.pathname + "#festas/" + slug;
 
-          // Encontra a festa correspondente pelo slug
           var f = festasBoas.find(function (festa) {
             return slugify(festa.titulo) === slug;
           });
 
           if (!f) return;
 
-          // Formata data e horário
           var d = partesDaData(f.data);
           var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : f.data;
           var horaFormatada = f.hora ? " : " + f.hora : "";
-
-          // Descrição da festa
           var descricaoFesta = f.descricao || f.desc || "";
 
-          // Linha condicional para compra de ingresso (somente se houver link válido)
           var linhaIngresso = pareceLink(f.ingresso)
             ? "\n\n*Comprar ingresso:* " + f.ingresso
             : "";
 
-          // Link para ser comissário
           var mensagemComissario = encodeURIComponent("*Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
           var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
-
-          // Linha de comissário / revenda
           var linhaRevenda = "\n\n*Revenda ingressos da festa:* " + linkComissario;
 
-          // Montagem do texto final conforme especificação
           var textoCompartilhamento =
             "*Ei*, achei essa festa e resolvi *compartilhar* a informação útil!\n" +
             urlCard + "\n\n" +
@@ -650,16 +640,23 @@
 
     function montarChips() {
       if (!divChips) return;
-      var html = '<div class="chip-grupo">' +
-        '<button class="chip" type="button" aria-pressed="' + (!catSel ? 'true' : 'false') + '" data-cat="">Todas as Categorias</button>' +
+
+      // Botão 'Todas as Categorias' ocupando largura inteira (linha única na grade)
+      var html = '<div class="chip-grupo chip-grupo--todas" aria-pressed="' + (!catSel ? 'true' : 'false') + '">' +
+        '<button class="chip-conteudo" type="button" data-cat="">' +
+          '<span class="chip-nome" style="text-align: center; width: 100%;">Todas as Categorias</span>' +
+        '</button>' +
         '</div>';
 
       Object.keys(categorias).forEach(function (key) {
         var cat = categorias[key];
         var ativa = catSel === key;
-        html += '<div class="chip-grupo">' +
-          '<button class="chip" type="button" aria-pressed="' + (ativa ? 'true' : 'false') + '" data-cat="' + key + '">' +
-            escapar(cat.nome) +
+        var imgUrl = cat.imagem || cat.icone || cat.foto || "";
+
+        html += '<div class="chip-grupo" aria-pressed="' + (ativa ? 'true' : 'false') + '">' +
+          '<button class="chip-conteudo" type="button" data-cat="' + key + '">' +
+            (imgUrl ? '<img class="chip-img" src="' + imgUrl + '" alt="" loading="lazy">' : '') +
+            '<span class="chip-nome">' + escapar(cat.nome) + '</span>' +
           '</button>' +
           '<button class="btn-share-cat" type="button" data-share-cat="' + key + '" title="Compartilhar Categoria no WhatsApp">📲</button>' +
           '</div>';
@@ -667,7 +664,7 @@
 
       divChips.innerHTML = html;
 
-      Array.prototype.forEach.call(divChips.querySelectorAll(".chip"), function (btn) {
+      Array.prototype.forEach.call(divChips.querySelectorAll("[data-cat]"), function (btn) {
         btn.addEventListener("click", function () {
           catSel = btn.getAttribute("data-cat") || "";
           montarChips();
