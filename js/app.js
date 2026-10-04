@@ -87,6 +87,15 @@
       .replace(/"/g, "&quot;");
   }
 
+  function slugify(texto) {
+    return String(texto || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   /* -------------------------------------------------------------------------
      FILTRAGEM INICIAL DE DADOS VÁLIDOS
      ------------------------------------------------------------------------- */
@@ -166,6 +175,7 @@
 
     return {
       reiniciar: function () { pagina = 1; },
+      irParaPagina: function (num) { pagina = num; },
       recortar: function (itens) {
         var ultima = Math.max(1, Math.ceil(itens.length / POR_PAGINA));
         if (pagina > ultima) pagina = ultima;
@@ -246,6 +256,8 @@
   /* -------------------------------------------------------------------------
      SEÇÃO DE FESTAS
      ------------------------------------------------------------------------- */
+  var paginasFestas;
+
   function montarFestas() {
     var lista = document.getElementById("festas-lista");
     if (!lista) return 0;
@@ -277,7 +289,7 @@
     
     var dataFiltroSel = "";
 
-    var paginas = fazerPaginas({
+    paginasFestas = fazerPaginas({
       caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
     }, function () { desenhar(); });
 
@@ -345,7 +357,7 @@
         uniSel = "";
         atualizarSelectCidadesFesta();
         atualizarSelectUnisFesta();
-        paginas.reiniciar();
+        paginasFestas.reiniciar();
         desenhar();
       });
     }
@@ -355,7 +367,7 @@
         cidadeSel = selCidadeFesta.value;
         uniSel = "";
         atualizarSelectUnisFesta();
-        paginas.reiniciar();
+        paginasFestas.reiniciar();
         desenhar();
       });
     }
@@ -363,7 +375,7 @@
     if (selUniFesta) {
       selUniFesta.addEventListener("change", function () {
         uniSel = selUniFesta.value;
-        paginas.reiniciar();
+        paginasFestas.reiniciar();
         desenhar();
       });
     }
@@ -373,7 +385,7 @@
         dataFiltroSel = buscaFesta.value;
         var btnLimpar = document.getElementById("festas-limpar");
         if (btnLimpar) btnLimpar.hidden = !dataFiltroSel;
-        paginas.reiniciar();
+        paginasFestas.reiniciar();
         desenhar();
       });
     }
@@ -384,7 +396,7 @@
         if (buscaFesta) buscaFesta.value = "";
         dataFiltroSel = "";
         btnLimparData.hidden = true;
-        paginas.reiniciar();
+        paginasFestas.reiniciar();
         desenhar();
       });
     }
@@ -416,11 +428,12 @@
         return bateEstado && bateCidade && bateUni && bateData;
       });
 
-      lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
+      lista.innerHTML = paginasFestas.recortar(visiveis).map(function (f) {
         var d = partesDaData(f.data);
         var u = unis[f.uni] || { nome: f.uni || "" };
         var corFesta = f.cor || "var(--terracota)";
         var faltam = diasFaltam(f.data);
+        var slugFesta = slugify(f.titulo);
 
         var temMidia = Boolean(f.midia);
         var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
@@ -444,7 +457,7 @@
         var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
         return (
-          '<li class="festa" style="--cor:' + corFesta + '">' +
+          '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
             '<div class="festa__data">' +
               '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
@@ -459,6 +472,7 @@
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
                 (pareceLink(f.grupo) ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo WhatsApp</a>' : '') +
+                '<button class="festa__link btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '">🔗 Compartilhar</button>' +
               '</div>' +
             '</div>' +
             miniHtml +
@@ -471,6 +485,24 @@
 
       var contaAba = document.getElementById("aba-festas-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
+
+      // Adiciona listener para os botões de compartilhar
+      Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-festa"), function (btn) {
+        btn.addEventListener("click", function () {
+          var slug = btn.getAttribute("data-slug");
+          var url = location.origin + location.pathname + "#festas/" + slug;
+
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function () {
+              var originalText = btn.textContent;
+              btn.textContent = "✓ Copiado!";
+              setTimeout(function () { btn.textContent = originalText; }, 2000);
+            }).catch(function (err) {
+              console.error("Erro ao copiar link: ", err);
+            });
+          }
+        });
+      });
     }
 
     renderEstadosFesta();
@@ -713,7 +745,7 @@
   }
 
   /* -------------------------------------------------------------------------
-     NAVEGAÇÃO POR ABAS
+     GERENCIAMENTO DAS ABAS (GRUPOS x FESTAS) E ROLAGEM DE DIRETA
      ------------------------------------------------------------------------- */
   function configurarAbas() {
     var abaGrupos = document.getElementById("aba-grupos");
@@ -723,103 +755,159 @@
 
     if (!abaGrupos || !abaFestas || !secGrupos || !secFestas) return;
 
-    function alternar(mostrarFestas) {
+    function alternar(mostrarFestas, atualizarHash) {
       abaGrupos.setAttribute("aria-selected", !mostrarFestas);
       abaFestas.setAttribute("aria-selected", mostrarFestas);
 
+      abaGrupos.tabIndex = mostrarFestas ? -1 : 0;
+      abaFestas.tabIndex = mostrarFestas ? 0 : -1;
+
       secGrupos.hidden = mostrarFestas;
       secFestas.hidden = !mostrarFestas;
+
+      if (atualizarHash !== false) {
+        var novoHash = mostrarFestas ? "#festas" : "#grupos";
+        if (location.hash !== novoHash) {
+          history.replaceState(null, "", novoHash);
+        }
+      }
     }
 
     abaGrupos.addEventListener("click", function () { alternar(false); });
     abaFestas.addEventListener("click", function () { alternar(true); });
+
+    function verificarHash() {
+      var rawHash = location.hash.toLowerCase().replace(/\/$/, "");
+      
+      if (rawHash === "#grupos" || rawHash.indexOf("#grupos/") === 0) {
+        alternar(false, false);
+      } else {
+        // Por padrão abre na aba festas (cobre #festas, #festas/slug, ou hash vazio)
+        alternar(true, false);
+
+        if (rawHash.indexOf("#festas/") === 0) {
+          var slugDesejado = rawHash.replace("#festas/", "");
+          if (slugDesejado) {
+            // Encontra em qual página da lista de festas o item está
+            var idx = festasBoas.findIndex(function (f) { return slugify(f.titulo) === slugDesejado; });
+            if (idx !== -1 && paginasFestas) {
+              var pag = Math.floor(idx / POR_PAGINA) + 1;
+              paginasFestas.irParaPagina(pag);
+              montarFestas(); // redesenha para carregar a página correta
+            }
+
+            setTimeout(function () {
+              var elTarget = document.getElementById("festa-" + slugDesejado);
+              if (elTarget) {
+                elTarget.scrollIntoView({ behavior: "smooth", block: "center" });
+                var corOriginal = elTarget.style.outline;
+                elTarget.style.transition = "outline 0.3s ease";
+                elTarget.style.outline = "3px solid var(--cor, #e0214a)";
+                setTimeout(function () {
+                  elTarget.style.outline = corOriginal;
+                }, 3000);
+              }
+            }, 300);
+          }
+        }
+      }
+    }
+
+    window.addEventListener("hashchange", verificarHash);
+    verificarHash();
   }
 
   /* -------------------------------------------------------------------------
-     MODAL DE MÍDIA EM TELA CHEIA (FESTAS)
+     MODAL DE MÍDIA DAS FESTAS (IMAGENS / VÍDEOS)
      ------------------------------------------------------------------------- */
   function configurarModalMidia() {
     var modal = document.getElementById("modal-midia");
+    var fechar = document.getElementById("modal-fechar");
     var container = document.getElementById("modal-container-midia");
-    var btnFechar = document.getElementById("modal-fechar");
 
-    if (!modal || !container) return;
+    if (!modal || !fechar || !container) return;
 
     document.addEventListener("click", function (e) {
-      var elem = e.target.closest(".festa__mini-container");
-      if (!elem) return;
+      var target = e.target.closest(".festa__mini-container");
+      if (!target) return;
 
-      var src = elem.getAttribute("data-midia");
-      var tipo = elem.getAttribute("data-tipo");
+      var src = target.getAttribute("data-midia");
+      var tipo = target.getAttribute("data-tipo");
 
       if (!src) return;
 
       if (tipo === "video") {
-        container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay playsinline></video>';
+        container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay></video>';
       } else {
-        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Mídia da festa">';
+        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Flyer em tamanho real">';
       }
 
       modal.hidden = false;
     });
 
-    function fechar() {
+    fechar.addEventListener("click", function () {
       modal.hidden = true;
       container.innerHTML = "";
-    }
+    });
 
-    if (btnFechar) btnFechar.addEventListener("click", fechar);
     modal.addEventListener("click", function (e) {
-      if (e.target === modal) fechar();
+      if (e.target === modal) {
+        modal.hidden = true;
+        container.innerHTML = "";
+      }
     });
   }
 
   /* -------------------------------------------------------------------------
-     MODAL COMISSÁRIO PLURI
+     MODAL POPUP COMISSÁRIO PLURI
      ------------------------------------------------------------------------- */
   function configurarModalComissario() {
     var btnInfo = document.getElementById("btn-comissario-info");
-    var modalComissario = document.getElementById("modal-comissario");
-    var btnFechar = document.getElementById("modal-comissario-fechar");
+    var modal = document.getElementById("modal-comissario");
+    var fechar = document.getElementById("modal-comissario-fechar");
     var video = document.getElementById("video-comissario");
 
-    if (!btnInfo || !modalComissario) return;
+    if (!btnInfo || !modal || !fechar) return;
 
     btnInfo.addEventListener("click", function () {
-      modalComissario.hidden = false;
-      if (video) video.play();
+      modal.hidden = false;
+      if (video) {
+        video.currentTime = 0;
+        video.play().catch(function (err) {
+          console.log("Autoplay bloqueado pelo navegador:", err);
+        });
+      }
     });
 
-    function fechar() {
-      modalComissario.hidden = true;
-      if (video) video.pause();
+    function fecharModalComissario() {
+      modal.hidden = true;
+      if (video) {
+        video.pause();
+      }
     }
 
-    if (btnFechar) btnFechar.addEventListener("click", fechar);
-    modalComissario.addEventListener("click", function (e) {
-      if (e.target === modalComissario) fechar();
+    fechar.addEventListener("click", fecharModalComissario);
+
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        fecharModalComissario();
+      }
     });
   }
 
   /* -------------------------------------------------------------------------
-     INICIALIZAÇÃO DA PÁGINA
+     DISPARO INICIAL
      ------------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     aplicarTextos();
+    configurarPix();
     montarParceiros();
     montarFestas();
     montarGrupos();
     configurarAbas();
-    configurarPix();
     configurarModalMidia();
     configurarModalComissario();
     mostrarProblemas();
-
-    var elSuporte = document.getElementById("suporte");
-    if (elSuporte && contatos.suporte) {
-      elSuporte.href = contatos.suporte;
-      elSuporte.textContent = "Falar no WhatsApp";
-    }
   });
 
 })();
