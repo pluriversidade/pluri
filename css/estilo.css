@@ -56,7 +56,7 @@ a { color: inherit; }
 .topo-video-container {
   position: relative;
   width: 100%;
-  height: clamp(140px, 22vw, 200px); /* Altura reduzida para ficar bem horizontal */
+  height: clamp(210px, 33vw, 300px); /* Altura reduzida para ficar bem horizontal */
   overflow: hidden;
   background: #111;
 }
