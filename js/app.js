@@ -516,7 +516,7 @@
             : "";
 
           // Link para ser comissário
-          var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+          var mensagemComissario = encodeURIComponent("*Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
           var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
           // Linha de comissário / revenda
