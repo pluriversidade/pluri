@@ -472,9 +472,9 @@
               '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
               '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
               '<div class="festa__links">' +
-                (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
+                (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
-                '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">seja um comissário dessa festa</a>' +
+                '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Seja Comissário</a>' +
                 '<button class="festa__link btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '">🔗 Compartilhar</button>' +
               '</div>' +
             '</div>' +
