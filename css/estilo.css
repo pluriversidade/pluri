@@ -390,15 +390,18 @@ a { color: inherit; }
 
 .chips {
   display: flex;
-  gap: .4rem;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: .5rem;
   padding: .7rem 0 .2rem;
   margin: 0;
-  scrollbar-width: none;
   max-width: 100%;
 }
 
-.chips::-webkit-scrollbar { display: none; }
+.chip-grupo {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+}
 
 .chip {
   flex: 0 0 auto;
@@ -418,6 +421,26 @@ a { color: inherit; }
   border-color: var(--tinta);
   color: #F5F1E6;
   font-weight: 600;
+}
+
+.btn-share-cat {
+  font-family: var(--sans);
+  font-size: .9rem;
+  padding: .45rem .65rem;
+  border-radius: 999px;
+  border: 1px solid var(--regua);
+  background: var(--papel);
+  color: var(--tinta);
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color .2s ease;
+}
+
+.btn-share-cat:hover {
+  background: #f0ece1;
 }
 
 .contagem {

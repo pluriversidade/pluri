@@ -560,6 +560,8 @@
   /* -------------------------------------------------------------------------
      SEÇÃO DE GRUPOS
      ------------------------------------------------------------------------- */
+  var selecionarCategoriaExternamente = null;
+
   function montarGrupos() {
     var lista = document.getElementById("lista");
     if (!lista) return 0;
@@ -648,14 +650,19 @@
 
     function montarChips() {
       if (!divChips) return;
-      var html = '<button class="chip" type="button" aria-pressed="' + (!catSel ? 'true' : 'false') + '" data-cat="">Todas as Categorias</button>';
+      var html = '<div class="chip-grupo">' +
+        '<button class="chip" type="button" aria-pressed="' + (!catSel ? 'true' : 'false') + '" data-cat="">Todas as Categorias</button>' +
+        '</div>';
 
       Object.keys(categorias).forEach(function (key) {
         var cat = categorias[key];
         var ativa = catSel === key;
-        html += '<button class="chip" type="button" aria-pressed="' + (ativa ? 'true' : 'false') + '" data-cat="' + key + '">' +
-          escapar(cat.nome) +
-          '</button>';
+        html += '<div class="chip-grupo">' +
+          '<button class="chip" type="button" aria-pressed="' + (ativa ? 'true' : 'false') + '" data-cat="' + key + '">' +
+            escapar(cat.nome) +
+          '</button>' +
+          '<button class="btn-share-cat" type="button" data-share-cat="' + key + '" title="Compartilhar Categoria no WhatsApp">📲</button>' +
+          '</div>';
       });
 
       divChips.innerHTML = html;
@@ -668,7 +675,26 @@
           desenhar();
         });
       });
+
+      Array.prototype.forEach.call(divChips.querySelectorAll("[data-share-cat]"), function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var keyCat = btn.getAttribute("data-share-cat");
+          var catObj = categorias[keyCat];
+          var nomeCat = catObj ? catObj.nome : keyCat;
+          var urlShare = location.origin + location.pathname + "#grupos/" + keyCat;
+          var msg = encodeURIComponent("Ei! Confira os grupos de *" + nomeCat + "* no site da Pluriversidade: " + urlShare);
+          window.open("https://wa.me/?text=" + msg, "_blank");
+        });
+      });
     }
+
+    selecionarCategoriaExternamente = function (keyCat) {
+      catSel = keyCat || "";
+      montarChips();
+      paginas.reiniciar();
+      desenhar();
+    };
 
     if (selEstado) {
       selEstado.addEventListener("change", function () {
@@ -824,18 +850,16 @@
       var rawHash = location.hash.toLowerCase().replace(/\/$/, "");
 
       if (rawHash === "#festas" || rawHash.indexOf("#festas/") === 0) {
-        // Abre na aba festas se especificamente indicado no hash
         alternar(true, false);
 
         if (rawHash.indexOf("#festas/") === 0) {
           var slugDesejado = rawHash.replace("#festas/", "");
           if (slugDesejado) {
-            // Encontra em qual página da lista de festas o item está
             var idx = festasBoas.findIndex(function (f) { return slugify(f.titulo) === slugDesejado; });
             if (idx !== -1 && paginasFestas) {
               var pag = Math.floor(idx / POR_PAGINA) + 1;
               paginasFestas.irParaPagina(pag);
-              montarFestas(); // redesenha para carregar a página correta
+              montarFestas();
             }
 
             setTimeout(function () {
@@ -853,8 +877,13 @@
           }
         }
       } else {
-        // Por padrão abre SEMPRE na aba grupos (URL inicial limpa ou #grupos)
         alternar(false, false);
+        if (rawHash.indexOf("#grupos/") === 0) {
+          var catDesejada = rawHash.replace("#grupos/", "");
+          if (catDesejada && typeof selecionarCategoriaExternamente === "function") {
+            selecionarCategoriaExternamente(catDesejada);
+          }
+        }
       }
     }
 
@@ -884,67 +913,64 @@
       if (tipo === "video") {
         container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay></video>';
       } else {
-        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Flyer em tamanho real">';
+        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Flyer ampliado">';
       }
 
       modal.hidden = false;
     });
 
-    fechar.addEventListener("click", function () {
+    function fecharModal() {
       modal.hidden = true;
       container.innerHTML = "";
-    });
-
-    modal.addEventListener("click", function (e) {
-      if (e.target === modal) {
-        modal.hidden = true;
-        container.innerHTML = "";
-      }
-    });
-  }
-
-  /* -------------------------------------------------------------------------
-     MODAL POPUP COMISSÁRIO PLURI
-     ------------------------------------------------------------------------- */
-  function configurarModalComissario() {
-    var btnInfo = document.getElementById("btn-comissario-info");
-    var modal = document.getElementById("modal-comissario");
-    var fechar = document.getElementById("modal-comissario-fechar");
-    var video = document.getElementById("video-comissario");
-
-    if (!btnInfo || !modal || !fechar) return;
-
-    btnInfo.addEventListener("click", function () {
-      modal.hidden = false;
-      if (video) {
-        video.currentTime = 0;
-        video.play().catch(function (err) {
-          console.log("Autoplay bloqueado pelo navegador:", err);
-        });
-      }
-    });
-
-    function fecharModalComissario() {
-      modal.hidden = true;
-      if (video) {
-        video.pause();
-      }
     }
 
-    fechar.addEventListener("click", fecharModalComissario);
-
+    fechar.addEventListener("click", fecharModal);
     modal.addEventListener("click", function (e) {
-      if (e.target === modal) {
-        fecharModalComissario();
-      }
+      if (e.target === modal) fecharModal();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modal.hidden) fecharModal();
     });
   }
 
   /* -------------------------------------------------------------------------
-     DISPARO INICIAL
+     MODAL DO COMISSÁRIO PLURI
+     ------------------------------------------------------------------------- */
+  function configurarModalComissario() {
+    var modal = document.getElementById("modal-comissario");
+    var btnAbrir = document.getElementById("btn-comissario-info");
+    var btnFechar = document.getElementById("modal-comissario-fechar");
+    var video = document.getElementById("video-comissario");
+
+    if (!modal || !btnAbrir || !btnFechar) return;
+
+    btnAbrir.addEventListener("click", function () {
+      modal.hidden = false;
+      if (video) video.play();
+    });
+
+    function fecharModal() {
+      modal.hidden = true;
+      if (video) video.pause();
+    }
+
+    btnFechar.addEventListener("click", fecharModal);
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) fecharModal();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modal.hidden) fecharModal();
+    });
+  }
+
+  /* -------------------------------------------------------------------------
+     INICIALIZAÇÃO GERAL
      ------------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     aplicarTextos();
+    mostrarProblemas();
     configurarPix();
     montarParceiros();
     montarFestas();
@@ -952,7 +978,5 @@
     configurarAbas();
     configurarModalMidia();
     configurarModalComissario();
-    mostrarProblemas();
   });
-
 })();
