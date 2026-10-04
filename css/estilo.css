@@ -52,11 +52,11 @@ a { color: inherit; }
 
 .capa { position: relative; }
 
-/* Capa mais horizontal e focada em cortar a parte de cima do vídeo */
+/* Capa com altura aumentada em aproximadamente 50% mantendo o formato horizontal */
 .topo-video-container {
   position: relative;
   width: 100%;
-  height: clamp(210px, 33vw, 300px); /* Altura reduzida para ficar bem horizontal */
+  height: clamp(210px, 33vw, 300px);
   overflow: hidden;
   background: #111;
 }
@@ -65,7 +65,7 @@ a { color: inherit; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 75%; /* Prioriza a parte de baixo/meio, cortando mais o topo */
+  object-position: center 75%;
   display: block;
 }
 
@@ -92,15 +92,17 @@ a { color: inherit; }
 }
 
 .marca {
-  margin-top: -74px;
+  /* Ajustado o margin-top proporcionalmente à redução de 35% do emblema */
+  margin-top: -48px;
   position: relative;
   text-align: center;
   z-index: 3;
 }
 
 .emblema {
-  width: 148px;
-  height: 148px;
+  /* Reduzido em 35% (de 148px para 96px) */
+  width: 96px;
+  height: 96px;
   filter: drop-shadow(0 6px 16px rgba(23, 32, 28, .22));
 }
 
