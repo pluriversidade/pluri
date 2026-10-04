@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   ESTILOS GERAIS DA PLURIVERSIDADE
-   ═══════════════════════════════════════════════════════════════════════════ */
-
 :root {
   --bg-principal: #0F172A;
   --bg-card: #1E293B;
@@ -15,13 +11,13 @@
   --fonte-padrao: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   background-color: var(--bg-principal);
   color: var(--texto-principal);
   font-family: var(--fonte-padrao);
@@ -282,6 +278,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
+  padding: 0;
 }
 
 .item {
@@ -363,6 +360,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding: 0;
 }
 
 .festa {
@@ -508,8 +506,7 @@ body {
 
 .card-comissario-fixo__btn-chamativo {
   width: 100%;
-  background: linear-gradient(90deg, #F43F5E, #8B5CF6, #10B981, #F43F5E);
-  background-size: 300% 300%;
+  background: #F43F5E;
   color: #FFFFFF;
   border: none;
   padding: 0.9rem 1.5rem;
@@ -520,24 +517,19 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
-  animation: animarGradienteBtn 4s ease infinite;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 
 .card-comissario-fixo__btn-chamativo:hover {
-  transform: scale(1.02);
+  background: #E11D48;
+  transform: scale(1.01);
   box-shadow: 0 6px 20px rgba(244, 63, 94, 0.6);
-}
-
-@keyframes animarGradienteBtn {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 /* POPUP COMISSÁRIO SPECIFIC */
 .popup-comissario__conteudo {
-  max-width: 650px !important;
+  width: 100%;
+  max-width: 600px !important;
   padding: 1.5rem !important;
 }
 
@@ -581,13 +573,13 @@ body {
 }
 
 .popup-comissario__btn-inscrever {
-  display: inline-block;
+  display: block;
   width: 100%;
   background: #10B981;
   color: #042F2E;
   text-decoration: none;
   padding: 1rem 1.5rem;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 800;
   border-radius: 0.5rem;
   text-transform: uppercase;
@@ -709,11 +701,11 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 1000;
   padding: 1rem;
 }
 

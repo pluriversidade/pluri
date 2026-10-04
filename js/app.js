@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   O FUNCIONAMENTO DA PÁGINA
-   ═══════════════════════════════════════════════════════════════════════════ */
-
 (function () {
   "use strict";
 
@@ -100,7 +96,6 @@
     caixa.hidden = false;
   }
 
-  /* CONFIGURAR BOTÃO DE PIX */
   function configurarPix() {
     var botaoPix = document.getElementById("copiar-pix");
     var pixNumero = document.getElementById("pix-numero");
@@ -129,7 +124,6 @@
     }
   }
 
-  /* CONFIGURAR POPUP COMISSÁRIO */
   function configurarPopupComissario() {
     var btnAbrir = document.getElementById("btn-abrir-popup-comissario");
     var popup = document.getElementById("popup-comissario");
@@ -171,7 +165,6 @@
     });
   }
 
-  /* PAGINAÇÃO */
   function fazerPaginas(nomes, redesenhar) {
     var caixa = document.getElementById(nomes.caixa);
     var voltar = document.getElementById(nomes.voltar);
