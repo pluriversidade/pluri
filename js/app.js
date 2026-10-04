@@ -427,7 +427,7 @@
             '<div class="festa__corpo">' +
               '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
               '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
-              '<p class="festa__descricao">' + escapar(f.desc || "") + '</p>' +
+              '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
               '<div class="festa__links">' +
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
