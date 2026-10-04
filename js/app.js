@@ -489,19 +489,55 @@
       var contaAba = document.getElementById("aba-festas-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
 
-      // Adiciona listener para os botões de compartilhar
+      // Adiciona listener para os botões de compartilhar com geração dinâmica da mensagem
       Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-festa"), function (btn) {
         btn.addEventListener("click", function () {
           var slug = btn.getAttribute("data-slug");
-          var url = location.origin + location.pathname + "#festas/" + slug;
+          var urlCard = location.origin + location.pathname + "#festas/" + slug;
+
+          // Encontra a festa correspondente pelo slug
+          var f = festasBoas.find(function (festa) {
+            return slugify(festa.titulo) === slug;
+          });
+
+          if (!f) return;
+
+          // Formata data e horário
+          var d = partesDaData(f.data);
+          var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : f.data;
+          var horaFormatada = f.hora ? " : " + f.hora : "";
+
+          // Linha condicional para compra de ingresso (somente se houver link válido)
+          var linhaIngresso = pareceLink(f.ingresso)
+            ? "\n\n*Comprar ingresso:* " + f.ingresso
+            : "";
+
+          var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+          var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
+
+          // Linha de comissário / revenda
+          var linhaRevenda = "\n\n*Revenda ingressos da festa:* " + linkComissario;
+
+          // Montagem do texto final
+          var textoCompartilhamento =
+            "Ei, achei uma festa e resolvi compartilhar ela!\n" +
+            urlCard + "\n\n" +
+            "#############\n\n" +
+            "*" + f.titulo.toUpperCase() + "*\n" +
+            "*" + dataFormatada + "*" + horaFormatada +
+            linhaIngresso +
+            linhaRevenda + "\n\n" +
+            "*Pluriversidade.com.br*\n" +
+            "31991579687 - Whatsapp\n\n" +
+            "#############";
 
           if (navigator.clipboard) {
-            navigator.clipboard.writeText(url).then(function () {
+            navigator.clipboard.writeText(textoCompartilhamento).then(function () {
               var originalText = btn.textContent;
               btn.textContent = "✓ Copiado!";
               setTimeout(function () { btn.textContent = originalText; }, 2000);
             }).catch(function (err) {
-              console.error("Erro ao copiar link: ", err);
+              console.error("Erro ao copiar mensagem: ", err);
             });
           }
         });
