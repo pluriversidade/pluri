@@ -130,6 +130,42 @@
     }
   }
 
+  /* POPUP COMISSÁRIO PLURI */
+  function configurarPopupComissario() {
+    var btnAbrir = document.getElementById("btn-abrir-comissario");
+    var modal = document.getElementById("modal-comissario");
+    var btnFechar = document.getElementById("modal-comissario-fechar");
+    var video = document.getElementById("video-comissario");
+
+    if (!btnAbrir || !modal || !btnFechar || !video) return;
+
+    btnAbrir.addEventListener("click", function () {
+      modal.hidden = false;
+      video.muted = false;
+      var promise = video.play();
+      if (promise !== undefined) {
+        promise.catch(function () {
+          video.muted = true;
+          video.play();
+        });
+      }
+    });
+
+    function fecharModal() {
+      modal.hidden = true;
+      video.pause();
+      video.currentTime = 0;
+    }
+
+    btnFechar.addEventListener("click", fecharModal);
+
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        fecharModal();
+      }
+    });
+  }
+
   /* PAGINAÇÃO */
   function fazerPaginas(nomes, redesenhar) {
     var caixa = document.getElementById(nomes.caixa);
@@ -233,543 +269,441 @@
     var unisData = window.UNIVERSIDADES || {};
 
     function simples(texto) {
-      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return String(texto || "").toLowerCase().trim();
     }
 
-    var estadoSel = Object.keys(estadosData).find(function(k) {
-      return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
-    }) || "MG";
+    function atualizarCombosFestas() {
+      var est = selEstadoFesta ? selEstadoFesta.value : "";
+      var cid = selCidadeFesta ? selCidadeFesta.value : "";
 
-    var cidadeSel = Object.keys(cidadesData).find(function(k) {
-      return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
-    }) || "bh";
-
-    var uniSel = Object.keys(unisData).find(function(k) {
-      return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
-    }) || "ufmg";
-    
-    var dataFiltroSel = "";
-
-    var paginas = fazerPaginas({
-      caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
-    }, function () { desenhar(); });
-
-    function renderEstadosFesta() {
-      if (!selEstadoFesta) return;
-      selEstadoFesta.innerHTML = '<option value="">Selecione o Estado</option>' +
-        Object.keys(estadosData).map(function (key) {
-          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
-        }).join("");
-      selEstadoFesta.value = estadoSel;
-    }
-
-    function atualizarSelectCidadesFesta() {
-      if (!selCidadeFesta) return;
-      if (!estadoSel) {
-        selCidadeFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
-        selCidadeFesta.disabled = true;
-        cidadeSel = "";
-        return;
+      if (selCidadeFesta) {
+        if (!est) {
+          selCidadeFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+          selCidadeFesta.disabled = true;
+        } else {
+          var cidsValidas = Object.keys(cidadesData).filter(function (cKey) {
+            return cidadesData[cKey].uf === est;
+          });
+          selCidadeFesta.innerHTML = '<option value="">Todas as Cidades</option>' +
+            cidsValidas.map(function (cKey) {
+              return '<option value="' + cKey + '">' + cidadesData[cKey].nome + '</option>';
+            }).join('');
+          selCidadeFesta.disabled = false;
+        }
       }
 
-      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
-        return cidadesData[key].estado === estadoSel;
-      });
-
-      selCidadeFesta.innerHTML = '<option value="">Todas as Cidades</option>' +
-        cidadesFiltradas.map(function (key) {
-          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
-        }).join("");
-
-      selCidadeFesta.disabled = false;
-      selCidadeFesta.value = cidadeSel;
-    }
-
-    function atualizarSelectUnisFesta() {
-      if (!selUniFesta) return;
-      if (!estadoSel) {
-        selUniFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
-        selUniFesta.disabled = true;
-        uniSel = "";
-        return;
+      if (selUniFesta) {
+        if (!est) {
+          selUniFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+          selUniFesta.disabled = true;
+        } else {
+          var unisValidas = Object.keys(unisData).filter(function (uKey) {
+            var u = unisData[uKey];
+            if (cid) return u.uf === est && u.cidade === cid;
+            return u.uf === est;
+          });
+          selUniFesta.innerHTML = '<option value="">Todas as Universidades</option>' +
+            unisValidas.map(function (uKey) {
+              return '<option value="' + uKey + '">' + unisData[uKey].sigla + ' - ' + unisData[uKey].nome + '</option>';
+            }).join('');
+          selUniFesta.disabled = false;
+        }
       }
-
-      var unisFiltradas = Object.keys(unisData).filter(function (key) {
-        var u = unisData[key];
-        var c = cidadesData[u.cidade];
-        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
-        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
-        return bateEstado && bateCidade;
-      });
-
-      selUniFesta.innerHTML = '<option value="">Todas as Universidades</option>' +
-        unisFiltradas.map(function (key) {
-          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
-        }).join("");
-
-      selUniFesta.disabled = false;
-      selUniFesta.value = uniSel;
     }
 
     if (selEstadoFesta) {
+      selEstadoFesta.innerHTML = '<option value="">Todos os Estados</option>' +
+        Object.keys(estadosData).map(function (eKey) {
+          return '<option value="' + eKey + '">' + estadosData[eKey].nome + ' (' + eKey + ')</option>';
+        }).join('');
+
       selEstadoFesta.addEventListener("change", function () {
-        estadoSel = selEstadoFesta.value;
-        cidadeSel = "";
-        uniSel = "";
-        atualizarSelectCidadesFesta();
-        atualizarSelectUnisFesta();
-        paginas.reiniciar();
+        if (selCidadeFesta) selCidadeFesta.value = "";
+        if (selUniFesta) selUniFesta.value = "";
+        atualizarCombosFestas();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
     if (selCidadeFesta) {
       selCidadeFesta.addEventListener("change", function () {
-        cidadeSel = selCidadeFesta.value;
-        uniSel = "";
-        atualizarSelectUnisFesta();
-        paginas.reiniciar();
+        if (selUniFesta) selUniFesta.value = "";
+        atualizarCombosFestas();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
     if (selUniFesta) {
       selUniFesta.addEventListener("change", function () {
-        uniSel = selUniFesta.value;
-        paginas.reiniciar();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
     if (buscaFesta) {
-      buscaFesta.addEventListener("change", function () {
-        dataFiltroSel = buscaFesta.value;
-        var btnLimpar = document.getElementById("festas-limpar");
-        if (btnLimpar) btnLimpar.hidden = !dataFiltroSel;
-        paginas.reiniciar();
+      buscaFesta.addEventListener("input", function () {
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
-    var btnLimparData = document.getElementById("festas-limpar");
-    if (btnLimparData) {
-      btnLimparData.addEventListener("click", function () {
-        if (buscaFesta) buscaFesta.value = "";
-        dataFiltroSel = "";
-        btnLimparData.hidden = true;
-        paginas.reiniciar();
-        desenhar();
-      });
-    }
-
-    function diasFaltam(iso) {
-      var p = partesDaData(iso);
-      if (!p) return "";
-      var dFesta = new Date(p.ano, p.mes - 1, p.dia);
-      var dHoje = new Date();
-      dHoje.setHours(0, 0, 0, 0);
-      dFesta.setHours(0, 0, 0, 0);
-      var diff = Math.round((dFesta - dHoje) / (1000 * 60 * 60 * 24));
-      if (diff < 0) return "passou";
-      if (diff === 0) return "hoje";
-      if (diff === 1) return "amanhã";
-      return "faltam " + diff + " dias";
-    }
+    var paginacao = fazerPaginas({
+      caixa: "festas-paginas",
+      voltar: "festas-voltar",
+      avancar: "festas-avancar",
+      onde: "festas-onde"
+    }, function () { desenhar(); });
 
     function desenhar() {
-      var visiveis = festasBoas.filter(function (f) {
-        var uniDaFesta = unisData[f.uni];
-        var cidDaFesta = uniDaFesta ? cidadesData[uniDaFesta.cidade] : null;
+      var est = selEstadoFesta ? selEstadoFesta.value : "";
+      var cid = selCidadeFesta ? selCidadeFesta.value : "";
+      var uni = selUniFesta ? selUniFesta.value : "";
+      var dia = buscaFesta ? buscaFesta.value : "";
 
-        var bateEstado = !estadoSel || (cidDaFesta && cidDaFesta.estado === estadoSel);
-        var bateCidade = !cidadeSel || (uniDaFesta && uniDaFesta.cidade === cidadeSel);
-        var bateUni = !uniSel || f.uni === uniSel || simples(f.uni) === simples(uniSel);
-        var bateData = !dataFiltroSel || f.data === dataFiltroSel;
-
-        return bateEstado && bateCidade && bateUni && bateData;
+      var filtradas = festasBoas.filter(function (f) {
+        var uInfo = unisData[f.uni] || {};
+        if (est && uInfo.uf !== est) return false;
+        if (cid && uInfo.cidade !== cid) return false;
+        if (uni && f.uni !== uni) return false;
+        if (dia && f.data !== dia) return false;
+        return true;
       });
 
-      lista.innerHTML = paginas.recortar(visiveis).map(function (f) {
-        var d = partesDaData(f.data);
-        var u = unis[f.uni] || { nome: f.uni || "" };
-        var corFesta = f.cor || "var(--terracota)";
-        var faltam = diasFaltam(f.data);
+      var exibidas = paginacao.recortar(filtradas);
 
-        var temMidia = Boolean(f.midia);
-        var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
-        
-        var miniHtml = "";
-        if (temMidia) {
-          if (ehVideo) {
-            miniHtml = 
-              '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
-                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
-                '<span class="festa__play-icon">▶</span>' +
-              '</div>';
-          } else {
-            miniHtml = 
-              '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="imagem">' +
-                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer da festa" loading="lazy">' +
-              '</div>';
-          }
+      if (exibidas.length === 0) {
+        lista.innerHTML = "";
+        var vazio = document.getElementById("festas-vazio");
+        if (vazio) {
+          vazio.textContent = "Nenhuma festa encontrada para esse filtro.";
+          vazio.hidden = false;
+        }
+        return;
+      }
+
+      var vazioEl = document.getElementById("festas-vazio");
+      if (vazioEl) vazioEl.hidden = true;
+
+      var DIAS_SEMANA = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
+
+      lista.innerHTML = exibidas.map(function (f) {
+        var p = partesDaData(f.data);
+        var uInfo = unisData[f.uni] || {};
+        var nomeUni = uInfo.sigla || f.uni;
+
+        var mMidia = "";
+        if (f.flyer || f.video) {
+          var eVideo = !!f.video;
+          var srcMidia = f.video || f.flyer;
+
+          mMidia = '<div class="festa__mini-container" data-midia-src="' + srcMidia + '" data-midia-tipo="' + (eVideo ? 'video' : 'imagem') + '">' +
+            (eVideo ?
+              '<video class="festa__mini-media" src="' + srcMidia + '#t=0.1" preload="metadata" muted></video><div class="festa__play-icon">▶</div>' :
+              '<img class="festa__mini-media" src="' + srcMidia + '" alt="Flyer" loading="lazy">'
+            ) +
+          '</div>';
         }
 
-        return (
-          '<li class="festa" style="--cor: ' + corFesta + '">' +
-            '<div class="festa__data">' +
-              '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
-              '<span class="festa__dia">' + dois(d.dia) + '</span>' +
-              (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
+        return '<li class="festa">' +
+          '<div class="festa__data">' +
+            '<span class="festa__semana">' + DIAS_SEMANA[p.semana] + '</span>' +
+            '<span class="festa__dia">' + dois(p.dia) + '</span>' +
+            '<span class="festa__mes">' + MESES[p.mes - 1] + '</span>' +
+          '</div>' +
+          '<div class="festa__corpo">' +
+            '<p class="festa__uni">' + escapar(nomeUni) + (f.hora ? ' • <span class="festa__hora">' + f.hora + '</span>' : '') + '</p>' +
+            '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+            (f.desc ? '<p class="festa__descricao">' + escapar(f.desc) + '</p>' : '') +
+            '<div class="festa__links">' +
+              (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
+              (f.instagram ? '<a class="festa__link festa__link--perfil" href="' + f.instagram + '" target="_blank" rel="noopener">Instagram</a>' : '') +
             '</div>' +
-            '<div class="festa__corpo">' +
-              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
-              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
-              (f.descricao ? '<p class="festa__descricao">' + escapar(f.descricao) + '</p>' : '') +
-              '<div class="festa__links">' +
-                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">COMPRAR INGRESSO</a>' : '') +
-                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">GRUPO DE COMISSÁRIOS</a>' : '') +
-              '</div>' +
-            '</div>' +
-            miniHtml +
-          '</li>'
-        );
+          '</div>' +
+          mMidia +
+        '</li>';
       }).join("");
 
-      var elVazio = document.getElementById("festas-vazio");
-      if (elVazio) {
-        elVazio.textContent = "Nenhuma festa encontrada para os filtros selecionados.";
-        elVazio.hidden = visiveis.length > 0;
-      }
+      Array.prototype.forEach.call(lista.querySelectorAll(".festa__mini-container"), function (el) {
+        el.addEventListener("click", function () {
+          var src = el.getAttribute("data-midia-src");
+          var tipo = el.getAttribute("data-midia-tipo");
+          abrirModalMidia(src, tipo);
+        });
+      });
     }
 
-    renderEstadosFesta();
-    atualizarSelectCidadesFesta();
-    atualizarSelectUnisFesta();
     desenhar();
-
-    var modal = document.getElementById("modal-midia");
-    var containerModalMidia = document.getElementById("modal-container-midia");
-    var botaoFecharModal = document.getElementById("modal-fechar");
-
-    if (lista && modal && containerModalMidia) {
-      lista.addEventListener("click", function (e) {
-        var miniContainer = e.target.closest(".festa__mini-container");
-        if (!miniContainer) return;
-
-        var arquivoMidia = miniContainer.getAttribute("data-midia");
-        var tipoMidia = miniContainer.getAttribute("data-tipo");
-
-        if (tipoMidia === "video") {
-          containerModalMidia.innerHTML = '<video class="modal-midia__midia" src="' + arquivoMidia + '" controls autoplay></video>';
-        } else {
-          containerModalMidia.innerHTML = '<img class="modal-midia__midia" src="' + arquivoMidia + '" alt="Flyer ampliado">';
-        }
-
-        modal.hidden = false;
-      });
-
-      function fecharModal() {
-        modal.hidden = true;
-        containerModalMidia.innerHTML = "";
-      }
-
-      if (botaoFecharModal) {
-        botaoFecharModal.addEventListener("click", fecharModal);
-      }
-
-      modal.addEventListener("click", function (e) {
-        if (e.target === modal) {
-          fecharModal();
-        }
-      });
-    }
-
     return festasBoas.length;
   }
-  
+
+  /* MODAL DE MÍDIA */
+  function abrirModalMidia(src, tipo) {
+    var modal = document.getElementById("modal-midia");
+    var container = document.getElementById("modal-container-midia");
+    if (!modal || !container) return;
+
+    if (tipo === "video") {
+      container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay playsinline></video>';
+    } else {
+      container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Mídia da festa em tela cheia">';
+    }
+
+    modal.hidden = false;
+  }
+
+  function configurarModal() {
+    var modal = document.getElementById("modal-midia");
+    var fechar = document.getElementById("modal-fechar");
+    var container = document.getElementById("modal-container-midia");
+
+    if (!modal || !fechar) return;
+
+    function fecharModal() {
+      modal.hidden = true;
+      if (container) container.innerHTML = "";
+    }
+
+    fechar.addEventListener("click", fecharModal);
+
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) fecharModal();
+    });
+  }
+
   function montarGrupos() {
     var lista = document.getElementById("lista");
-    var vazio = document.getElementById("vazio");
-    var contagem = document.getElementById("contagem");
-    var busca = document.getElementById("busca");
-    var chips = document.getElementById("chips");
+    if (!lista) return 0;
 
     var selEstado = document.getElementById("select-estado");
     var selCidade = document.getElementById("select-cidade");
-    var selUni = document.getElementById("select-uni");
-
-    if (!lista) return 0;
+    var selUni    = document.getElementById("select-uni");
+    var busca     = document.getElementById("busca");
+    var contagem  = document.getElementById("contagem");
+    var chips     = document.getElementById("chips");
 
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
-    var unisData = window.UNIVERSIDADES_GRUPOS || {};
+    var unisData = window.UNIVERSIDADES || {};
 
-    function simples(texto) {
-      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
+    var catAtiva = "";
 
-    var estadoSel = Object.keys(estadosData).find(function(k) {
-      return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
-    }) || "MG";
+    function atualizarCombosGrupos() {
+      var est = selEstado ? selEstado.value : "";
+      var cid = selCidade ? selCidade.value : "";
 
-    var cidadeSel = Object.keys(cidadesData).find(function(k) {
-      return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
-    }) || "bh";
-
-    var uniSel = Object.keys(unisData).find(function(k) {
-      return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
-    }) || "ufmg";
-
-    var filtroCat = "todos";
-    var termo = "";
-
-    var paginas = fazerPaginas({
-      caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde"
-    }, function () { desenhar(); });
-
-    function comPonto(n) { return n.toLocaleString("pt-BR"); }
-
-    function renderEstados() {
-      if (!selEstado) return;
-      selEstado.innerHTML = '<option value="">Todos os Estados</option>' +
-        Object.keys(estadosData).map(function (key) {
-          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
-        }).join("");
-      selEstado.value = estadoSel;
-    }
-
-    function atualizarSelectCidades() {
-      if (!selCidade) return;
-      if (!estadoSel) {
-        selCidade.innerHTML = '<option value="">Todas as Cidades</option>';
-        selCidade.disabled = false;
-        cidadeSel = "";
-        return;
+      if (selCidade) {
+        if (!est) {
+          selCidade.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+          selCidade.disabled = true;
+        } else {
+          var cidsValidas = Object.keys(cidadesData).filter(function (cKey) {
+            return cidadesData[cKey].uf === est;
+          });
+          selCidade.innerHTML = '<option value="">Todas as Cidades</option>' +
+            cidsValidas.map(function (cKey) {
+              return '<option value="' + cKey + '">' + cidadesData[cKey].nome + '</option>';
+            }).join('');
+          selCidade.disabled = false;
+        }
       }
 
-      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
-        return cidadesData[key].estado === estadoSel;
-      });
-
-      selCidade.innerHTML = '<option value="">Todas as Cidades</option>' +
-        cidadesFiltradas.map(function (key) {
-          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
-        }).join("");
-
-      selCidade.disabled = false;
-      selCidade.value = cidadeSel;
-    }
-
-    function atualizarSelectUnis() {
-      if (!selUni) return;
-      if (!estadoSel && !cidadeSel) {
-        selUni.innerHTML = '<option value="">Todas as Universidades</option>';
-        selUni.disabled = false;
-        uniSel = "";
-        return;
+      if (selUni) {
+        if (!est) {
+          selUni.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+          selUni.disabled = true;
+        } else {
+          var unisValidas = Object.keys(unisData).filter(function (uKey) {
+            var u = unisData[uKey];
+            if (cid) return u.uf === est && u.cidade === cid;
+            return u.uf === est;
+          });
+          selUni.innerHTML = '<option value="">Todas as Universidades</option>' +
+            unisValidas.map(function (uKey) {
+              return '<option value="' + uKey + '">' + unisData[uKey].sigla + ' - ' + unisData[uKey].nome + '</option>';
+            }).join('');
+          selUni.disabled = false;
+        }
       }
-
-      var unisFiltradas = Object.keys(unisData).filter(function (key) {
-        var u = unisData[key];
-        var c = cidadesData[u.cidade];
-        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
-        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
-        return bateEstado && bateCidade;
-      });
-
-      selUni.innerHTML = '<option value="">Todas as Universidades</option>' +
-        unisFiltradas.map(function (key) {
-          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
-        }).join("");
-
-      selUni.disabled = false;
-      selUni.value = uniSel;
     }
 
     if (selEstado) {
+      selEstado.innerHTML = '<option value="">Todos os Estados</option>' +
+        Object.keys(estadosData).map(function (eKey) {
+          return '<option value="' + eKey + '">' + estadosData[eKey].nome + ' (' + eKey + ')</option>';
+        }).join('');
+
       selEstado.addEventListener("change", function () {
-        estadoSel = selEstado.value;
-        cidadeSel = "";
-        uniSel = "";
-        atualizarSelectCidades();
-        atualizarSelectUnis();
-        paginas.reiniciar();
+        if (selCidade) selCidade.value = "";
+        if (selUni) selUni.value = "";
+        atualizarCombosGrupos();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
     if (selCidade) {
       selCidade.addEventListener("change", function () {
-        cidadeSel = selCidade.value;
-        uniSel = "";
-        atualizarSelectUnis();
-        paginas.reiniciar();
+        if (selUni) selUni.value = "";
+        atualizarCombosGrupos();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
     if (selUni) {
       selUni.addEventListener("change", function () {
-        uniSel = selUni.value;
-        paginas.reiniciar();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
-    function cartao(g) {
-      var c = categorias[g.cat] || { nome: "Geral", cor: "#2E7D53" };
-      var u = unisData[g.uni] || { nome: g.uni || "" };
-      var membros = g.membros ? comPonto(g.membros) + " membros" : "";
-
-      var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
-      var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
-
-      var textoEtiqueta = g.etiqueta || ((g.admin || g.administrado || g.pluri) ? "Pluriversidade" : "");
-      var seloAdmin = textoEtiqueta 
-        ? '<span class="grupo__etiqueta-admin">' + escapar(textoEtiqueta) + '</span>' 
-        : '';
-
-      var textoZap = 'Oi, estou enviando esta mensagem para avisar que o link do grupo "' + g.nome + '" está quebrado, você pode me mandar o link aqui?';
-      var linkReportar = 'https://wa.me/5531991579687?text=' + encodeURIComponent(textoZap);
-
-      return (
-        '<li class="item" style="--cor:' + c.cor + '">' +
-          '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
-            '<div class="grupo__topo-linha">' +
-              '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
-              seloAdmin +
-            '</div>' +
-            desc +
-            '<span class="grupo__meta">' + onde + "</span>" +
-          "</a>" +
-          '<a class="reportar" href="' + linkReportar + '" target="_blank" rel="noopener" title="Reportar link quebrado">' +
-            '🔗' +
-          '</a>' +
-        "</li>"
-      );
-    }
-    
-    function desenhar() {
-      var visiveis = gruposBons.filter(function (g) {
-        var uniDoGrupo = unisData[g.uni];
-        var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
-
-        var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
-        var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
-        
-        if (!uniDoGrupo && !uniSel && !cidadeSel && !estadoSel) {
-          bateEstado = true;
-          bateCidade = true;
-          bateUni = true;
-        }
-
-        var bateCat = filtroCat === "todos" || g.cat === filtroCat;
-        var bateTermo = termo === "" ||
-          simples(g.nome).indexOf(termo) !== -1 ||
-          simples(g.desc || "").indexOf(termo) !== -1;
-
-        return bateEstado && bateCidade && bateUni && bateCat && bateTermo;
-      });
-
-      lista.innerHTML = paginas.recortar(visiveis).map(cartao).join("");
-      if (vazio) vazio.hidden = visiveis.length > 0;
-
-      var pessoas = visiveis.reduce(function (soma, g) {
-        return soma + (typeof g.membros === "number" ? g.membros : 0);
-      }, 0);
-
-      if (contagem) {
-        contagem.textContent = visiveis.length === 0
-          ? ""
-          : visiveis.length + " grupos · " + comPonto(pessoas) + " pessoas";
-      }
-    }
-
-    var usadas = {};
-    gruposBons.forEach(function (g) { usadas[g.cat] = true; });
-
-    var botoes = [{ id: "todos", nome: "Todas Categorias" }].concat(
-      Object.keys(categorias)
-        .filter(function (id) { return usadas[id]; })
-        .map(function (id) { return { id: id, nome: categorias[id].nome }; })
-    );
-
     if (chips) {
-      chips.innerHTML = botoes.map(function (b, i) {
-        return '<button type="button" class="chip" data-cat="' + b.id + '"' +
-               ' aria-pressed="' + (i === 0) + '">' + b.nome + "</button>";
-      }).join("");
+      var htmlChips = '<button class="chip" type="button" data-cat="" aria-pressed="true">Todos</button>';
+      Object.keys(categorias).forEach(function (cKey) {
+        htmlChips += '<button class="chip" type="button" data-cat="' + cKey + '" aria-pressed="false">' + categorias[cKey].nome + '</button>';
+      });
+      chips.innerHTML = htmlChips;
 
-      Array.prototype.forEach.call(chips.children, function (b) {
-        b.addEventListener("click", function () {
-          filtroCat = b.getAttribute("data-cat");
-          Array.prototype.forEach.call(chips.children, function (o) {
-            o.setAttribute("aria-pressed", o === b ? "true" : "false");
-          });
-          paginas.reiniciar();
-          desenhar();
+      chips.addEventListener("click", function (e) {
+        var btn = e.target.closest(".chip");
+        if (!btn) return;
+        catAtiva = btn.getAttribute("data-cat") || "";
+
+        Array.prototype.forEach.call(chips.querySelectorAll(".chip"), function (c) {
+          c.setAttribute("aria-pressed", c === btn ? "true" : "false");
         });
+
+        paginacao.reiniciar();
+        desenhar();
       });
     }
 
     if (busca) {
       busca.addEventListener("input", function () {
-        termo = simples(busca.value.trim());
-        paginas.reiniciar();
+        paginacao.reiniciar();
         desenhar();
       });
     }
 
-    renderEstados();
-    atualizarSelectCidades();
-    atualizarSelectUnis();
-    desenhar();
+    var paginacao = fazerPaginas({
+      caixa: "grupos-paginas",
+      voltar: "grupos-voltar",
+      avancar: "grupos-avancar",
+      onde: "grupos-onde"
+    }, function () { desenhar(); });
 
-    return gruposBons.length;
-  }
+    function desenhar() {
+      var est = selEstado ? selEstado.value : "";
+      var cid = selCidade ? selCidade.value : "";
+      var uni = selUni ? selUni.value : "";
+      var termo = busca ? busca.value.toLowerCase().trim() : "";
 
-  function montarAbas() {
-    var botaoGrupos = document.getElementById("aba-grupos");
-    var botaoFestas = document.getElementById("aba-festas");
-    var secaoGrupos = document.getElementById("secao-grupos");
-    var secaoFestas = document.getElementById("secao-festas");
+      var filtrados = gruposBons.filter(function (g) {
+        var uInfo = unisData[g.uni] || {};
+        if (est && uInfo.uf !== est) return false;
+        if (cid && uInfo.cidade !== cid) return false;
+        if (uni && g.uni !== uni) return false;
+        if (catAtiva && g.cat !== catAtiva) return false;
+        if (termo && g.nome.toLowerCase().indexOf(termo) === -1 && (g.desc || "").toLowerCase().indexOf(termo) === -1) return false;
+        return true;
+      });
 
-    if (!botaoGrupos || !botaoFestas) return;
+      if (contagem) {
+        contagem.textContent = filtrados.length + " grupos encontrados";
+      }
 
-    function mostrar(id) {
-      var ehGrupos = id === "grupos";
-      botaoGrupos.setAttribute("aria-selected", ehGrupos ? "true" : "false");
-      botaoFestas.setAttribute("aria-selected", !ehGrupos ? "true" : "false");
-      if (secaoGrupos) secaoGrupos.hidden = !ehGrupos;
-      if (secaoFestas) secaoFestas.hidden = ehGrupos;
+      var exibidos = paginacao.recortar(filtrados);
+
+      if (exibidos.length === 0) {
+        lista.innerHTML = "";
+        var vazio = document.getElementById("vazio");
+        if (vazio) vazio.hidden = false;
+        return;
+      }
+
+      var vazioEl = document.getElementById("vazio");
+      if (vazioEl) vazioEl.hidden = true;
+
+      lista.innerHTML = exibidos.map(function (g) {
+        var catInfo = categorias[g.cat] || {};
+        var cor = catInfo.cor || "var(--verde)";
+
+        return '<li class="item" style="--cor: ' + cor + ';">' +
+          '<a class="grupo" href="' + g.url + '" target="_blank" rel="noopener">' +
+            '<div class="grupo__topo-linha">' +
+              '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
+            '</div>' +
+            (g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + '</span>' : '') +
+            '<div class="grupo__meta">' +
+              '<span class="ponto"></span>' +
+              '<span>' + (catInfo.nome || g.cat) + '</span>' +
+              (g.membros ? ' • <span>' + g.membros + ' membros</span>' : '') +
+            '</div>' +
+          '</a>' +
+        '</li>';
+      }).join("");
     }
 
-    botaoGrupos.addEventListener("click", function () { mostrar("grupos"); });
-    botaoFestas.addEventListener("click", function () { mostrar("festas"); });
-  }
-
-  function montarPainel() {
+    /* ATUALIZAR PAINEL */
     var elGrupos = document.getElementById("painel-grupos");
     var elMembros = document.getElementById("painel-membros");
     var elMedia = document.getElementById("painel-media");
-    if (!elGrupos) return;
 
-    var comNumero = gruposBons.filter(function (g) { return typeof g.membros === "number" && g.membros > 0; });
-    var total = comNumero.reduce(function (s, g) { return s + g.membros; }, 0);
-    var media = comNumero.length ? Math.round(total / comNumero.length) : 0;
+    var totalMembros = 0;
+    gruposBons.forEach(function (g) {
+      if (g.membros) totalMembros += Number(g.membros) || 0;
+    });
 
-    elGrupos.textContent = gruposBons.length.toLocaleString("pt-BR");
-    elMembros.textContent = total.toLocaleString("pt-BR");
-    elMedia.textContent = media.toLocaleString("pt-BR");
+    if (elGrupos) elGrupos.textContent = gruposBons.length;
+    if (elMembros) elMembros.textContent = totalMembros.toLocaleString("pt-BR");
+    if (elMedia && gruposBons.length > 0) {
+      elMedia.textContent = Math.round(totalMembros / gruposBons.length).toLocaleString("pt-BR");
+    }
+
+    desenhar();
+    return gruposBons.length;
   }
 
-  aplicarTextos();
-  configurarPix();
-  montarParceiros();
-  montarFestas();
-  montarGrupos();
-  montarAbas();
-  montarPainel();
-  mostrarProblemas();
+  function configurarAbas(totalGrupos, totalFestas) {
+    var abaGrupos = document.getElementById("aba-grupos");
+    var abaFestas = document.getElementById("aba-festas");
+    var secGrupos = document.getElementById("secao-grupos");
+    var secFestas = document.getElementById("secao-festas");
+    var contaGrupos = document.getElementById("aba-grupos-conta");
+    var contaFestas = document.getElementById("aba-festas-conta");
+
+    if (contaGrupos) contaGrupos.textContent = totalGrupos;
+    if (contaFestas) contaFestas.textContent = totalFestas;
+
+    if (!abaGrupos || !abaFestas || !secGrupos || !secFestas) return;
+
+    function alternar(mostrarFestas) {
+      abaGrupos.setAttribute("aria-selected", !mostrarFestas);
+      abaFestas.setAttribute("aria-selected", mostrarFestas);
+      abaGrupos.tabIndex = mostrarFestas ? -1 : 0;
+      abaFestas.tabIndex = mostrarFestas ? 0 : -1;
+
+      secGrupos.hidden = mostrarFestas;
+      secFestas.hidden = !mostrarFestas;
+    }
+
+    abaGrupos.addEventListener("click", function () { alternar(false); });
+    abaFestas.addEventListener("click", function () { alternar(true); });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    mostrarProblemas();
+    aplicarTextos();
+    configurarPix();
+    configurarPopupComissario();
+    montarParceiros();
+    configurarModal();
+
+    var numGrupos = montarGrupos();
+    var numFestas = montarFestas();
+
+    configurarAbas(numGrupos, numFestas);
+  });
 })();

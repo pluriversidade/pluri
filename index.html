@@ -204,6 +204,17 @@
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
 
+    <!-- Card Fixo Comissário -->
+    <div class="card-comissario">
+      <h3 class="card-comissario__titulo">QUER SER UM COMISSÁRIO PLURI?</h3>
+      <p class="card-comissario__desc">
+        Torne-se um comissário oficial de vendas de ingressos para as melhores festas universitárias. Garanta seu ingresso sem pagar nada por ele e ainda fature uma renda extra divulgando para a galera!
+      </p>
+      <button type="button" class="btn-comissario-animado" id="btn-abrir-comissario">
+        QUERO SABER MAIS INFORMAÇÕES...
+      </button>
+    </div>
+
     <div class="localizacao">
       <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
         <option value="">Selecione o Estado</option>
@@ -345,6 +356,28 @@
   <div class="modal-midia__conteudo">
     <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar">&times;</button>
     <div id="modal-container-midia"></div>
+  </div>
+</div>
+
+<!-- Modal Comissário Pluri -->
+<div class="modal-comissario" id="modal-comissario" hidden>
+  <div class="modal-comissario__conteudo">
+    <button class="modal-comissario__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
+    <video class="modal-comissario__video" id="video-comissario" controls playsinline muted src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4"></video>
+    <div class="modal-comissario__texto">
+      <p>
+        <strong>Por que é essencial ter vários comissários nas festas universitárias?</strong>
+      </p>
+      <p>
+        Organizar um evento universitário exige um investimento considerável: contratação de DJs e atrações principais, aluguel do espaço perfeito, estrutura de som, iluminação, segurança e uma divulgação pesada no marketing.
+      </p>
+      <p>
+        A venda direta realizada pelos comissários antecipa o caixa necessário para que a comissão organizadora consiga honrar com todos esses custos e viabilizar o evento com a melhor estrutura possível.
+      </p>
+      <p>
+        A <strong>Pluriversidade</strong> atua como a ponte ideal entre a comissão organizadora do evento e a rede de comissários. Nós conectamos quem faz a festa acontecer a quem espalha a energia e vende os ingressos!
+      </p>
+    </div>
   </div>
 </div>
 
