@@ -201,6 +201,14 @@
 
   <!-- festas -->
   <section class="secao" id="secao-festas" role="tabpanel" aria-labelledby="aba-festas" tabindex="-1" hidden>
+    
+    <!-- CARD FIXO COMISSÁRIO PLURI -->
+    <div class="card-comissario">
+      <h3 class="card-comissario__titulo">QUER SER UM COMISSÁRIO PLURI?</h3>
+      <p class="card-comissario__desc">Clique no botão abaixo e saiba como se tornar um comissário de vendas de ingressos das festas universitárias! Você pode garantir seu ingresso na faixa e não pagar nada para ir nas festas em que estiver vendendo.</p>
+      <button type="button" class="card-comissario__btn" id="btn-comissario-info">QUERO SABER MAIS INFORMAÇÕES..</button>
+    </div>
+
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
 
@@ -345,6 +353,20 @@
   <div class="modal-midia__conteudo">
     <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar">&times;</button>
     <div id="modal-container-midia"></div>
+  </div>
+</div>
+
+<!-- Modal Popup Comissário Pluri -->
+<div class="modal-comissario" id="modal-comissario" hidden>
+  <div class="modal-comissario__conteudo">
+    <button class="modal-comissario__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
+    <div class="modal-comissario__corpo">
+      <video class="modal-comissario__video" id="video-comissario" src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" controls autoplay playsinline></video>
+      <p class="modal-comissario__texto">
+        Ter vários comissários é essencial para o sucesso de uma festa universitária! Os comissários arrecadam a grana inicial necessária para viabilizar todo o evento, permitindo que a comissão organize a estrutura, contrate DJs de peso, alugue o espaço e invista pesado no marketing. Nós da Pluriversidade somos a ponte oficial entre os organizadores (comissão) e os vendedores de ingressos (comissários).
+      </p>
+      <a class="modal-comissario__btn-form" href="https://forms.google.com" target="_blank" rel="noopener">PREENCHER FORMULÁRIO</a>
+    </div>
   </div>
 </div>
 

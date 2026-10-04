@@ -409,25 +409,29 @@
           } else {
             miniHtml = 
               '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="imagem">' +
-                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer da festa" loading="lazy">' +
+                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer ' + escapar(f.titulo) + '" loading="lazy">' +
               '</div>';
           }
         }
 
+        var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+
         return (
-          '<li class="festa" style="--cor: ' + corFesta + '">' +
+          '<li class="festa" style="--cor:' + corFesta + '">' +
             '<div class="festa__data">' +
-              '<span class="festa__semana">' + MESES[d.mes - 1].toUpperCase() + '</span>' +
+              '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
               '<span class="festa__dia">' + dois(d.dia) + '</span>' +
+              '<span class="festa__mes">' + MESES[d.mes - 1] + '</span>' +
               (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
             '</div>' +
             '<div class="festa__corpo">' +
-              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' <span class="festa__hora">· ' + escapar(f.hora) + '</span>' : '') + '</p>' +
+              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
               '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
-              (f.descricao ? '<p class="festa__descricao">' + escapar(f.descricao) + '</p>' : '') +
+              '<p class="festa__descricao">' + escapar(f.desc || "") + '</p>' +
               '<div class="festa__links">' +
-                (f.ingresso ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">COMPRAR INGRESSO</a>' : '') +
-                (f.grupo ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">GRUPO DE COMISSÁRIOS</a>' : '') +
+                (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingressos</a>' : '') +
+                (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
+                (pareceLink(f.grupo) ? '<a class="festa__link festa__link--grupo" href="' + f.grupo + '" target="_blank" rel="noopener">Grupo WhatsApp</a>' : '') +
               '</div>' +
             '</div>' +
             miniHtml +
@@ -435,11 +439,11 @@
         );
       }).join("");
 
-      var elVazio = document.getElementById("festas-vazio");
-      if (elVazio) {
-        elVazio.textContent = "Nenhuma festa encontrada para os filtros selecionados.";
-        elVazio.hidden = visiveis.length > 0;
-      }
+      var vazio = document.getElementById("festas-vazio");
+      if (vazio) vazio.hidden = visiveis.length > 0;
+
+      var contaAba = document.getElementById("aba-festas-conta");
+      if (contaAba) contaAba.textContent = visiveis.length;
     }
 
     renderEstadosFesta();
@@ -447,91 +451,41 @@
     atualizarSelectUnisFesta();
     desenhar();
 
-    var modal = document.getElementById("modal-midia");
-    var containerModalMidia = document.getElementById("modal-container-midia");
-    var botaoFecharModal = document.getElementById("modal-fechar");
-
-    if (lista && modal && containerModalMidia) {
-      lista.addEventListener("click", function (e) {
-        var miniContainer = e.target.closest(".festa__mini-container");
-        if (!miniContainer) return;
-
-        var arquivoMidia = miniContainer.getAttribute("data-midia");
-        var tipoMidia = miniContainer.getAttribute("data-tipo");
-
-        if (tipoMidia === "video") {
-          containerModalMidia.innerHTML = '<video class="modal-midia__midia" src="' + arquivoMidia + '" controls autoplay></video>';
-        } else {
-          containerModalMidia.innerHTML = '<img class="modal-midia__midia" src="' + arquivoMidia + '" alt="Flyer ampliado">';
-        }
-
-        modal.hidden = false;
-      });
-
-      function fecharModal() {
-        modal.hidden = true;
-        containerModalMidia.innerHTML = "";
-      }
-
-      if (botaoFecharModal) {
-        botaoFecharModal.addEventListener("click", fecharModal);
-      }
-
-      modal.addEventListener("click", function (e) {
-        if (e.target === modal) {
-          fecharModal();
-        }
-      });
-    }
-
     return festasBoas.length;
   }
-  
+
   function montarGrupos() {
     var lista = document.getElementById("lista");
-    var vazio = document.getElementById("vazio");
-    var contagem = document.getElementById("contagem");
-    var busca = document.getElementById("busca");
-    var chips = document.getElementById("chips");
+    if (!lista) return 0;
 
     var selEstado = document.getElementById("select-estado");
     var selCidade = document.getElementById("select-cidade");
-    var selUni = document.getElementById("select-uni");
+    var selUni    = document.getElementById("select-uni");
+    var busca     = document.getElementById("busca");
+    var contagem  = document.getElementById("contagem");
+    var divChips  = document.getElementById("chips");
 
-    if (!lista) return 0;
+    var estadoSel = "MG";
+    var cidadeSel = "bh";
+    var uniSel    = "ufmg";
+    var catSel    = "";
+    var buscaTexto= "";
 
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
-    var unisData = window.UNIVERSIDADES_GRUPOS || {};
-
-    function simples(texto) {
-      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-
-    var estadoSel = Object.keys(estadosData).find(function(k) {
-      return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
-    }) || "MG";
-
-    var cidadeSel = Object.keys(cidadesData).find(function(k) {
-      return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
-    }) || "bh";
-
-    var uniSel = Object.keys(unisData).find(function(k) {
-      return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
-    }) || "ufmg";
-
-    var filtroCat = "todos";
-    var termo = "";
+    var unisData = window.UNIVERSIDADES || {};
 
     var paginas = fazerPaginas({
       caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde"
     }, function () { desenhar(); });
 
-    function comPonto(n) { return n.toLocaleString("pt-BR"); }
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
 
     function renderEstados() {
       if (!selEstado) return;
-      selEstado.innerHTML = '<option value="">Todos os Estados</option>' +
+      selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
         Object.keys(estadosData).map(function (key) {
           return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
         }).join("");
@@ -541,8 +495,8 @@
     function atualizarSelectCidades() {
       if (!selCidade) return;
       if (!estadoSel) {
-        selCidade.innerHTML = '<option value="">Todas as Cidades</option>';
-        selCidade.disabled = false;
+        selCidade.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selCidade.disabled = true;
         cidadeSel = "";
         return;
       }
@@ -562,9 +516,9 @@
 
     function atualizarSelectUnis() {
       if (!selUni) return;
-      if (!estadoSel && !cidadeSel) {
-        selUni.innerHTML = '<option value="">Todas as Universidades</option>';
-        selUni.disabled = false;
+      if (!estadoSel) {
+        selUni.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selUni.disabled = true;
         uniSel = "";
         return;
       }
@@ -584,6 +538,30 @@
 
       selUni.disabled = false;
       selUni.value = uniSel;
+    }
+
+    function montarChips() {
+      if (!divChips) return;
+      var html = '<button class="chip" type="button" aria-pressed="' + (!catSel ? 'true' : 'false') + '" data-cat="">Todas as Categorias</button>';
+
+      Object.keys(categorias).forEach(function (key) {
+        var cat = categorias[key];
+        var ativa = catSel === key;
+        html += '<button class="chip" type="button" aria-pressed="' + (ativa ? 'true' : 'false') + '" data-cat="' + key + '">' +
+          escapar(cat.nome) +
+          '</button>';
+      });
+
+      divChips.innerHTML = html;
+
+      Array.prototype.forEach.call(divChips.querySelectorAll(".chip"), function (btn) {
+        btn.addEventListener("click", function () {
+          catSel = btn.getAttribute("data-cat") || "";
+          montarChips();
+          paginas.reiniciar();
+          desenhar();
+        });
+      });
     }
 
     if (selEstado) {
@@ -616,39 +594,14 @@
       });
     }
 
-    function cartao(g) {
-      var c = categorias[g.cat] || { nome: "Geral", cor: "#2E7D53" };
-      var u = unisData[g.uni] || { nome: g.uni || "" };
-      var membros = g.membros ? comPonto(g.membros) + " membros" : "";
-
-      var desc = g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>" : "";
-      var onde = '<span class="grupo__onde">' + (u.nome ? u.nome + " · " : "") + escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
-
-      var textoEtiqueta = g.etiqueta || ((g.admin || g.administrado || g.pluri) ? "Pluriversidade" : "");
-      var seloAdmin = textoEtiqueta 
-        ? '<span class="grupo__etiqueta-admin">' + escapar(textoEtiqueta) + '</span>' 
-        : '';
-
-      var textoZap = 'Oi, estou enviando esta mensagem para avisar que o link do grupo "' + g.nome + '" está quebrado, você pode me mandar o link aqui?';
-      var linkReportar = 'https://wa.me/5531991579687?text=' + encodeURIComponent(textoZap);
-
-      return (
-        '<li class="item" style="--cor:' + c.cor + '">' +
-          '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
-            '<div class="grupo__topo-linha">' +
-              '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
-              seloAdmin +
-            '</div>' +
-            desc +
-            '<span class="grupo__meta">' + onde + "</span>" +
-          "</a>" +
-          '<a class="reportar" href="' + linkReportar + '" target="_blank" rel="noopener" title="Reportar link quebrado">' +
-            '🔗' +
-          '</a>' +
-        "</li>"
-      );
+    if (busca) {
+      busca.addEventListener("input", function () {
+        buscaTexto = simples(busca.value);
+        paginas.reiniciar();
+        desenhar();
+      });
     }
-    
+
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
         var uniDoGrupo = unisData[g.uni];
@@ -657,119 +610,187 @@
         var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
         var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
         var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
-        
-        if (!uniDoGrupo && !uniSel && !cidadeSel && !estadoSel) {
-          bateEstado = true;
-          bateCidade = true;
-          bateUni = true;
-        }
+        var bateCat = !catSel || g.cat === catSel;
 
-        var bateCat = filtroCat === "todos" || g.cat === filtroCat;
-        var bateTermo = termo === "" ||
-          simples(g.nome).indexOf(termo) !== -1 ||
-          simples(g.desc || "").indexOf(termo) !== -1;
+        var bateBusca = !buscaTexto ||
+          simples(g.nome).indexOf(buscaTexto) !== -1 ||
+          simples(g.desc).indexOf(buscaTexto) !== -1;
 
-        return bateEstado && bateCidade && bateUni && bateCat && bateTermo;
+        return bateEstado && bateCidade && bateUni && bateCat && bateBusca;
       });
 
-      lista.innerHTML = paginas.recortar(visiveis).map(cartao).join("");
-      if (vazio) vazio.hidden = visiveis.length > 0;
+      lista.innerHTML = paginas.recortar(visiveis).map(function (g) {
+        var cat = categorias[g.cat] || {};
+        var corCat = cat.cor || "var(--verde)";
 
-      var pessoas = visiveis.reduce(function (soma, g) {
-        return soma + (typeof g.membros === "number" ? g.membros : 0);
-      }, 0);
+        var suporteUrl = contatos.suporte || "#";
+        var msgReport = encodeURIComponent("Olá, o grupo '" + g.nome + "' está com problemas ou lotado.");
+        var linkReport = suporteUrl.indexOf("?") !== -1 ? suporteUrl + "&text=" + msgReport : suporteUrl + "?text=" + msgReport;
 
-      if (contagem) {
-        contagem.textContent = visiveis.length === 0
-          ? ""
-          : visiveis.length + " grupos · " + comPonto(pessoas) + " pessoas";
-      }
-    }
-
-    var usadas = {};
-    gruposBons.forEach(function (g) { usadas[g.cat] = true; });
-
-    var botoes = [{ id: "todos", nome: "Todas Categorias" }].concat(
-      Object.keys(categorias)
-        .filter(function (id) { return usadas[id]; })
-        .map(function (id) { return { id: id, nome: categorias[id].nome }; })
-    );
-
-    if (chips) {
-      chips.innerHTML = botoes.map(function (b, i) {
-        return '<button type="button" class="chip" data-cat="' + b.id + '"' +
-               ' aria-pressed="' + (i === 0) + '">' + b.nome + "</button>";
+        return (
+          '<li class="item" style="--cor:' + corCat + '">' +
+            '<a class="grupo" href="' + g.url + '" target="_blank" rel="noopener">' +
+              '<div class="grupo__topo-linha">' +
+                '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
+                (g.lotado ? '<span class="etiqueta etiqueta--lotado">lotado</span>' : '') +
+              '</div>' +
+              (g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + '</span>' : '') +
+              '<div class="grupo__meta">' +
+                '<span class="ponto"></span>' +
+                '<span>' + escapar(cat.nome || g.cat) + '</span>' +
+                (g.membros ? '<span>• ' + g.membros + ' membros</span>' : '') +
+                (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
+              '</div>' +
+            '</a>' +
+            '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
+              '⚠️' +
+            '</a>' +
+          '</li>'
+        );
       }).join("");
 
-      Array.prototype.forEach.call(chips.children, function (b) {
-        b.addEventListener("click", function () {
-          filtroCat = b.getAttribute("data-cat");
-          Array.prototype.forEach.call(chips.children, function (o) {
-            o.setAttribute("aria-pressed", o === b ? "true" : "false");
-          });
-          paginas.reiniciar();
-          desenhar();
-        });
-      });
-    }
+      var vazio = document.getElementById("vazio");
+      if (vazio) vazio.hidden = visiveis.length > 0;
 
-    if (busca) {
-      busca.addEventListener("input", function () {
-        termo = simples(busca.value.trim());
-        paginas.reiniciar();
-        desenhar();
+      if (contagem) {
+        contagem.textContent = visiveis.length + " grupo(s) encontrado(s)";
+      }
+
+      var contaAba = document.getElementById("aba-grupos-conta");
+      if (contaAba) contaAba.textContent = visiveis.length;
+
+      var totalMembros = 0;
+      gruposBons.forEach(function (g) {
+        if (g.membros) totalMembros += Number(g.membros) || 0;
       });
+
+      var elGrupos = document.getElementById("painel-grupos");
+      var elMembros = document.getElementById("painel-membros");
+      var elMedia = document.getElementById("painel-media");
+
+      if (elGrupos) elGrupos.textContent = gruposBons.length;
+      if (elMembros) elMembros.textContent = totalMembros > 0 ? totalMembros.toLocaleString("pt-BR") : "—";
+      if (elMedia) elMedia.textContent = gruposBons.length > 0 ? Math.round(totalMembros / gruposBons.length) : "—";
     }
 
     renderEstados();
     atualizarSelectCidades();
     atualizarSelectUnis();
+    montarChips();
     desenhar();
 
     return gruposBons.length;
   }
 
-  function montarAbas() {
-    var botaoGrupos = document.getElementById("aba-grupos");
-    var botaoFestas = document.getElementById("aba-festas");
-    var secaoGrupos = document.getElementById("secao-grupos");
-    var secaoFestas = document.getElementById("secao-festas");
+  /* ABAS */
+  function configurarAbas() {
+    var abaGrupos = document.getElementById("aba-grupos");
+    var abaFestas = document.getElementById("aba-festas");
+    var secGrupos = document.getElementById("secao-grupos");
+    var secFestas = document.getElementById("secao-festas");
 
-    if (!botaoGrupos || !botaoFestas) return;
+    if (!abaGrupos || !abaFestas || !secGrupos || !secFestas) return;
 
-    function mostrar(id) {
-      var ehGrupos = id === "grupos";
-      botaoGrupos.setAttribute("aria-selected", ehGrupos ? "true" : "false");
-      botaoFestas.setAttribute("aria-selected", !ehGrupos ? "true" : "false");
-      if (secaoGrupos) secaoGrupos.hidden = !ehGrupos;
-      if (secaoFestas) secaoFestas.hidden = ehGrupos;
+    function alternar(mostrarFestas) {
+      abaGrupos.setAttribute("aria-selected", !mostrarFestas);
+      abaFestas.setAttribute("aria-selected", mostrarFestas);
+
+      abaGrupos.tabIndex = mostrarFestas ? -1 : 0;
+      abaFestas.tabIndex = mostrarFestas ? 0 : -1;
+
+      secGrupos.hidden = mostrarFestas;
+      secFestas.hidden = !mostrarFestas;
     }
 
-    botaoGrupos.addEventListener("click", function () { mostrar("grupos"); });
-    botaoFestas.addEventListener("click", function () { mostrar("festas"); });
+    abaGrupos.addEventListener("click", function () { alternar(false); });
+    abaFestas.addEventListener("click", function () { alternar(true); });
   }
 
-  function montarPainel() {
-    var elGrupos = document.getElementById("painel-grupos");
-    var elMembros = document.getElementById("painel-membros");
-    var elMedia = document.getElementById("painel-media");
-    if (!elGrupos) return;
+  /* MODAL DE MÍDIA */
+  function configurarModalMidia() {
+    var modal = document.getElementById("modal-midia");
+    var fechar = document.getElementById("modal-fechar");
+    var container = document.getElementById("modal-container-midia");
 
-    var comNumero = gruposBons.filter(function (g) { return typeof g.membros === "number" && g.membros > 0; });
-    var total = comNumero.reduce(function (s, g) { return s + g.membros; }, 0);
-    var media = comNumero.length ? Math.round(total / comNumero.length) : 0;
+    if (!modal || !fechar || !container) return;
 
-    elGrupos.textContent = gruposBons.length.toLocaleString("pt-BR");
-    elMembros.textContent = total.toLocaleString("pt-BR");
-    elMedia.textContent = media.toLocaleString("pt-BR");
+    document.addEventListener("click", function (e) {
+      var target = e.target.closest(".festa__mini-container");
+      if (!target) return;
+
+      var src = target.getAttribute("data-midia");
+      var tipo = target.getAttribute("data-tipo");
+
+      if (!src) return;
+
+      if (tipo === "video") {
+        container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay></video>';
+      } else {
+        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Flyer em tamanho real">';
+      }
+
+      modal.hidden = false;
+    });
+
+    fechar.addEventListener("click", function () {
+      modal.hidden = true;
+      container.innerHTML = "";
+    });
+
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        modal.hidden = true;
+        container.innerHTML = "";
+      }
+    });
   }
 
-  aplicarTextos();
-  configurarPix();
-  montarParceiros();
-  montarFestas();
-  montarGrupos();
-  montarAbas();
-  montarPainel();
-  mostrarProblemas();
+  /* MODAL POPUP COMISSÁRIO PLURI */
+  function configurarModalComissario() {
+    var btnInfo = document.getElementById("btn-comissario-info");
+    var modal = document.getElementById("modal-comissario");
+    var fechar = document.getElementById("modal-comissario-fechar");
+    var video = document.getElementById("video-comissario");
+
+    if (!btnInfo || !modal || !fechar) return;
+
+    btnInfo.addEventListener("click", function () {
+      modal.hidden = false;
+      if (video) {
+        video.currentTime = 0;
+        video.play().catch(function (err) {
+          console.log("Autoplay bloqueado pelo navegador:", err);
+        });
+      }
+    });
+
+    function fecharModalComissario() {
+      modal.hidden = true;
+      if (video) {
+        video.pause();
+      }
+    }
+
+    fechar.addEventListener("click", fecharModalComissario);
+
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        fecharModalComissario();
+      }
+    });
+  }
+
+  /* INICIALIZAÇÃO */
+  document.addEventListener("DOMContentLoaded", function () {
+    aplicarTextos();
+    configurarPix();
+    montarParceiros();
+    montarFestas();
+    montarGrupos();
+    configurarAbas();
+    configurarModalMidia();
+    configurarModalComissario();
+    mostrarProblemas();
+  });
+
 })();
