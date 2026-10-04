@@ -103,9 +103,7 @@
     return g && g.nome && pareceLink(g.url) && categorias[g.cat];
   });
 
-  var festasBoas = festas.filter(function (f) {
-    return f && f.titulo && partesDaData(f.data) && unis[f.uni];
-  });
+  var festasBoas = [];
 
   var parceirosBons = parceiros.filter(function (p) {
     return p && p.nome && pareceLink(p.link);
@@ -269,7 +267,11 @@
 
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
-    var unisData = window.UNIVERSIDADES || {};
+    var unisData    = window.UNIVERSIDADES || {};
+
+    festasBoas = festas.filter(function (f) {
+      return f && f.titulo && partesDaData(f.data) && unisData[f.uni];
+    });
 
     function simples(texto) {
       return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -286,7 +288,7 @@
     var uniSel = Object.keys(unisData).find(function(k) {
       return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
     }) || "ufmg";
-    
+
     var dataFiltroSel = "";
 
     paginasFestas = fazerPaginas({
@@ -430,24 +432,24 @@
 
       lista.innerHTML = paginasFestas.recortar(visiveis).map(function (f) {
         var d = partesDaData(f.data);
-        var u = unis[f.uni] || { nome: f.uni || "" };
+        var u = unisData[f.uni] || { nome: f.uni || "" };
         var corFesta = f.cor || "var(--terracota)";
         var faltam = diasFaltam(f.data);
         var slugFesta = slugify(f.titulo);
 
         var temMidia = Boolean(f.midia);
         var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
-        
+
         var miniHtml = "";
         if (temMidia) {
           if (ehVideo) {
-            miniHtml = 
+            miniHtml =
               '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
                 '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
                 '<span class="festa__play-icon">▶</span>' +
               '</div>';
           } else {
-            miniHtml = 
+            miniHtml =
               '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="imagem">' +
                 '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer ' + escapar(f.titulo) + '" loading="lazy">' +
               '</div>';
@@ -551,6 +553,7 @@
      SEÇÃO DE GRUPOS
      ------------------------------------------------------------------------- */
   var selecionarCategoriaExternamente = null;
+  var paginasGrupos;
 
   function montarGrupos() {
     var lista = document.getElementById("lista");
@@ -573,7 +576,7 @@
     var cidadesData = window.CIDADES || {};
     var unisData = window.UNIVERSIDADES || {};
 
-    var paginas = fazerPaginas({
+    paginasGrupos = fazerPaginas({
       caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde"
     }, function () { desenhar(); });
 
@@ -678,7 +681,7 @@
         btn.addEventListener("click", function () {
           catSel = btn.getAttribute("data-cat") || "";
           montarChips();
-          paginas.reiniciar();
+          paginasGrupos.reiniciar();
           desenhar();
           if (catSel) {
             rolarParaCards();
@@ -693,7 +696,7 @@
           var catObj = categorias[keyCat];
           var nomeCat = catObj ? catObj.nome : keyCat;
           var urlShare = location.origin + location.pathname + "#grupos/" + keyCat;
-          
+
           var nomeUni = "universidade";
           if (selUni && selUni.value && unisData[selUni.value]) {
             nomeUni = unisData[selUni.value].nome;
@@ -715,7 +718,7 @@
     selecionarCategoriaExternamente = function (keyCat) {
       catSel = keyCat || "";
       montarChips();
-      paginas.reiniciar();
+      paginasGrupos.reiniciar();
       desenhar();
       if (catSel) {
         setTimeout(function () {
@@ -731,7 +734,7 @@
         uniSel = "";
         atualizarSelectCidades();
         atualizarSelectUnis();
-        paginas.reiniciar();
+        paginasGrupos.reiniciar();
         desenhar();
       });
     }
@@ -741,7 +744,7 @@
         cidadeSel = selCidade.value;
         uniSel = "";
         atualizarSelectUnis();
-        paginas.reiniciar();
+        paginasGrupos.reiniciar();
         desenhar();
       });
     }
@@ -749,7 +752,7 @@
     if (selUni) {
       selUni.addEventListener("change", function () {
         uniSel = selUni.value;
-        paginas.reiniciar();
+        paginasGrupos.reiniciar();
         desenhar();
       });
     }
@@ -757,7 +760,7 @@
     if (busca) {
       busca.addEventListener("input", function () {
         buscaTexto = simples(busca.value);
-        paginas.reiniciar();
+        paginasGrupos.reiniciar();
         desenhar();
       });
     }
@@ -779,19 +782,24 @@
         return bateEstado && bateCidade && bateUni && bateCat && bateBusca;
       });
 
-      lista.innerHTML = paginas.recortar(visiveis).map(function (g) {
+      lista.innerHTML = paginasGrupos.recortar(visiveis).map(function (g) {
         var cat = categorias[g.cat] || {};
         var corCat = cat.cor || "var(--verde)";
+        var slugGrupo = slugify(g.nome);
 
-        /* Identificação de Universidade e Cidade para a mensagem de erro */
+        /* Identificação de Universidade e Cidade */
         var uniObj = unisData[g.uni] || {};
         var nomeUni = uniObj.nome || g.uni || "Não informada";
         var cidObj = uniObj.cidade ? cidadesData[uniObj.cidade] : null;
         var nomeCidade = cidObj ? cidObj.nome : "Não informada";
 
-        /* Geração segura da URL do botão de reportar erro com Universidade e Cidade */
+        /* Link direto para o card do grupo específico */
+        var urlCard = location.origin + location.pathname + "#grupos/" + slugGrupo;
+
+        /* Mensagem de reporte incluindo o link direto do card do grupo */
         var suporteBase = contatos.suporte || "https://wa.me/5531991579687";
-        var msgReport = encodeURIComponent("Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + " - " + nomeCidade + ") está com problemas ou com link quebrado.");
+        var textoReport = "Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + " - " + nomeCidade + ") está com problemas ou com link quebrado/lotado.\nLink do card: " + urlCard;
+        var msgReport = encodeURIComponent(textoReport);
         var linkReport = "";
 
         if (suporteBase.indexOf("text=") !== -1) {
@@ -803,7 +811,7 @@
         }
 
         return (
-          '<li class="item" style="--cor:' + corCat + '">' +
+          '<li class="item" id="grupo-' + slugGrupo + '" style="--cor:' + corCat + '">' +
             '<a class="grupo" href="' + g.url + '" target="_blank" rel="noopener">' +
               '<div class="grupo__topo-linha">' +
                 '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
@@ -922,9 +930,32 @@
       } else {
         alternar(false, false);
         if (rawHash.indexOf("#grupos/") === 0) {
-          var catDesejada = rawHash.replace("#grupos/", "");
-          if (catDesejada && typeof selecionarCategoriaExternamente === "function") {
-            selecionarCategoriaExternamente(catDesejada);
+          var paramGrupo = rawHash.replace("#grupos/", "");
+          if (paramGrupo) {
+            // Verifica se é um card de grupo pelo slug
+            var idxGrupo = gruposBons.findIndex(function (g) { return slugify(g.nome) === paramGrupo; });
+
+            if (idxGrupo !== -1 && paginasGrupos) {
+              var pagG = Math.floor(idxGrupo / POR_PAGINA) + 1;
+              paginasGrupos.irParaPagina(pagG);
+              montarGrupos();
+
+              setTimeout(function () {
+                var elTargetG = document.getElementById("grupo-" + paramGrupo);
+                if (elTargetG) {
+                  elTargetG.scrollIntoView({ behavior: "smooth", block: "center" });
+                  var corOrig = elTargetG.style.outline;
+                  elTargetG.style.transition = "outline 0.3s ease";
+                  elTargetG.style.outline = "3px solid var(--cor, #00c853)";
+                  setTimeout(function () {
+                    elTargetG.style.outline = corOrig;
+                  }, 3000);
+                }
+              }, 300);
+            } else if (typeof selecionarCategoriaExternamente === "function") {
+              // Se não for um slug de grupo, tenta abrir como categoria
+              selecionarCategoriaExternamente(paramGrupo);
+            }
           }
         }
       }
