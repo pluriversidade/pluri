@@ -825,6 +825,7 @@
                 (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
               '</div>' +
             '</a>' +
+            '<button class="festa__link btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 Compartilhar</button>' +
             '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
               '⚠' +
             '</a>' +
@@ -854,6 +855,42 @@
       if (elGrupos) elGrupos.textContent = gruposBons.length;
       if (elMembros) elMembros.textContent = totalMembros > 0 ? totalMembros.toLocaleString("pt-BR") : "—";
       if (elMedia) elMedia.textContent = gruposBons.length > 0 ? Math.round(totalMembros / gruposBons.length) : "—";
+
+      /* Configuração dos eventos de clique para o botão Compartilhar nos cards de grupos */
+      Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-grupo"), function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var slug = btn.getAttribute("data-slug");
+          var urlCard = location.origin + location.pathname + "#grupos/" + slug;
+
+          var g = gruposBons.find(function (grupo) {
+            return slugify(grupo.nome) === slug;
+          });
+
+          if (!g) return;
+
+          var uniObj = unisData[g.uni] || {};
+          var nomeUni = uniObj.nome || g.uni || "";
+          var descGrupo = g.desc ? "\n" + g.desc : "";
+
+          var textoCompartilhamento =
+            "*Ei*, confira este grupo do WhatsApp " + (nomeUni ? "da *" + nomeUni + "*" : "") + " no site da *Pluriversidade*:\n\n" +
+            "*" + g.nome.toUpperCase() + "*" + descGrupo + "\n\n" +
+            "Acesse o card direto pelo link abaixo:\n" +
+            urlCard + "\n\n" +
+            "*Pluriversidade.com.br*";
+
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(textoCompartilhamento).then(function () {
+              var originalText = btn.textContent;
+              btn.textContent = "✓ Copiado!";
+              setTimeout(function () { btn.textContent = originalText; }, 2000);
+            }).catch(function (err) {
+              console.error("Erro ao copiar mensagem do grupo: ", err);
+            });
+          }
+        });
+      });
     }
 
     renderEstados();
