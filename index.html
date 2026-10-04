@@ -204,13 +204,6 @@
     <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
     <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
 
-    <!-- CARD ÚNICO E ESTÁTICO PARA CAPTAÇÃO DE COMISSÁRIOS -->
-    <div class="card-comissario-estatico">
-      <h3 class="card-comissario-estatico__titulo">QUER SER COMISSÁRIO?</h3>
-      <p class="card-comissario-estatico__chamada">Ganhe ingressos e benefícios divulgando festas universitárias.</p>
-      <button class="botao-gradiente-animado" id="btn-abrir-popup-comissario" type="button">QUERO SER COMISSÁRIO</button>
-    </div>
-
     <div class="localizacao">
       <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
         <option value="">Selecione o Estado</option>
@@ -321,7 +314,8 @@
       <span aria-hidden="true">⧉</span>
     </button>
 
-    <a class="botao" id="sugerir" href="https://wa.me/5531991579687?text=EI%20GALERA%20DA%20PLURIVERSIDADE%2C%20QUERO%20SUGERIR%20A%20CRIAÇÃO%20DE%20UM%20GRUPO%21" target="_blank" rel="noopener">
+    <!-- Botão atualizado com link dinâmico para sugerir novo grupo -->
+    <a class="botao" id="sugerir" href="https://wa.me/5531991579687?text=EI%20GALERA%20DA%20PLURIVERSIDADE%2C%20QUERO%20SUGERIR%20A%20CRIA%C3%87%C3%83O%20DE%20UM%20GRUPO%21" target="_blank" rel="noopener">
       <span><span data-texto="sugerirBotao">Sugerir um grupo novo</span><small data-texto="sugerirNota">falar no privado</small></span>
       <span aria-hidden="true">→</span>
     </a>
@@ -332,7 +326,7 @@
 <footer class="rodape">
   <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
     <rect width="1200" height="300" fill="#1F3347"/>
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#17232E"/>
+    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 300 L0 300 Z" fill="#17232E"/>
   </svg>
 
   <div class="rodape__texto">
@@ -348,35 +342,9 @@
 
 <!-- Modal de Visualização de Mídia em Tela Cheia -->
 <div class="modal-midia" id="modal-midia" hidden>
-  <div class="modal-midia__conteudo">
-    <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar">&times;</button>
+  <div class="modal-midia__conteudo" style="position: relative; display: inline-block; max-width: 90vw; max-height: 90vh;">
+    <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 28px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">&times;</button>
     <div id="modal-container-midia"></div>
-  </div>
-</div>
-
-<!-- POP-UP / MODAL DO COMISSÁRIO (COM TEXTO MELHORADO E VÍDEO DE IA) -->
-<div class="modal-midia" id="modal-comissario" hidden>
-  <div class="modal-comissario__conteudo">
-    <button class="modal-midia__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
-    <h2 class="modal-comissario__titulo">Seja um Comissário Pluri!</h2>
-    
-    <!-- VÍDEO GERADO POR IA (Dá play sozinho, em loop, sem som e sem controles) -->
-    <div class="modal-comissario__video-container">
-      <video class="modal-comissario__video" autoplay muted loop playsinline>
-        <source src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" type="video/mp4">
-        Seu navegador não suporta vídeos.
-      </video>
-    </div>
-
-    <!-- TEXTO REESCRITO E OTIMIZADO -->
-    <p class="modal-comissario__texto">
-      Toda grande festa universitária depende de uma forte articulação de divulgação e vendas para viabilizar sua estrutura, desde a contratação de DJs e segurança até a locação do espaço.
-    </p>
-    <p class="modal-comissario__texto">
-      É aqui que entra a <strong>Pluriversidade</strong>. Atuamos como a ponte oficial entre as comissões organizadoras e a nossa rede de comissários. Como comissário, você divulga os eventos e converte vendas, sendo recompensado diretamente com <strong>ingressos e benefícios exclusivos</strong>.
-    </p>
-    
-    <a class="botao-gradiente-animado modal-comissario__cta" href="https://forms.gle/SEU_LINK_DO_FORM_AQUI" target="_blank" rel="noopener">QUERO SER COMISSÁRIO</a>
   </div>
 </div>
 
@@ -385,35 +353,6 @@
 <script src="js/dados-festas.js"></script>
 <script src="js/dados-parceiros.js"></script>
 <script src="js/app.js"></script>
-
-<!-- SCRIPT PARA CONTROLAR O POP-UP DO COMISSÁRIO -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var btnAbrir = document.getElementById("btn-abrir-popup-comissario");
-    var modalComissario = document.getElementById("modal-comissario");
-    var btnFechar = document.getElementById("modal-comissario-fechar");
-
-    if (btnAbrir && modalComissario) {
-      btnAbrir.addEventListener("click", function () {
-        modalComissario.hidden = false;
-      });
-    }
-
-    if (btnFechar && modalComissario) {
-      btnFechar.addEventListener("click", function () {
-        modalComissario.hidden = true;
-      });
-    }
-
-    if (modalComissario) {
-      modalComissario.addEventListener("click", function (e) {
-        if (e.target === modalComissario) {
-          modalComissario.hidden = true;
-        }
-      });
-    }
-  });
-</script>
 
 </body>
 </html>
