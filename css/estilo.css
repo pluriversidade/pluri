@@ -870,10 +870,13 @@ a { color: inherit; }
 }
 
 .modal-midia__midia {
-  max-width: 100%;
-  max-height: 85vh;
-  border-radius: 8px;
-  object-fit: contain;
+  width: 100%;
+  max-width: 380px;         /* Limita a largura máxima para formato de celular */
+  height: auto;
+  max-height: 85vh;         /* Garante que não passe da altura da tela */
+  aspect-ratio: 9 / 16;     /* Força a proporção vertical (9:16) */
+  border-radius: 12px;
+  object-fit: cover;        /* Preenche a área do vídeo ajustando a imagem */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   background: #111;
 }
