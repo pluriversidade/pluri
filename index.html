@@ -1,358 +1,214 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pluriversidade — grupos de WhatsApp e festas universitárias</title>
-<meta name="description" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
-<meta name="theme-color" content="#1F3347">
-<meta property="og:title" content="PLURIVERSIDADE.COM.BR">
-<meta property="og:description" content="Repositório de Grupos e Festas das maiores universidades do Brasil!">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.png">
-<meta property="og:image:secure_url" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<!-- Ícone do Navegador (Favicon corrigido) -->
-<link rel="icon" type="image/png" href="https://pluriversidade.github.io/pluri/img/icone-pluri.png">
-<link rel="stylesheet" href="https://pluriversidade.github.io/pluri/css/estilo.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluriversidade - Grupos e Festas Universitárias</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<!-- ================================================================ capa -->
-<header class="capa">
-  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Ilustração de uma cidade ao entardecer">
-    <defs>
-      <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="#1F3347"/>
-        <stop offset="42%"  stop-color="#6B5B7B"/>
-        <stop offset="70%"  stop-color="#C67B5C"/>
-        <stop offset="88%"  stop-color="#E8A55F"/>
-        <stop offset="100%" stop-color="#F2D7A8"/>
-      </linearGradient>
-      <radialGradient id="brilho">
-        <stop offset="0%"   stop-color="#FFD98A" stop-opacity=".55"/>
-        <stop offset="100%" stop-color="#FFD98A" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
+  <!-- DIAGNÓSTICO PARA DESENVOLVIMENTO -->
+  <div id="diagnostico" hidden class="diagnostico"></div>
 
-    <rect width="1200" height="300" fill="url(#ceu)"/>
-    <circle cx="790" cy="112" r="104" fill="url(#brilho)"/>
-    <circle cx="790" cy="112" r="26" fill="#FFD07A"/>
-
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#4B4560"/>
-
-    <g fill="#2B3A34">
-      <rect x="60"   y="172" width="74" height="128" rx="3"/>
-      <rect x="150"  y="196" width="52" height="104" rx="3"/>
-      <rect x="980"  y="186" width="66" height="114" rx="3"/>
-      <rect x="1060" y="206" width="48" height="94"  rx="3"/>
-    </g>
-    <g fill="#F0BE6B">
-      <rect x="72"   y="186" width="9" height="11" rx="1.5"/>
-      <rect x="90"   y="186" width="9" height="11" rx="1.5"/>
-      <rect x="108"  y="186" width="9" height="11" rx="1.5"/>
-      <rect x="72"   y="208" width="9" height="11" rx="1.5"/>
-      <rect x="108"  y="208" width="9" height="11" rx="1.5"/>
-      <rect x="90"   y="230" width="9" height="11" rx="1.5"/>
-      <rect x="162"  y="210" width="9" height="11" rx="1.5"/>
-      <rect x="180"  y="210" width="9" height="11" rx="1.5"/>
-      <rect x="162"  y="232" width="9" height="11" rx="1.5"/>
-      <rect x="992"  y="200" width="9" height="11" rx="1.5"/>
-      <rect x="1010" y="200" width="9" height="11" rx="1.5"/>
-      <rect x="992"  y="222" width="9" height="11" rx="1.5"/>
-      <rect x="1028" y="222" width="9" height="11" rx="1.5"/>
-      <rect x="1072" y="220" width="9" height="11" rx="1.5"/>
-      <rect x="1090" y="220" width="9" height="11" rx="1.5"/>
-    </g>
-
-    <g>
-      <rect x="250" y="214" width="96" height="86" rx="4" fill="#F0EADC"/>
-      <path d="M238 216 L298 176 L358 216 Z" fill="#B24232"/>
-      <rect x="268" y="236" width="20" height="20" rx="2" fill="#E8A55F"/>
-      <rect x="306" y="236" width="20" height="20" rx="2" fill="#E8A55F"/>
-      <rect x="286" y="270" width="24" height="30" rx="2" fill="#7A5A46"/>
-
-      <rect x="392" y="226" width="84" height="74" rx="4" fill="#E7DFCF"/>
-      <path d="M382 228 L434 194 L486 228 Z" fill="#8E3A2C"/>
-      <rect x="408" y="244" width="18" height="18" rx="2" fill="#F0BE6B"/>
-      <rect x="442" y="244" width="18" height="18" rx="2" fill="#F0BE6B"/>
-      <rect x="424" y="276" width="22" height="24" rx="2" fill="#6E5140"/>
-
-      <rect x="520" y="218" width="104" height="82" rx="4" fill="#F0EADC"/>
-      <path d="M508 220 L572 182 L636 220 Z" fill="#B24232"/>
-      <rect x="540" y="240" width="20" height="20" rx="2" fill="#E8A55F"/>
-      <rect x="584" y="240" width="20" height="20" rx="2" fill="#E8A55F"/>
-      <rect x="560" y="272" width="24" height="28" rx="2" fill="#7A5A46"/>
-
-      <rect x="668" y="230" width="80" height="70" rx="4" fill="#E7DFCF"/>
-      <path d="M658 232 L708 200 L758 232 Z" fill="#8E3A2C"/>
-      <rect x="684" y="248" width="17" height="17" rx="2" fill="#F0BE6B"/>
-      <rect x="716" y="248" width="17" height="17" rx="2" fill="#F0BE6B"/>
-
-      <rect x="790" y="222" width="94" height="78" rx="4" fill="#F0EADC"/>
-      <path d="M778 224 L837 188 L896 224 Z" fill="#B24232"/>
-      <rect x="810" y="242" width="19" height="19" rx="2" fill="#E8A55F"/>
-      <rect x="848" y="242" width="19" height="19" rx="2" fill="#E8A55F"/>
-      <rect x="828" y="274" width="22" height="26" rx="2" fill="#7A5A46"/>
-    </g>
-
-    <g fill="#2E4A38">
-      <circle cx="372" cy="262" r="20"/>
-      <circle cx="650" cy="266" r="17"/>
-      <circle cx="772" cy="264" r="19"/>
-      <circle cx="960" cy="268" r="16"/>
-    </g>
-    <g fill="#4A3524">
-      <rect x="369" y="270" width="6" height="30"/>
-      <rect x="647" y="274" width="6" height="26"/>
-      <rect x="769" y="272" width="6" height="28"/>
-      <rect x="957" y="276" width="6" height="24"/>
-    </g>
-
-    <g class="carro-a" fill="#E8A55F">
-      <rect x="0" y="262" width="56" height="20" rx="6"/>
-      <circle cx="14" cy="285" r="6" fill="#17201C"/>
-      <circle cx="42" cy="285" r="6" fill="#17201C"/>
-    </g>
-    <g class="carro-b" fill="#B24232">
-      <rect x="0" y="258" width="64" height="22" rx="6"/>
-      <circle cx="16" cy="283" r="6.5" fill="#17201C"/>
-      <circle cx="48" cy="283" r="6.5" fill="#17201C"/>
-    </g>
-
-    <rect x="0" y="282" width="1200" height="18" fill="#2A2F33"/>
-    <g fill="#C9CBB8" opacity=".75">
-      <rect x="30"   y="290" width="34" height="3" rx="1.5"/>
-      <rect x="110"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="190"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="270"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="350"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="430"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="510"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="590"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="670"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="750"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="830"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="910"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="990"  y="290" width="34" height="3" rx="1.5"/>
-      <rect x="1070" y="290" width="34" height="3" rx="1.5"/>
-      <rect x="1150" y="290" width="34" height="3" rx="1.5"/>
-    </g>
-  </svg>
-
-  <div class="miolo marca">
-    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema com comunidade em volta">
-      <defs>
-        <g id="pessoa">
-          <circle cy="-9.5" r="6.4"/>
-          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8 a9.2 9.2 0 0 1 9.2 -9.2 z"/>
-        </g>
-      </defs>
-      <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
+  <!-- CABEÇALHO -->
+  <header class="cabecalho">
+    <div class="conteiner cabecalho__conteiner">
+      <div class="cabecalho__marca">
+        <h1 class="cabecalho__titulo" data-texto="titulo_site">Pluriversidade</h1>
+        <p class="cabecalho__subtitulo" data-texto="subtitulo_site">Conectando estudantes e movimentando a vida universitária</p>
+      </div>
       
-      <g opacity="0.9">
-        <use href="#pessoa" fill="#2E7D53" transform="translate(0, -74) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(52, -52) rotate(45) scale(0.95)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="translate(74, 0) rotate(90) scale(0.95)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="translate(52, 52) rotate(135) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(0, 74) rotate(180) scale(0.95)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="translate(-52, 52) rotate(225) scale(0.95)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="translate(-74, 0) rotate(270) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(-52, -52) rotate(315) scale(0.95)"/>
-      </g>
+      <!-- PIX / APOIO -->
+      <div class="pix-card">
+        <span class="pix-card__titulo">Apoie o projeto via Pix:</span>
+        <div class="pix-card__acoes">
+          <code id="pix-numero" class="pix-card__chave">carregando...</code>
+          <button id="copiar-pix" type="button" class="pix-card__btn">
+            <span id="pix-rotulo">Copiar Chave</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-      <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
-      <image href="https://pluriversidade.github.io/pluri/img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
-    </svg>
-
-    <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
-    <p class="subtitulo" data-texto="subtitulo">Brechó, sebo, bandeco, caronas, idiomas e o que mais a comunidade inventar.</p>
-    <p class="atualizado" id="atualizado" hidden></p>
-  </div>
-</header>
-
-<div class="miolo">
-  <div class="diagnostico" id="diagnostico" hidden></div>
-</div>
-
-<main class="miolo">
-
-  <!-- parceiros -->
-  <section class="secao-parceiros" id="secao-parceiros" aria-label="Parceiros">
-    <div class="carrossel" id="parceiros"></div>
-    <div class="bolinhas" id="parceiros-bolinhas" role="tablist" aria-label="Escolher parceiro"></div>
+  <!-- PAINEL DE ESTATÍSTICAS -->
+  <section class="painel-estatisticas">
+    <div class="conteiner painel-estatisticas__grid">
+      <div class="painel-estatisticas__item">
+        <strong id="painel-grupos">0</strong>
+        <span>Grupos cadastrados</span>
+      </div>
+      <div class="painel-estatisticas__item">
+        <strong id="painel-membros">0</strong>
+        <span>Estudantes conectados</span>
+      </div>
+      <div class="painel-estatisticas__item">
+        <strong id="painel-media">0</strong>
+        <span>Média por grupo</span>
+      </div>
+    </div>
   </section>
 
-  <!-- abas -->
-  <nav class="abas" id="abas" role="tablist" aria-label="Escolher o que ver">
-    <button class="aba" type="button" role="tab" id="aba-grupos" aria-controls="secao-grupos" aria-selected="true">
-      <span class="aba__nome" data-texto="abaGrupos">Grupos</span>
-      <span class="aba__conta" id="aba-grupos-conta"></span>
-    </button>
-    <button class="aba" type="button" role="tab" id="aba-festas" aria-controls="secao-festas" aria-selected="false" tabindex="-1">
-      <span class="aba__nome" data-texto="abaFestas">Festas</span>
-      <span class="aba__conta" id="aba-festas-conta"></span>
-    </button>
+  <!-- NAVEGAÇÃO POR ABAS -->
+  <nav class="abas-navegacao">
+    <div class="conteiner abas-navegacao__conteiner" role="tablist">
+      <button id="aba-grupos" type="button" role="tab" aria-selected="true" class="aba-btn">
+        Grupos de WhatsApp
+      </button>
+      <button id="aba-festas" type="button" role="tab" aria-selected="false" class="aba-btn">
+        Festas Universitárias
+      </button>
+    </div>
   </nav>
 
-  <!-- festas -->
-  <section class="secao" id="secao-festas" role="tabpanel" aria-labelledby="aba-festas" tabindex="-1" hidden>
-    <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
-    <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="conteiner conteudo-principal">
 
-    <div class="localizacao">
-      <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
-        <option value="">Selecione o Estado</option>
-      </select>
+    <!-- SEÇÃO: GRUPOS DE WHATSAPP -->
+    <section id="secao-grupos" role="tabpanel" class="secao-aba">
+      <div class="filtros-bar">
+        <div class="filtros-bar__locais">
+          <select id="select-estado" class="select-filtro">
+            <option value="">Todos os Estados</option>
+          </select>
+          <select id="select-cidade" class="select-filtro">
+            <option value="">Todas as Cidades</option>
+          </select>
+          <select id="select-uni" class="select-filtro">
+            <option value="">Todas as Universidades</option>
+          </select>
+        </div>
 
-      <select class="seletor-local" id="select-cidade-festas" aria-label="Filtrar por Cidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
+        <div class="filtros-bar__busca">
+          <input id="busca" type="search" placeholder="Buscar grupo por nome ou assunto..." class="input-busca">
+        </div>
+      </div>
 
-      <select class="seletor-local" id="select-uni-festas" aria-label="Filtrar por Universidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
+      <div id="chips" class="chips-conteiner"></div>
+
+      <div class="status-barra">
+        <span id="contagem" class="status-barra__contagem"></span>
+      </div>
+
+      <ul id="lista" class="grupos-grid"></ul>
+
+      <p id="vazio" hidden class="mensagem-vazio">Nenhum grupo encontrado com os filtros selecionados.</p>
+
+      <div id="grupos-paginas" hidden class="paginacao">
+        <button id="grupos-voltar" type="button" class="paginacao__btn">&larr; Anterior</button>
+        <span id="grupos-onde" class="paginacao__info"></span>
+        <button id="grupos-avancar" type="button" class="paginacao__btn">Próxima &rarr;</button>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: FESTAS UNIVERSITÁRIAS -->
+    <section id="secao-festas" role="tabpanel" hidden class="secao-aba">
+      
+      <!-- CARD FIXO COMISSÁRIO PLURI -->
+      <div class="card-comissario-fixo">
+        <div class="card-comissario-fixo__conteudo">
+          <h2 class="card-comissario-fixo__titulo">QUER SER UM COMISSÁRIO PLURI?</h2>
+          <p class="card-comissario-fixo__descricao">
+            Seja um comissário de vendas de ingressos das festas universitárias! É a oportunidade perfeita para você garantir o seu ingresso VIP de graça, não pagar nada para ir aos melhores rolês e ainda faturar uma grana extra vendendo para a galera.
+          </p>
+          <button id="btn-abrir-popup-comissario" type="button" class="card-comissario-fixo__btn-chamativo">
+            QUERO SABER MAIS INFORMAÇÕES
+          </button>
+        </div>
+      </div>
+
+      <div class="filtros-bar">
+        <div class="filtros-bar__locais">
+          <select id="select-estado-festas" class="select-filtro">
+            <option value="">Selecione o Estado</option>
+          </select>
+          <select id="select-cidade-festas" class="select-filtro">
+            <option value="">Todas as Cidades</option>
+          </select>
+          <select id="select-uni-festas" class="select-filtro">
+            <option value="">Todas as Universidades</option>
+          </select>
+        </div>
+
+        <div class="filtros-bar__busca">
+          <input id="festas-dia" type="date" class="input-busca">
+          <button id="festas-limpar" type="button" hidden class="btn-limpar-data">Limpar Data</button>
+        </div>
+      </div>
+
+      <ul id="festas-lista" class="festas-lista"></ul>
+
+      <p id="festas-vazio" hidden class="mensagem-vazio">Nenhuma festa encontrada para os filtros selecionados.</p>
+
+      <div id="festas-paginas" hidden class="paginacao">
+        <button id="festas-voltar" type="button" class="paginacao__btn">&larr; Anterior</button>
+        <span id="festas-onde" class="paginacao__info"></span>
+        <button id="festas-avancar" type="button" class="paginacao__btn">Próxima &rarr;</button>
+      </div>
+    </section>
+
+    <!-- CARROSSEL DE PARCEIROS -->
+    <section class="secao-parceiros">
+      <h2 class="secao-parceiros__titulo">Parceiros e Marcas</h2>
+      <div id="parceiros" class="parceiros-trilho"></div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="rodape">
+    <div class="conteiner rodape__conteiner">
+      <p data-texto="rodape_texto">&copy; Pluriversidade - Todos os direitos reservados.</p>
     </div>
+  </footer>
 
-    <div class="chips" id="festas-chips" role="group" aria-label="Universidades"></div>
-
-    <div class="linha-data">
-      <label class="rotulo-data" for="festas-dia" data-texto="festasFiltroDia">Ver um dia específico</label>
-      <span class="linha-data__campos">
-        <input class="campo-data" type="date" id="festas-dia">
-        <button class="limpar-data" type="button" id="festas-limpar" hidden>limpar</button>
-      </span>
+  <!-- MODAL DE MÍDIA DAS FESTAS -->
+  <div id="modal-midia" hidden class="modal-midia">
+    <div class="modal-midia__conteudo">
+      <button id="modal-fechar" type="button" class="modal-midia__fechar">&times;</button>
+      <div id="modal-container-midia" class="modal-midia__container"></div>
     </div>
-
-    <ul class="festas" id="festas-lista"></ul>
-    <p class="vazio" id="festas-vazio" hidden></p>
-
-    <nav class="paginas" id="festas-paginas" aria-label="Páginas das festas" hidden>
-      <button class="pagina" type="button" id="festas-voltar">
-        <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
-      </button>
-      <span class="paginas__onde" id="festas-onde" aria-live="polite"></span>
-      <button class="pagina" type="button" id="festas-avancar">
-        <span data-texto="paginaProxima">próxima</span> <span aria-hidden="true">→</span>
-      </button>
-    </nav>
-  </section>
-
-  <!-- grupos -->
-  <section class="secao" id="secao-grupos" role="tabpanel" aria-labelledby="aba-grupos" tabindex="-1">
-    <h2 class="secao__titulo" id="grupos-titulo" data-texto="gruposTitulo">Todos os grupos</h2>
-    <p class="secao__nota" data-texto="gruposSubtitulo">Toque no grupo para entrar direto no WhatsApp.</p>
-
-    <div class="painel">
-      <div class="dado"><b id="painel-grupos">—</b><span>grupos na lista</span></div>
-      <div class="dado"><b id="painel-membros">—</b><span>membros somados</span></div>
-      <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
-    </div>
-
-    <div class="localizacao">
-      <select class="seletor-local" id="select-estado" aria-label="Filtrar por Estado">
-        <option value="">Selecione o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-cidade" aria-label="Filtrar por Cidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-uni" aria-label="Filtrar por Universidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-    </div>
-
-    <input class="busca" id="busca" type="search" autocomplete="off"
-           aria-label="Buscar grupo pelo nome"
-           data-texto-dica="gruposBusca"
-           placeholder="Buscar grupo…">
-
-    <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
-    <p class="contagem" id="contagem"></p>
-
-    <ul class="lista" id="lista"></ul>
-    <p class="vazio" id="vazio" data-texto="gruposVazio" hidden></p>
-
-    <nav class="paginas" id="grupos-paginas" aria-label="Páginas dos grupos" hidden>
-      <button class="pagina" type="button" id="grupos-voltar">
-        <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
-      </button>
-      <span class="paginas__onde" id="grupos-onde" aria-live="polite"></span>
-      <button class="pagina" type="button" id="grupos-avancar">
-        <span data-texto="paginaProxima">próxima</span> <span aria-hidden="true">→</span>
-      </button>
-    </nav>
-  </section>
-
-  <!-- blocos adicionais -->
-  <section class="bloco">
-    <h2 data-texto="listasTitulo">Faltou alguma coisa?</h2>
-    <p data-texto="listasTexto">Os grupos que não estão aqui vêm por WhatsApp, é só pedir.</p>
-
-    <a class="botao" id="lista-completa" href="#INCLUIRFESTA" target="_blank" rel="noopener">
-      <span><span data-texto="listaBotao">Pedir a lista completa</span><small data-texto="listaBotaoNota">todos os grupos da UFMG</small></span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <a class="botao" id="caronas" href="#INDICARGRUPO" target="_blank" rel="noopener">
-      <span><span data-texto="caronasBotao">Pedir a lista de caronas</span><small data-texto="caronasNota">grupos de carona da UFMG</small></span>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
-  <section class="bloco">
-    <h2 data-texto="apoioTitulo">Ajude a manter os grupos</h2>
-    <p data-texto="apoioTexto">Administrar mais de cem grupos toma tempo e paciência.</p>
-
-    <button class="botao" id="copiar-pix" type="button">
-      <span class="pix"><span id="pix-numero">—</span><small id="pix-rotulo">Chave pix</small></span>
-      <span aria-hidden="true">⧉</span>
-    </button>
-
-    <!-- Botão atualizado com link dinâmico para sugerir novo grupo -->
-    <a class="botao" id="sugerir" href="https://wa.me/5531991579687?text=EI%20GALERA%20DA%20PLURIVERSIDADE%2C%20QUERO%20SUGERIR%20A%20CRIAÇÃO%20DE%20UM%20GRUPO%21" target="_blank" rel="noopener">
-      <span><span data-texto="sugerirBotao">Sugerir um grupo novo</span><small data-texto="sugerirNota">falar no privado</small></span>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
-</main>
-
-<footer class="rodape">
-  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
-    <rect width="1200" height="300" fill="#1F3347"/>
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#17232E"/>
-  </svg>
-
-  <div class="rodape__texto">
-    <p>
-      <span data-texto="rodapeAviso">Grupo lotado ou link quebrado? Avise no WhatsApp</span>
-      <a id="suporte" href="#" target="_blank" rel="noopener">—</a>
-    </p>
-    <p class="rodape__isencao" data-texto="rodapeIsencao">
-      Página independente, mantida pela comunidade.
-    </p>
   </div>
-</footer>
 
-<!-- Modal de Visualização de Mídia em Tela Cheia -->
-<div class="modal-midia" id="modal-midia" hidden>
-  <div class="modal-midia__conteudo">
-    <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar">&times;</button>
-    <div id="modal-container-midia"></div>
+  <!-- POPUP COMISSÁRIO PLURI -->
+  <div id="popup-comissario" hidden class="modal-midia">
+    <div class="modal-midia__conteudo popup-comissario__conteudo">
+      <button id="popup-comissario-fechar" type="button" class="modal-midia__fechar" aria-label="Fechar Popup">&times;</button>
+      
+      <div class="popup-comissario__video-wrapper">
+        <video id="popup-comissario-video" class="popup-comissario__video" controls autoplay playsinline>
+          <source src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" type="video/mp4">
+          Seu navegador não suporta a reprodução de vídeo.
+        </video>
+      </div>
+
+      <div class="popup-comissario__texto">
+        <h3>Por que ter comissários é essencial para as festas?</h3>
+        <p>
+          Organizar uma festa universitária exige investimento e dedicação! As comissões organizadoras precisam arrecadar fundos antecipados para conseguir contratar os melhores DJs e atrações, alugar espaços incríveis, garantir a estrutura de som e iluminação, e investir pesado em marketing para divulgar o evento.
+        </p>
+        <p>
+          É aí que entram os <strong>comissários de vendas</strong>: a Pluriversidade atua como a ponte perfeita entre os organizadores das festas (comissão) e os comissários (vendedores). Os comissários impulsionam as vendas antecipadas, viabilizam a realização do evento e, em troca, ganham comissão em dinheiro, cortesias para curtir a festa de graça e vantagens exclusivas!
+        </p>
+      </div>
+
+      <div class="popup-comissario__footer">
+        <a id="btn-inscrever-comissario" href="https://forms.gle/" target="_blank" rel="noopener" class="popup-comissario__btn-inscrever">
+          PREENCHER FORMULÁRIO DE INSCRIÇÃO
+        </a>
+      </div>
+    </div>
   </div>
-</div>
 
-<script src="js/dados-textos.js"></script>
-<script src="js/dados-grupos.js"></script>
-<script src="js/dados-festas.js"></script>
-<script src="js/dados-parceiros.js"></script>
-<script src="js/app.js"></script>
-
+  <!-- SCRIPTS -->
+  <script src="js/dados-textos.js"></script>
+  <script src="js/dados-grupos.js"></script>
+  <script src="js/dados-festas.js"></script>
+  <script src="js/dados-parceiros.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

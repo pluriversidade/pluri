@@ -106,7 +106,6 @@
     var pixNumero = document.getElementById("pix-numero");
     var pixRotulo = document.getElementById("pix-rotulo");
 
-    // Pega a chave dos dados/contatos se existir, ou define um fallback padrão
     var chavePix = (contatos && contatos.pix) ? contatos.pix : (window.CHAVE_PIX || "pix@pluri.com");
 
     if (pixNumero) {
@@ -128,6 +127,48 @@
         });
       });
     }
+  }
+
+  /* CONFIGURAR POPUP COMISSÁRIO */
+  function configurarPopupComissario() {
+    var btnAbrir = document.getElementById("btn-abrir-popup-comissario");
+    var popup = document.getElementById("popup-comissario");
+    var btnFechar = document.getElementById("popup-comissario-fechar");
+    var video = document.getElementById("popup-comissario-video");
+
+    if (!btnAbrir || !popup) return;
+
+    function abrirPopup() {
+      popup.hidden = false;
+      if (video) {
+        video.currentTime = 0;
+        var playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function (error) {
+            console.log("Autoplay prevenido pelo navegador:", error);
+          });
+        }
+      }
+    }
+
+    function fecharPopup() {
+      popup.hidden = true;
+      if (video) {
+        video.pause();
+      }
+    }
+
+    btnAbrir.addEventListener("click", abrirPopup);
+
+    if (btnFechar) {
+      btnFechar.addEventListener("click", fecharPopup);
+    }
+
+    popup.addEventListener("click", function (e) {
+      if (e.target === popup) {
+        fecharPopup();
+      }
+    });
   }
 
   /* PAGINAÇÃO */
@@ -766,6 +807,7 @@
 
   aplicarTextos();
   configurarPix();
+  configurarPopupComissario();
   montarParceiros();
   montarFestas();
   montarGrupos();
