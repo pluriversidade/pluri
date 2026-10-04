@@ -388,19 +388,20 @@ a { color: inherit; }
 
 /* ---------------------------------------------------- chips de categorias --- */
 
-/* Grade de 2 colunas para organizar as categorias */
+/* Grade responsiva para organizar as categorias sem estouro */
 .chips {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: .5rem;
   padding: .7rem 0 .2rem;
   margin: 0;
   width: 100%;
+  box-sizing: border-box;
 }
 
-/* O primeiro botão ("Todas as Categorias") ocupa as 2 colunas */
+/* O primeiro botão ("Todas as Categorias") ocupa toda a largura */
 .chip-grupo--todas {
-  grid-column: span 2;
+  grid-column: 1 / -1;
 }
 
 .chip-grupo {
@@ -410,11 +411,13 @@ a { color: inherit; }
   background: var(--papel);
   border: 1px solid var(--regua);
   border-radius: 12px;
-  padding: .4rem .6rem;
-  gap: .4rem;
+  padding: .4rem .5rem;
+  gap: .3rem;
   min-height: 46px;
   box-shadow: var(--sombra);
   transition: border-color .2s ease, background-color .2s ease;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .chip-grupo[aria-pressed="true"] {
@@ -426,26 +429,27 @@ a { color: inherit; }
 .chip-conteudo {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: .4rem;
   background: transparent;
   border: none;
   color: inherit;
   font-family: var(--sans);
-  font-size: .85rem;
+  font-size: .82rem;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   min-width: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .chip-img {
-  width: 35px;
-  height: 35px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   object-fit: cover;
-  flex: 0 0 35px;
+  flex: 0 0 32px;
   background: var(--fundo);
 }
 
@@ -454,12 +458,13 @@ a { color: inherit; }
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1 1 auto;
+  min-width: 0;
 }
 
 .btn-share-cat {
   font-family: var(--sans);
-  font-size: .85rem;
-  padding: .2rem .4rem;
+  font-size: .8rem;
+  padding: .2rem .35rem;
   border-radius: 8px;
   border: 1px solid var(--regua);
   background: var(--fundo);
@@ -481,6 +486,28 @@ a { color: inherit; }
 
 .btn-share-cat:hover {
   background: #f0ece1;
+}
+
+@media (max-width: 420px) {
+  .chips {
+    grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+    gap: .4rem;
+  }
+  
+  .chip-grupo {
+    padding: .35rem .4rem;
+  }
+  
+  .chip-conteudo {
+    font-size: .78rem;
+    gap: .3rem;
+  }
+  
+  .chip-img {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
 }
 
 .contagem {
