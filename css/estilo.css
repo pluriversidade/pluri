@@ -637,8 +637,8 @@ a { color: inherit; }
 }
 
 .grupo__btn-share,
-.reportar,
-.btn-compartilhar-grupo {
+.festa__btn-share,
+.reportar {
   flex: 1;
   display: flex;
   align-items: center;
@@ -649,13 +649,12 @@ a { color: inherit; }
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: .95rem;
+  font-size: .9rem;
   transition: background-color .2s ease, color .2s ease;
-  line-height: 1;
 }
 
 .grupo__btn-share,
-.btn-compartilhar-grupo {
+.festa__btn-share {
   border-bottom: 1px solid var(--regua);
   border-radius: 0 11px 0 0;
 }
@@ -665,7 +664,7 @@ a { color: inherit; }
 }
 
 .grupo__btn-share:hover,
-.btn-compartilhar-grupo:hover {
+.festa__btn-share:hover {
   background: #E4F0E9;
   color: var(--verde);
 }
@@ -834,17 +833,17 @@ a { color: inherit; }
 
 .festa {
   display: flex;
+  align-items: stretch;
   gap: .9rem;
   background: var(--papel);
   border: 1px solid var(--regua);
   border-left: 5px solid var(--cor, var(--terracota));
   border-radius: 12px;
-  padding: .85rem .9rem;
+  padding: 0;
   box-shadow: var(--sombra);
-  align-items: center;
-  justify-content: space-between;
   transition: background-color .4s ease, border-color .4s ease;
   max-width: 100%;
+  overflow: hidden;
 }
 
 .festa--destaque {
@@ -860,6 +859,7 @@ a { color: inherit; }
   border-radius: 10px;
   padding: .4rem .2rem .45rem;
   align-self: flex-start;
+  margin: .85rem 0 .85rem .9rem;
 }
 
 .festa__semana,
@@ -893,7 +893,11 @@ a { color: inherit; }
   padding-top: 3px;
 }
 
-.festa__corpo { flex: 1 1 auto; min-width: 0; }
+.festa__corpo { 
+  flex: 1 1 auto; 
+  min-width: 0; 
+  padding: .85rem 0;
+}
 
 .festa__uni {
   margin: 0;
@@ -1012,6 +1016,8 @@ a { color: inherit; }
   background: #000;
   border: 1px solid var(--regua);
   transition: transform .2s ease, box-shadow .2s ease;
+  align-self: center;
+  margin-right: .5rem;
 }
 
 .festa__mini-container:hover {

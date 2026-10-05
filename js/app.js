@@ -477,10 +477,12 @@
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
                 '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Seja Comissário</a>' +
-                '<button class="festa__link btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '">🔗 Compartilhar</button>' +
               '</div>' +
             '</div>' +
             miniHtml +
+            '<div class="grupo__acoes">' +
+              '<button class="festa__btn-share btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '" title="Compartilhar Festa no WhatsApp">🔗</button>' +
+            '</div>' +
           '</li>'
         );
       }).join("");
@@ -492,7 +494,8 @@
       if (contaAba) contaAba.textContent = visiveis.length;
 
       Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-festa"), function (btn) {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
           var slug = btn.getAttribute("data-slug");
           var urlCard = location.origin + location.pathname + "#festas/" + slug;
 
@@ -528,15 +531,8 @@
             "31991579687 - Whatsapp\n\n" +
             "#############";
 
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(textoCompartilhamento).then(function () {
-              var originalText = btn.textContent;
-              btn.textContent = "✓ Copiado!";
-              setTimeout(function () { btn.textContent = originalText; }, 2000);
-            }).catch(function (err) {
-              console.error("Erro ao copiar mensagem: ", err);
-            });
-          }
+          var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
+          window.open(urlWhatsapp, "_blank");
         });
       });
     }
@@ -710,7 +706,7 @@
             "*Faça sua parte*, ajude a promover os grupos da *" + uniMaiuscula + "* compartilhando essa mensagem em outros grupos da " + nomeUni + ".";
 
           var msg = encodeURIComponent(msgTexto);
-          window.open("https://wa.me/?text=" + msg, "_blank");
+          window.open("https://api.whatsapp.com/send?text=" + msg, "_blank");
         });
       });
     }
@@ -825,10 +821,10 @@
                 (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
               '</div>' +
             '</a>' +
-            '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
-              '⚠' +
-            '</a>' +
-            '<button class="festa__link btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 Compartilhar</button>' +
+            '<div class="grupo__acoes">' +
+              '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗</button>' +
+              '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">⚠</a>' +
+            '</div>' +
           '</li>'
         );
       }).join("");
@@ -885,15 +881,8 @@
             "Link do grupo: " + urlCard + "\n\n" +
             "Compartilhe essa mensagem em outros grupos da " + (nomeUni || "universidade") + " para que essa informação útil chegue a mais pessoas.";
 
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(textoCompartilhamento).then(function () {
-              var originalText = btn.textContent;
-              btn.textContent = "✓ Copiado!";
-              setTimeout(function () { btn.textContent = originalText; }, 2000);
-            }).catch(function (err) {
-              console.error("Erro ao copiar mensagem do grupo: ", err);
-            });
-          }
+          var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
+          window.open(urlWhatsapp, "_blank");
         });
       });
     }
