@@ -637,7 +637,8 @@ a { color: inherit; }
 }
 
 .grupo__btn-share,
-.reportar {
+.reportar,
+.btn-compartilhar-grupo {
   flex: 1;
   display: flex;
   align-items: center;
@@ -648,11 +649,13 @@ a { color: inherit; }
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: .9rem;
+  font-size: .95rem;
   transition: background-color .2s ease, color .2s ease;
+  line-height: 1;
 }
 
-.grupo__btn-share {
+.grupo__btn-share,
+.btn-compartilhar-grupo {
   border-bottom: 1px solid var(--regua);
   border-radius: 0 11px 0 0;
 }
@@ -661,7 +664,8 @@ a { color: inherit; }
   border-radius: 0 0 11px 0;
 }
 
-.grupo__btn-share:hover {
+.grupo__btn-share:hover,
+.btn-compartilhar-grupo:hover {
   background: #E4F0E9;
   color: var(--verde);
 }

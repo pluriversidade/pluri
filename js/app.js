@@ -1,4 +1,3 @@
-
 /* ═══════════════════════════════════════════════════════════════════════════
    O FUNCIONAMENTO DA PÁGINA
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -826,10 +825,10 @@
                 (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
               '</div>' +
             '</a>' +
-            '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
-              '⚠' +
-            '</a>' +
-            '<button class="festa__link btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 Compartilhar</button>' +
+            '<div class="grupo__acoes">' +
+              '<button class="btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗</button>' +
+              '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">⚠</a>' +
+            '</div>' +
           '</li>'
         );
       }).join("");
@@ -888,9 +887,9 @@
 
           if (navigator.clipboard) {
             navigator.clipboard.writeText(textoCompartilhamento).then(function () {
-              var originalText = btn.textContent;
-              btn.textContent = "✓ Copiado!";
-              setTimeout(function () { btn.textContent = originalText; }, 2000);
+              var originalIcon = btn.textContent;
+              btn.textContent = "✓";
+              setTimeout(function () { btn.textContent = originalIcon; }, 2000);
             }).catch(function (err) {
               console.error("Erro ao copiar mensagem do grupo: ", err);
             });
@@ -1097,4 +1096,3 @@
     configurarModalComissario();
   });
 })();
-
