@@ -118,7 +118,7 @@
     blocosComDados.forEach(function (item) {
       var tamanhoBloco = item.textoWa.length;
 
-      if ((tamanhoAtual + tamanhoBloco + rodapeBase.length) > LIMITE_WHATSAPP_CHARS && parteAtualTextos.length > 0) {
+      if ((tamanhoAtual + tamanhoBloco + rodapeBase.length + 300) > LIMITE_WHATSAPP_CHARS && parteAtualTextos.length > 0) {
         partes.push({
           textos: parteAtualTextos,
           categorias: parteAtualCategorias
@@ -145,16 +145,28 @@
     // Constrói a mensagem final do WhatsApp para cada parte
     return partes.map(function (parte, idx) {
       var numParte = idx + 1;
+      var numProximaLista = numParte + 1;
       var indicacaoParte = totalPartes > 1 ? " (PARTE " + numParte + "/" + totalPartes + ")" : "";
+
+      var sufixoProximaLista = "";
+      if (numParte < totalPartes) {
+        var msgSuporte = "Olá, gostaria de receber a lista " + numProximaLista + " dos grupos que ainda tem vaga da " + nomeUni + ", você pode me enviar aqui por favor?";
+        var linkWaProxima = "https://wa.me/5531991579687?text=" + encodeURIComponent(msgSuporte);
+
+        sufixoProximaLista = "\n\nPara pedir a lista " + numProximaLista + ", clique aqui: " + linkWaProxima;
+      }
+
       var textoWaCompleto = cabecalhoBase + indicacaoParte + "\n\n" +
         parte.textos.join("") +
-        rodapeBase;
+        rodapeBase +
+        sufixoProximaLista;
 
       return {
         numParte: numParte,
         totalPartes: totalPartes,
         textoWa: textoWaCompleto,
-        categorias: parte.categorias
+        categorias: parte.categorias,
+        sufixoProximaLista: sufixoProximaLista
       };
     });
   }
@@ -186,7 +198,6 @@
       var htmlCategorias = parte.categorias.map(function (cat) {
         var htmlGrupos = cat.grupos.map(function (g) {
           var slugGrupo = slugify(g.nome);
-          var urlCard = location.origin + location.pathname.replace("lista-ufmg.html", "index.html") + "#grupos/" + slugGrupo;
 
           return (
             '<li class="item" style="--cor:' + cat.cor + '; margin-bottom: 0.5rem;">' +
@@ -214,12 +225,20 @@
         );
       }).join("");
 
+      var htmlPedirProxima = parte.sufixoProximaLista ? (
+        '<div style="margin-top: 1.5rem; padding: 1rem; background: var(--fundo, #f4f6f8); border-radius: 6px; font-size: 0.95rem; color: var(--tinta);">' +
+          '<strong>Link para pedir a próxima lista inserido no WhatsApp:</strong><br>' +
+          '<code style="word-break: break-all;">' + escapar(parte.sufixoProximaLista.trim()) + '</code>' +
+        '</div>'
+      ) : "";
+
       return (
         '<section class="bloco" style="background: var(--papel); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--linha);">' +
           '<h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--azul); border-bottom: 2px solid var(--linha); padding-bottom: 0.5rem;">' +
             'Parte ' + parte.numParte + ' de ' + parte.totalPartes +
           '</h2>' +
           htmlCategorias +
+          htmlPedirProxima +
         '</section>'
       );
     }).join("");
