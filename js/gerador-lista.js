@@ -1,12 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   GERADOR DA LISTA COMPLETA DA UFMG (PLURIVERSIDADE)
+   GERADOR DE LISTAS DIVIDIDAS PARA WHATSAPP
    ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
   "use strict";
 
+  var LIMITE_WHATSAPP_CHARS = 3800; // Limite seguro para garantir links clicáveis
+
   var grupos = window.GRUPOS || [];
   var categorias = window.CATEGORIAS || {};
+  var unis = window.UNIVERSIDADES || {};
 
   function pareceLink(url) {
     return typeof url === "string" && /^https?:\/\/.+/.test(url.trim());
@@ -21,121 +24,133 @@
       .replace(/^-+|-+$/g, "");
   }
 
-  // Filtrar apenas grupos da UFMG que NÃO estão lotados
-  // Considera lotado: se lotado === true OU se tiver 1024 membros ou mais
-  var gruposUFMG = grupos.filter(function (g) {
-    if (!g || !g.nome || !pareceLink(g.url)) return false;
-
-    var ehUFMG = g.uni && String(g.uni).toLowerCase() === "ufmg";
-    var qtdMembros = typeof g.membros === "number" ? g.membros : parseInt(g.membros, 10) || 0;
-    var ehLotado = g.lotado === true || qtdMembros >= 1024;
-
-    return ehUFMG && !ehLotado;
-  });
-
-  // Agrupar por categoria
-  var porCategoria = {};
-  gruposUFMG.forEach(function (g) {
-    var catKey = g.cat || "outros";
-    if (!porCategoria[catKey]) {
-      porCategoria[catKey] = [];
-    }
-    porCategoria[catKey].push(g);
-  });
-
-  function gerarTextoWhatsApp() {
-    var linhas = [];
-    linhas.push("*LISTA COMPLETA COM OS LINKS DOS GRUPOS DA UFMG*");
-    linhas.push("");
-
-    Object.keys(porCategoria).forEach(function (catKey) {
-      var catObj = categorias[catKey] || { nome: catKey.toUpperCase() };
-      var listaCat = porCategoria[catKey];
-      var count = listaCat.length;
-
-      linhas.push("════════════════════════");
-      linhas.push("*" + catObj.nome.toUpperCase() + "* - [" + count + " grupo" + (count > 1 ? "s" : "") + "]");
-      linhas.push("_(Grupos não listados nesta categoria estão lotados)_");
-      linhas.push("");
-
-      listaCat.forEach(function (g) {
-        var slug = slugify(g.nome);
-        var urlCard = "https://pluriversidade.github.io/pluri/#grupos/" + slug;
-        var qtdMembros = g.membros ? g.membros + " membros" : "Grupo aberto";
-
-        linhas.push("• *" + g.nome + "* - [" + qtdMembros + "]");
-        linhas.push(urlCard);
-        linhas.push("");
-      });
+  /* Filtra apenas grupos válidos da UFMG que não estejam lotados */
+  function obterGruposEntraveis(siglaUni) {
+    var uniAlvo = (siglaUni || "ufmg").toLowerCase();
+    return grupos.filter(function (g) {
+      var bateUni = g && g.uni && g.uni.toLowerCase() === uniAlvo;
+      var temLink = pareceLink(g.url);
+      var naoLotado = !g.lotado;
+      return bateUni && temLink && naoLotado;
     });
-
-    linhas.push("════════════════════════");
-    linhas.push("*Compartilhe essa lista em todos os grupos da UFMG*");
-
-    return linhas.join("\n");
   }
 
-  function renderizarPreviewVisual() {
-    var container = document.getElementById("container-lista-preview");
-    if (!container) return;
+  /* Agrupa a lista em blocos de categoria */
+  function gerarBlocosPorCategoria(gruposFiltrados, nomeUni) {
+    var porCat = {};
 
-    var html = [];
-    html.push('<div style="text-align: center; margin-bottom: 1.5rem;">');
-    html.push('<h2 style="margin: 0; font-size: 1.3rem; color: var(--terracota);">*LISTA COMPLETA COM OS LINKS DOS GRUPOS DA UFMG*</h2>');
-    html.push('<p style="font-size: 0.85rem; color: var(--tinta-fraca); margin-top: 0.3rem;">Total de grupos ativos (não lotados): <strong>' + gruposUFMG.length + '</strong></p>');
-    html.push('</div>');
+    gruposFiltrados.forEach(function (g) {
+      if (!porCat[g.cat]) {
+        porCat[g.cat] = [];
+      }
+      porCat[g.cat].push(g);
+    });
 
-    Object.keys(porCategoria).forEach(function (catKey) {
+    var blocos = [];
+
+    Object.keys(porCat).forEach(function (catKey) {
+      var listaCat = porCat[catKey];
+      if (listaCat.length === 0) return;
+
       var catObj = categorias[catKey] || { nome: catKey };
-      var listaCat = porCategoria[catKey];
-      var corCat = catObj.cor || "var(--verde)";
+      var tituloCat = catObj.nome.toUpperCase();
 
-      html.push('<div style="border-left: 4px solid ' + corCat + '; padding-left: 0.8rem; margin-top: 1.8rem; margin-bottom: 0.8rem;">');
-      html.push('<h3 style="margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.03em;">' + catObj.nome + ' <span style="font-size: 0.85rem; font-weight: normal; color: var(--tinta-fraca);">— [' + listaCat.length + ' grupos]</span></h3>');
-      html.push('<p style="margin: 0.1rem 0 0; font-size: 0.78rem; color: var(--tinta-fraca); font-style: italic;">Grupos não listados nesta categoria estão lotados.</p>');
-      html.push('</div>');
+      var textoBloco = "════════════════════════\n" +
+        "*" + tituloCat + "* - [" + listaCat.length + " " + (listaCat.length === 1 ? "grupo" : "grupos") + "]\n" +
+        "_(Grupos não listados nesta categoria estão lotados)_\n\n";
 
-      html.push('<div style="display: grid; gap: 0.6rem; margin-bottom: 1.2rem;">');
       listaCat.forEach(function (g) {
-        var slug = slugify(g.nome);
-        var urlCard = "https://pluriversidade.github.io/pluri/#grupos/" + slug;
-        var qtdMembros = g.membros ? g.membros + " membros" : "Membros não informados";
+        var slugGrupo = slugify(g.nome);
+        var urlCard = "https://pluriversidade.github.io/pluri/#grupos/" + slugGrupo;
+        var infoMembros = g.membros ? "[" + g.membros + " membros]" : "[Grupo aberto]";
 
-        html.push('<div style="background: var(--fundo); border: 1px solid var(--regua); border-radius: 8px; padding: 0.6rem 0.8rem;">');
-        html.push('<div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">');
-        html.push('<strong style="font-size: 0.95rem;">' + g.nome + '</strong>');
-        html.push('<span style="font-size: 0.75rem; background: rgba(0,0,0,0.06); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: var(--mono);">' + qtdMembros + '</span>');
-        html.push('</div>');
-        html.push('<a href="' + urlCard + '" target="_blank" style="font-size: 0.8rem; color: var(--verde); word-break: break-all; margin-top: 0.3rem; display: block;">' + urlCard + '</a>');
-        html.push('</div>');
+        textoBloco += "• *" + g.nome + "* - " + infoMembros + "\n" + urlCard + "\n\n";
       });
-      html.push('</div>');
+
+      blocos.push(textoBloco);
     });
 
-    html.push('<div style="text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px dashed var(--regua);">');
-    html.push('<p style="font-weight: bold; color: var(--terracota); font-size: 1rem;">*Compartilhe essa lista em todos os grupos da UFMG*</p>');
-    html.push('</div>');
-
-    container.innerHTML = html.join("");
+    return blocos;
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    renderizarPreviewVisual();
+  /* Divide os blocos em partes menores respeitando o limite do WhatsApp */
+  function fatiarTextoPorTamanho(blocos, nomeUni) {
+    var cabecalhoBase = "*LISTA COMPLETA COM OS LINKS DOS GRUPOS DA " + nomeUni.toUpperCase() + "*";
+    var rodapeBase = "════════════════════════\n*Compartilhe essa lista em todos os grupos da " + nomeUni.toUpperCase() + "*";
 
-    var btnCopiar = document.getElementById("btn-copiar-lista");
-    if (btnCopiar) {
-      btnCopiar.addEventListener("click", function () {
-        var textoFormatado = gerarTextoWhatsApp();
-        navigator.clipboard.writeText(textoFormatado).then(function () {
-          var textoOriginal = btnCopiar.textContent;
-          btnCopiar.textContent = "✅ LISTA COPIADA!";
+    var partes = [];
+    var parteAtual = "";
+
+    blocos.forEach(function (bloco) {
+      if ((parteAtual + bloco + rodapeBase).length > LIMITE_WHATSAPP_CHARS && parteAtual.length > 0) {
+        partes.push(parteAtual.trim());
+        parteAtual = "";
+      }
+      parteAtual += bloco;
+    });
+
+    if (parteAtual.trim().length > 0) {
+      partes.push(parteAtual.trim());
+    }
+
+    var totalPartes = partes.length;
+
+    return partes.map(function (conteudo, idx) {
+      var numParte = idx + 1;
+      var indicacaoParte = totalPartes > 1 ? " (PARTE " + numParte + "/" + totalPartes + ")" : "";
+      
+      return cabecalhoBase + indicacaoParte + "\n\n" + conteudo + "\n" + rodapeBase;
+    });
+  }
+
+  /* Renderização e eventos */
+  function inicializarGerador() {
+    var containerBotoes = document.getElementById("container-botoes-copiar");
+    var containerPreview = document.getElementById("container-lista-preview");
+
+    if (!containerPreview || !containerBotoes) return;
+
+    var siglaUni = "ufmg";
+    var objUni = unis[siglaUni] || { nome: "UFMG" };
+    var nomeUni = objUni.nome || "UFMG";
+
+    var gruposValidos = obterGruposEntraveis(siglaUni);
+    var blocos = gerarBlocosPorCategoria(gruposValidos, nomeUni);
+    var mensagensFinais = fatiarTextoPorTamanho(blocos, nomeUni);
+
+    // Gerar Botões
+    containerBotoes.innerHTML = mensagensFinais.map(function (_, index) {
+      var num = index + 1;
+      return '<button class="card-comissario__btn btn-copiar-parte" data-index="' + index + '" style="padding: 0.7rem 1rem; font-size: 0.9rem;">' +
+        '📋 COPIAR PARTE ' + num + ' DE ' + mensagensFinais.length +
+        '</button>';
+    }).join("");
+
+    // Gerar Preview visual com separadores das partes
+    containerPreview.textContent = mensagensFinais.map(function (msg, idx) {
+      return "--- PARTE " + (idx + 1) + " DE " + mensagensFinais.length + " (" + msg.length + " caracteres) ---\n\n" + msg;
+    }).join("\n\n\n");
+
+    // Eventos de cópia
+    Array.prototype.forEach.call(document.querySelectorAll(".btn-copiar-parte"), function (btn) {
+      btn.addEventListener("click", function () {
+        var idx = Number(btn.getAttribute("data-index"));
+        var textoParaCopiar = mensagensFinais[idx];
+
+        navigator.clipboard.writeText(textoParaCopiar).then(function () {
+          var textoOriginal = btn.textContent;
+          btn.textContent = "✅ PARTE " + (idx + 1) + " COPIADA!";
+          btn.style.background = "var(--verde, #2e7d32)";
           setTimeout(function () {
-            btnCopiar.textContent = textoOriginal;
+            btn.textContent = textoOriginal;
+            btn.style.background = "";
           }, 2500);
         }).catch(function (err) {
-          alert("Erro ao copiar lista: " + err);
+          console.error("Erro ao copiar texto: ", err);
         });
       });
-    }
-  });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", inicializarGerador);
 })();
