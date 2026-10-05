@@ -480,8 +480,8 @@
               '</div>' +
             '</div>' +
             miniHtml +
-            '<div class="grupo__acoes">' +
-              '<button class="festa__btn-share btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '" title="Compartilhar Festa no WhatsApp">🔗</button>' +
+            '<div class="grupo__acoes festa__acoes">' +
+              '<button class="festa__btn-share btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '" title="Compartilhar Festa no WhatsApp">🔗 <span class="texto-vertical">COMPARTILHAR</span></button>' +
             '</div>' +
           '</li>'
         );
@@ -834,8 +834,8 @@
                 '</div>' +
               '</div>' +
               '<div class="grupo__acoes">' +
-                '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗</button>' +
-                '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">⚠</a>' +
+                '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 <span class="texto-vertical">COMPARTILHAR</span></button>' +
+                '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">⚠ <span class="texto-vertical">QUEBRADO</span></a>' +
               '</div>' +
             '</div>' +
             botaoEntrarHtml +
@@ -846,27 +846,10 @@
       var vazio = document.getElementById("vazio");
       if (vazio) vazio.hidden = visiveis.length > 0;
 
-      if (contagem) {
-        contagem.textContent = visiveis.length + " grupo(s) encontrado(s)";
-      }
-
       var contaAba = document.getElementById("aba-grupos-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
 
-      var totalMembros = 0;
-      gruposBons.forEach(function (g) {
-        if (g.membros) totalMembros += Number(g.membros) || 0;
-      });
-
-      var elGrupos = document.getElementById("painel-grupos");
-      var elMembros = document.getElementById("painel-membros");
-      var elMedia = document.getElementById("painel-media");
-
-      if (elGrupos) elGrupos.textContent = gruposBons.length;
-      if (elMembros) elMembros.textContent = totalMembros > 0 ? totalMembros.toLocaleString("pt-BR") : "—";
-      if (elMedia) elMedia.textContent = gruposBons.length > 0 ? Math.round(totalMembros / gruposBons.length) : "—";
-
-      /* Configuração dos eventos de clique para o botão Compartilhar nos cards de grupos */
+      /* Evento para o botão de compartilhar no WhatsApp individual do grupo */
       Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-grupo"), function (btn) {
         btn.addEventListener("click", function (e) {
           e.stopPropagation();
@@ -879,26 +862,46 @@
 
           if (!g) return;
 
-          var uniObj = unisData[g.uni] || {};
-          var nomeUni = uniObj.nome || g.uni || "";
-          var cidObj = uniObj.cidade ? cidadesData[uniObj.cidade] : null;
-          var nomeCidade = cidObj ? cidObj.nome : "";
-          var descGrupo = g.desc || "";
-          var qtdMembros = g.membros ? String(g.membros) : "Não informada";
+          var cat = categorias[g.cat] || {};
+          var nomeCat = cat.nome || g.cat || "";
 
           var textoCompartilhamento =
-            "*Ei*, confira este grupo do Whatsapp " + (nomeUni ? "da *" + nomeUni + "*" : "") + " no site da *Pluriversidade*:\n\n" +
-            "*Nome do grupo:* " + g.nome + "\n\n" +
-            "*Descrição:* " + descGrupo + "\n\n" +
-            "Quantidade de Membros: " + qtdMembros + "\n\n" +
-            nomeUni + (nomeCidade ? " / " + nomeCidade : "") + "\n\n" +
-            "Link do grupo: " + urlCard + "\n\n" +
-            "Compartilhe essa mensagem em outros grupos da " + (nomeUni || "universidade") + " para que essa informação útil chegue a mais pessoas.";
+            "*Ei*, achei esse grupo do *WhatsApp* e resolvi *compartilhar* com você!\n" +
+            urlCard + "\n\n" +
+            "#############\n\n" +
+            "*" + g.nome.toUpperCase() + "*\n" +
+            "*" + nomeCat + "*\n\n" +
+            (g.desc ? g.desc + "\n\n" : "") +
+            "*Acesse o link direto do grupo:* " + g.url + "\n\n" +
+            "*Pluriversidade.com.br*\n" +
+            "31991579687 - Whatsapp\n\n" +
+            "#############";
 
           var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
           window.open(urlWhatsapp, "_blank");
         });
       });
+
+      /* Atualiza Painel Numérico Superior */
+      var totalGrupos = visiveis.length;
+      var totalMembros = 0;
+
+      visiveis.forEach(function (g) {
+        var num = parseInt(g.membros, 10);
+        if (!isNaN(num)) {
+          totalMembros += num;
+        }
+      });
+
+      var mediaMembros = totalGrupos > 0 ? Math.round(totalMembros / totalGrupos) : 0;
+
+      var elPainelGrupos = document.getElementById("painel-grupos");
+      var elPainelMembros = document.getElementById("painel-membros");
+      var elPainelMedia = document.getElementById("painel-media");
+
+      if (elPainelGrupos) elPainelGrupos.textContent = totalGrupos;
+      if (elPainelMembros) elPainelMembros.textContent = totalMembros.toLocaleString("pt-BR");
+      if (elPainelMedia) elPainelMedia.textContent = mediaMembros.toLocaleString("pt-BR");
     }
 
     renderEstados();
@@ -911,7 +914,7 @@
   }
 
   /* -------------------------------------------------------------------------
-     GERENCIAMENTO DAS ABAS (GRUPOS x FESTAS) E ROLAGEM DIRETA
+     LÓGICA DAS ABAS (GRUPOS / FESTAS) E HASH NA URL (#grupos e #festas)
      ------------------------------------------------------------------------- */
   function configurarAbas() {
     var abaGrupos = document.getElementById("aba-grupos");
@@ -919,88 +922,56 @@
     var secGrupos = document.getElementById("secao-grupos");
     var secFestas = document.getElementById("secao-festas");
 
-    if (!abaGrupos || !abaFestas || !secGrupos || !secFestas) return;
-
-    function alternar(mostrarFestas, atualizarHash) {
-      abaGrupos.setAttribute("aria-selected", !mostrarFestas);
-      abaFestas.setAttribute("aria-selected", mostrarFestas);
-
-      abaGrupos.tabIndex = mostrarFestas ? -1 : 0;
-      abaFestas.tabIndex = mostrarFestas ? 0 : -1;
-
-      secGrupos.hidden = mostrarFestas;
-      secFestas.hidden = !mostrarFestas;
-
-      if (atualizarHash !== false) {
-        var novoHash = mostrarFestas ? "#festas" : "#grupos";
-        if (location.hash !== novoHash) {
-          history.replaceState(null, "", novoHash);
-        }
+    function alternarAba(qual) {
+      if (qual === "festas") {
+        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "false"); abaGrupos.tabIndex = -1; }
+        if (abaFestas) { abaFestas.setAttribute("aria-selected", "true"); abaFestas.tabIndex = 0; }
+        if (secGrupos) secGrupos.hidden = true;
+        if (secFestas) secFestas.hidden = false;
+      } else {
+        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "true"); abaGrupos.tabIndex = 0; }
+        if (abaFestas) { abaFestas.setAttribute("aria-selected", "false"); abaFestas.tabIndex = -1; }
+        if (secGrupos) secGrupos.hidden = false;
+        if (secFestas) secFestas.hidden = true;
       }
     }
 
-    abaGrupos.addEventListener("click", function () { alternar(false); });
-    abaFestas.addEventListener("click", function () { alternar(true); });
+    if (abaGrupos) abaGrupos.addEventListener("click", function () { alternarAba("grupos"); });
+    if (abaFestas) abaFestas.addEventListener("click", function () { alternarAba("festas"); });
 
     function verificarHash() {
-      var rawHash = location.hash.toLowerCase().replace(/\/$/, "");
+      var hash = location.hash || "";
 
-      if (rawHash === "#festas" || rawHash.indexOf("#festas/") === 0) {
-        alternar(true, false);
-
-        if (rawHash.indexOf("#festas/") === 0) {
-          var slugDesejado = rawHash.replace("#festas/", "");
-          if (slugDesejado) {
-            var idx = festasBoas.findIndex(function (f) { return slugify(f.titulo) === slugDesejado; });
-            if (idx !== -1 && paginasFestas) {
-              var pag = Math.floor(idx / POR_PAGINA) + 1;
-              paginasFestas.irParaPagina(pag);
-              montarFestas();
+      if (hash.indexOf("#festas") !== -1) {
+        alternarAba("festas");
+        var partes = hash.split("/");
+        if (partes.length >= 2) {
+          var slugFesta = partes[1];
+          setTimeout(function () {
+            var elFesta = document.getElementById("festa-" + slugFesta);
+            if (elFesta) {
+              elFesta.scrollIntoView({ behavior: "smooth", block: "center" });
+              elFesta.classList.add("festa--destaque");
+              setTimeout(function () {
+                elFesta.classList.remove("festa--destaque");
+              }, 4000);
             }
-
+          }, 300);
+        }
+      } else if (hash.indexOf("#grupos") !== -1) {
+        alternarAba("grupos");
+        var partesG = hash.split("/");
+        if (partesG.length >= 2) {
+          var param = partesG[1];
+          if (categorias[param] && typeof selecionarCategoriaExternamente === "function") {
+            selecionarCategoriaExternamente(param);
+          } else {
             setTimeout(function () {
-              var elTarget = document.getElementById("festa-" + slugDesejado);
-              if (elTarget) {
-                elTarget.scrollIntoView({ behavior: "smooth", block: "center" });
-                var corOriginal = elTarget.style.outline;
-                elTarget.style.transition = "outline 0.3s ease";
-                elTarget.style.outline = "3px solid var(--cor, #e0214a)";
-                setTimeout(function () {
-                  elTarget.style.outline = corOriginal;
-                }, 3000);
+              var elGrupo = document.getElementById("grupo-" + param);
+              if (elGrupo) {
+                elGrupo.scrollIntoView({ behavior: "smooth", block: "center" });
               }
             }, 300);
-          }
-        }
-      } else {
-        alternar(false, false);
-        if (rawHash.indexOf("#grupos/") === 0) {
-          var paramGrupo = rawHash.replace("#grupos/", "");
-          if (paramGrupo) {
-            // Verifica se é um card de grupo pelo slug
-            var idxGrupo = gruposBons.findIndex(function (g) { return slugify(g.nome) === paramGrupo; });
-
-            if (idxGrupo !== -1 && paginasGrupos) {
-              var pagG = Math.floor(idxGrupo / POR_PAGINA) + 1;
-              paginasGrupos.irParaPagina(pagG);
-              montarGrupos();
-
-              setTimeout(function () {
-                var elTargetG = document.getElementById("grupo-" + paramGrupo);
-                if (elTargetG) {
-                  elTargetG.scrollIntoView({ behavior: "smooth", block: "center" });
-                  var corOrig = elTargetG.style.outline;
-                  elTargetG.style.transition = "outline 0.3s ease";
-                  elTargetG.style.outline = "3px solid var(--cor, #00c853)";
-                  setTimeout(function () {
-                    elTargetG.style.outline = corOrig;
-                  }, 3000);
-                }
-              }, 300);
-            } else if (typeof selecionarCategoriaExternamente === "function") {
-              // Se não for um slug de grupo, tenta abrir como categoria
-              selecionarCategoriaExternamente(paramGrupo);
-            }
           }
         }
       }
@@ -1011,39 +982,42 @@
   }
 
   /* -------------------------------------------------------------------------
-     MODAL DE MÍDIA DAS FESTAS (IMAGENS / VÍDEOS)
+     MODAL DE MÍDIA (FLYER OU VÍDEO)
      ------------------------------------------------------------------------- */
   function configurarModalMidia() {
     var modal = document.getElementById("modal-midia");
-    var fechar = document.getElementById("modal-fechar");
     var container = document.getElementById("modal-container-midia");
+    var btnFechar = document.getElementById("modal-fechar");
 
-    if (!modal || !fechar || !container) return;
+    if (!modal || !container) return;
 
-    document.addEventListener("click", function (e) {
-      var target = e.target.closest(".festa__mini-container");
-      if (!target) return;
-
-      var src = target.getAttribute("data-midia");
-      var tipo = target.getAttribute("data-tipo");
-
-      if (!src) return;
-
+    function abrirModal(src, tipo) {
       if (tipo === "video") {
-        container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay></video>';
+        container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay playsinline></video>';
       } else {
-        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Flyer ampliado">';
+        container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Mídia em tela cheia">';
       }
-
       modal.hidden = false;
-    });
+      document.body.style.overflow = "hidden";
+    }
 
     function fecharModal() {
       modal.hidden = true;
       container.innerHTML = "";
+      document.body.style.overflow = "";
     }
 
-    fechar.addEventListener("click", fecharModal);
+    document.addEventListener("click", function (e) {
+      var target = e.target.closest(".festa__mini-container");
+      if (target) {
+        var src = target.getAttribute("data-midia");
+        var tipo = target.getAttribute("data-tipo");
+        if (src) abrirModal(src, tipo);
+      }
+    });
+
+    if (btnFechar) btnFechar.addEventListener("click", fecharModal);
+
     modal.addEventListener("click", function (e) {
       if (e.target === modal) fecharModal();
     });
@@ -1054,48 +1028,61 @@
   }
 
   /* -------------------------------------------------------------------------
-     MODAL DO COMISSÁRIO PLURI
+     MODAL COMISSÁRIO
      ------------------------------------------------------------------------- */
   function configurarModalComissario() {
+    var btnInfo = document.getElementById("btn-comissario-info");
     var modal = document.getElementById("modal-comissario");
-    var btnAbrir = document.getElementById("btn-comissario-info");
     var btnFechar = document.getElementById("modal-comissario-fechar");
     var video = document.getElementById("video-comissario");
 
-    if (!modal || !btnAbrir || !btnFechar) return;
+    if (!modal) return;
 
-    btnAbrir.addEventListener("click", function () {
+    function abrir() {
       modal.hidden = false;
-      if (video) video.play();
-    });
+      document.body.style.overflow = "hidden";
+      if (video) video.play().catch(function(){});
+    }
 
-    function fecharModal() {
+    function fechar() {
       modal.hidden = true;
+      document.body.style.overflow = "";
       if (video) video.pause();
     }
 
-    btnFechar.addEventListener("click", fecharModal);
+    if (btnInfo) btnInfo.addEventListener("click", abrir);
+    if (btnFechar) btnFechar.addEventListener("click", fechar);
+
     modal.addEventListener("click", function (e) {
-      if (e.target === modal) fecharModal();
+      if (e.target === modal) fechar();
     });
 
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !modal.hidden) fecharModal();
+      if (e.key === "Escape" && !modal.hidden) fechar();
     });
   }
 
   /* -------------------------------------------------------------------------
-     INICIALIZAÇÃO GERAL
+     INICIALIZAÇÃO DA PÁGINA
      ------------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
-    aplicarTextos();
     mostrarProblemas();
+    aplicarTextos();
     configurarPix();
+
+    var totalFestas = montarFestas();
+    var totalGrupos = montarGrupos();
+
     montarParceiros();
-    montarFestas();
-    montarGrupos();
     configurarAbas();
     configurarModalMidia();
     configurarModalComissario();
+
+    var suporte = document.getElementById("suporte");
+    if (suporte && contatos.suporte) {
+      suporte.href = contatos.suporte;
+      suporte.textContent = contatos.suporte.replace(/^https?:\/\//, "");
+    }
   });
+
 })();

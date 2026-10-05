@@ -638,7 +638,21 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--regua);
-  width: 46px;
+  width: 48px;
+}
+
+/* Estilo do texto na vertical nos botões de ação na extrema direita dos cards */
+.texto-vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--sans);
+  font-size: .55rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .grupo__btn-share,
@@ -646,14 +660,16 @@ a { color: inherit; }
 .reportar {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #A8AFA8;
+  gap: .25rem;
+  color: #8C958C;
   text-decoration: none;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: .4rem .1rem;
   font-size: .9rem;
   transition: background-color .2s ease, color .2s ease;
 }
@@ -662,6 +678,11 @@ a { color: inherit; }
 .festa__btn-share {
   border-bottom: 1px solid var(--regua);
   border-radius: 0 11px 0 0;
+}
+
+.festa__acoes .festa__btn-share {
+  border-bottom: none;
+  border-radius: 0 11px 11px 0;
 }
 
 .reportar {
