@@ -576,7 +576,7 @@ a { color: inherit; }
 .grupo__nome {
   display: block;
   font-weight: 650;
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1.25;
   word-break: break-word;
 }

@@ -814,7 +814,7 @@
         if (estaLotado) {
           botaoEntrarHtml = '<span class="grupo__btn-entrar grupo__btn-entrar--lotado">INFELIZMENTE ESTE GRUPO ESTÁ LOTADO. 🚫</span>';
         } else {
-          botaoEntrarHtml = '<a class="grupo__btn-entrar" href="' + g.url + '" target="_blank" rel="noopener">CLIQUE AQUI PARA ENTRAR NO GRUPO NO WHATSAPP ♿</a>';
+          botaoEntrarHtml = '<a class="grupo__btn-entrar" href="' + g.url + '" target="_blank" rel="noopener">ENTRAR NO GRUPO NO WHATSAPP ✅</a>';
         }
 
         return (
