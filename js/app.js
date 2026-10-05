@@ -701,9 +701,9 @@
           }
           var uniMaiuscula = nomeUni.toUpperCase();
 
-          var msgTexto = "*Ei*, confira a categoria *" + nomeCat + "* que contém vários grupos do whatsapp da " + nomeUni + ", no site da *Pluriversidade*, acredito que algum desses grupos vá te interessar!:\n" +
+          var msgTexto = "*Ei*, segue a lista de links de grupos da categoria *" + nomeCat + "* que contém vários grupos do whatsapp da " + nomeUni + ", no site da *Pluriversidade*.\n" +
             urlShare + "\n\n" +
-            "*Faça sua parte*, ajude a promover os grupos da *" + uniMaiuscula + "* compartilhando essa mensagem em outros grupos da " + nomeUni + ".";
+            "*Faça sua parte!* Ajude a promover os grupos da *" + uniMaiuscula + "* compartilhando essa mensagem em outros grupos da " + nomeUni + ".";
 
           var msg = encodeURIComponent(msgTexto);
           window.open("https://api.whatsapp.com/send?text=" + msg, "_blank");
