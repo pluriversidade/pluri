@@ -798,7 +798,7 @@
 
         /* Mensagem de reporte incluindo o link direto do card do grupo */
         var suporteBase = contatos.suporte || "https://wa.me/5531991579687";
-        var textoReport = "Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + " - " + nomeCidade + ") está com problemas ou com link quebrado/lotado.\nLink do card: " + urlCard;
+        var textoReport = "Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + " - " + nomeCidade + ") está com problemas ou com link quebrado/lotado.\nLink do card no site: " + urlCard;
         var msgReport = encodeURIComponent(textoReport);
         var linkReport = "";
 
@@ -825,10 +825,10 @@
                 (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
               '</div>' +
             '</a>' +
+            '<button class="btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">💬 Compartilhar via WhatsApp</button>' +
             '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
-              '⚠' +
+              '⚠ Reportar link quebrado' +
             '</a>' +
-            '<button class="festa__link btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 Compartilhar</button>' +
           '</li>'
         );
       }).join("");
@@ -856,7 +856,7 @@
       if (elMembros) elMembros.textContent = totalMembros > 0 ? totalMembros.toLocaleString("pt-BR") : "—";
       if (elMedia) elMedia.textContent = gruposBons.length > 0 ? Math.round(totalMembros / gruposBons.length) : "—";
 
-      /* Configuração dos eventos de clique para o botão Compartilhar nos cards de grupos */
+      /* Configuração dos eventos de clique para abrir diretamente no WhatsApp ao compartilhar o grupo */
       Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-grupo"), function (btn) {
         btn.addEventListener("click", function (e) {
           e.stopPropagation();
@@ -885,15 +885,8 @@
             "Link do grupo: " + urlCard + "\n\n" +
             "Compartilhe essa mensagem em outros grupos da " + (nomeUni || "universidade") + " para que essa informação útil chegue a mais pessoas.";
 
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(textoCompartilhamento).then(function () {
-              var originalText = btn.textContent;
-              btn.textContent = "✓ Copiado!";
-              setTimeout(function () { btn.textContent = originalText; }, 2000);
-            }).catch(function (err) {
-              console.error("Erro ao copiar mensagem do grupo: ", err);
-            });
-          }
+          var msgEnc = encodeURIComponent(textoCompartilhamento);
+          window.open("https://wa.me/?text=" + msgEnc, "_blank");
         });
       });
     }
