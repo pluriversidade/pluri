@@ -806,25 +806,39 @@
           linkReport = suporteBase + "?text=" + msgReport;
         }
 
+        /* Lógica para verificar se o grupo está lotado (1024 membros ou flag lotado) */
+        var qtdMembrosNum = Number(g.membros);
+        var estaLotado = g.lotado || (qtdMembrosNum >= 1024);
+
+        var botaoEntrarHtml = "";
+        if (estaLotado) {
+          botaoEntrarHtml = '<span class="grupo__btn-entrar grupo__btn-entrar--lotado">INFELIZMENTE ESTE GRUPO ESTÁ LOTADO. 🚫</span>';
+        } else {
+          botaoEntrarHtml = '<a class="grupo__btn-entrar" href="' + g.url + '" target="_blank" rel="noopener">CLIQUE AQUI PARA ENTRAR NO GRUPO NO WHATSAPP ♿</a>';
+        }
+
         return (
           '<li class="item" id="grupo-' + slugGrupo + '" style="--cor:' + corCat + '">' +
-            '<a class="grupo" href="' + g.url + '" target="_blank" rel="noopener">' +
-              '<div class="grupo__topo-linha">' +
-                '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
-                (g.lotado ? '<span class="etiqueta etiqueta--lotado">lotado</span>' : '') +
+            '<div class="grupo__conteudo">' +
+              '<div class="grupo">' +
+                '<div class="grupo__topo-linha">' +
+                  '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
+                  (estaLotado ? '<span class="etiqueta etiqueta--lotado">lotado</span>' : '') +
+                '</div>' +
+                (g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + '</span>' : '') +
+                '<div class="grupo__meta">' +
+                  '<span class="ponto"></span>' +
+                  '<span>' + escapar(cat.nome || g.cat) + '</span>' +
+                  (g.membros ? '<span>• ' + g.membros + ' membros</span>' : '') +
+                  (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
+                '</div>' +
               '</div>' +
-              (g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + '</span>' : '') +
-              '<div class="grupo__meta">' +
-                '<span class="ponto"></span>' +
-                '<span>' + escapar(cat.nome || g.cat) + '</span>' +
-                (g.membros ? '<span>• ' + g.membros + ' membros</span>' : '') +
-                (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
+              '<div class="grupo__acoes">' +
+                '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗</button>' +
+                '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">⚠</a>' +
               '</div>' +
-            '</a>' +
-            '<div class="grupo__acoes">' +
-              '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗</button>' +
-              '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">⚠</a>' +
             '</div>' +
+            botaoEntrarHtml +
           '</li>'
         );
       }).join("");
