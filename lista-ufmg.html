@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lista Completa UFMG — Pluriversidade</title>
+<meta name="theme-color" content="#1F3347">
+<link rel="icon" type="image/png" href="https://pluriversidade.github.io/pluri/img/icone-pluri.png">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<header class="capa" style="padding-top: 2rem;">
+  <div class="miolo marca" style="margin-top: 0;">
+    <h1 class="titulo" style="font-size: 1.8rem;">Gerador de Lista UFMG</h1>
+    <p class="subtitulo">Lista formatada de grupos disponíveis para compartilhamento.</p>
+  </div>
+</header>
+
+<main class="miolo" style="margin-top: 1.5rem; margin-bottom: 3rem;">
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+    <button id="btn-copiar-lista" class="card-comissario__btn" style="padding: 0.7rem 1rem; font-size: 0.9rem;">
+      📋 COPIAR LISTA FORMATADA
+    </button>
+  </div>
+
+  <div id="container-lista-preview" class="bloco" style="margin-top: 0; background: var(--papel); font-family: var(--sans);">
+    <p style="color: var(--tinta-fraca);">Carregando grupos da UFMG...</p>
+  </div>
+</main>
+
+<script src="js/dados-textos.js"></script>
+<script src="js/dados-grupos.js"></script>
+<script src="js/dados-festas.js"></script>
+<script src="js/gerador-lista.js"></script>
+
+</body>
+</html>
