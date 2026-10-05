@@ -13,17 +13,18 @@
 <header class="capa" style="padding-top: 2rem;">
   <div class="miolo marca" style="margin-top: 0;">
     <h1 class="titulo" style="font-size: 1.8rem;">Gerador de Lista UFMG</h1>
-    <p class="subtitulo">Lista formatada dividida em partes para garantir links clicáveis no WhatsApp.</p>
+    <p class="subtitulo">Lista de grupos disponíveis dividida em partes para o WhatsApp.</p>
   </div>
 </header>
 
 <main class="miolo" style="margin-top: 1.5rem; margin-bottom: 3rem;">
-  <!-- Container onde os botões das partes serão inseridos dinamicamente -->
-  <div id="container-botoes-copiar" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+  <!-- Container de Botões Dinâmicos de Cópia -->
+  <div id="container-botoes-copiar" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
     <span style="color: var(--tinta-fraca); font-size: 0.9rem;">Gerando botões de cópia...</span>
   </div>
 
-  <div id="container-lista-preview" class="bloco" style="margin-top: 0; background: var(--papel); font-family: var(--sans); white-space: pre-wrap; word-break: break-word;">
+  <!-- Container onde a prévia formatada com o CSS do site será renderizada -->
+  <div id="container-lista-preview" style="display: flex; flex-direction: column; gap: 2rem;">
     <p style="color: var(--tinta-fraca);">Carregando grupos da UFMG...</p>
   </div>
 </main>
