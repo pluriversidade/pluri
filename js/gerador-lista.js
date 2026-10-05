@@ -21,11 +21,16 @@
       .replace(/^-+|-+$/g, "");
   }
 
-  // Filtrar apenas grupos da UFMG que não estão lotados
+  // Filtrar apenas grupos da UFMG que NÃO estão lotados
+  // Considera lotado: se lotado === true OU se tiver 1024 membros ou mais
   var gruposUFMG = grupos.filter(function (g) {
-    var ehUFMG = g && g.uni && String(g.uni).toLowerCase() === "ufmg";
-    var naoLotado = !g.lotado;
-    return ehUFMG && naoLotado && g.nome && pareceLink(g.url);
+    if (!g || !g.nome || !pareceLink(g.url)) return false;
+
+    var ehUFMG = g.uni && String(g.uni).toLowerCase() === "ufmg";
+    var qtdMembros = typeof g.membros === "number" ? g.membros : parseInt(g.membros, 10) || 0;
+    var ehLotado = g.lotado === true || qtdMembros >= 1024;
+
+    return ehUFMG && !ehLotado;
   });
 
   // Agrupar por categoria
@@ -55,7 +60,7 @@
 
       listaCat.forEach(function (g) {
         var slug = slugify(g.nome);
-        var urlCard = "https://pluriversidade.com.br/#grupos/" + slug;
+        var urlCard = "https://pluriversidade.github.io/pluri/#grupos/" + slug;
         var qtdMembros = g.membros ? g.membros + " membros" : "Grupo aberto";
 
         linhas.push("• *" + g.nome + "* - [" + qtdMembros + "]");
@@ -77,7 +82,7 @@
     var html = [];
     html.push('<div style="text-align: center; margin-bottom: 1.5rem;">');
     html.push('<h2 style="margin: 0; font-size: 1.3rem; color: var(--terracota);">*LISTA COMPLETA COM OS LINKS DOS GRUPOS DA UFMG*</h2>');
-    html.push('<p style="font-size: 0.85rem; color: var(--tinta-fraca); margin-top: 0.3rem;">Total de grupos ativos: <strong>' + gruposUFMG.length + '</strong></p>');
+    html.push('<p style="font-size: 0.85rem; color: var(--tinta-fraca); margin-top: 0.3rem;">Total de grupos ativos (não lotados): <strong>' + gruposUFMG.length + '</strong></p>');
     html.push('</div>');
 
     Object.keys(porCategoria).forEach(function (catKey) {
@@ -93,7 +98,7 @@
       html.push('<div style="display: grid; gap: 0.6rem; margin-bottom: 1.2rem;">');
       listaCat.forEach(function (g) {
         var slug = slugify(g.nome);
-        var urlCard = "https://pluriversidade.com.br/#grupos/" + slug;
+        var urlCard = "https://pluriversidade.github.io/pluri/#grupos/" + slug;
         var qtdMembros = g.membros ? g.membros + " membros" : "Membros não informados";
 
         html.push('<div style="background: var(--fundo); border: 1px solid var(--regua); border-radius: 8px; padding: 0.6rem 0.8rem;">');
