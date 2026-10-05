@@ -825,10 +825,10 @@
                 (g.admin ? '<span class="grupo__etiqueta-admin">Oficial</span>' : '') +
               '</div>' +
             '</a>' +
-            '<button class="festa__link btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 Compartilhar</button>' +
             '<a class="reportar" href="' + linkReport + '" target="_blank" rel="noopener" title="Reportar problema">' +
               '⚠' +
             '</a>' +
+            '<button class="festa__link btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Card do Grupo">🔗 Compartilhar</button>' +
           '</li>'
         );
       }).join("");
@@ -871,14 +871,19 @@
 
           var uniObj = unisData[g.uni] || {};
           var nomeUni = uniObj.nome || g.uni || "";
-          var descGrupo = g.desc ? "\n" + g.desc : "";
+          var cidObj = uniObj.cidade ? cidadesData[uniObj.cidade] : null;
+          var nomeCidade = cidObj ? cidObj.nome : "";
+          var descGrupo = g.desc || "";
+          var qtdMembros = g.membros ? String(g.membros) : "Não informada";
 
           var textoCompartilhamento =
-            "*Ei*, confira este grupo do WhatsApp " + (nomeUni ? "da *" + nomeUni + "*" : "") + " no site da *Pluriversidade*:\n\n" +
-            "*" + g.nome.toUpperCase() + "*" + descGrupo + "\n\n" +
-            "Acesse o card direto pelo link abaixo:\n" +
-            urlCard + "\n\n" +
-            "*Pluriversidade.com.br*";
+            "*Ei*, confira este grupo do Whatsapp " + (nomeUni ? "da *" + nomeUni + "*" : "") + " no site da *Pluriversidade*:\n\n" +
+            "*Nome do grupo:* " + g.nome + "\n\n" +
+            "*Descrição:* " + descGrupo + "\n\n" +
+            "Quantidade de Membros: " + qtdMembros + "\n\n" +
+            nomeUni + (nomeCidade ? " / " + nomeCidade : "") + "\n\n" +
+            "Link do grupo: " + urlCard + "\n\n" +
+            "Compartilhe essa mensagem em outros grupos da " + (nomeUni || "universidade") + " para que essa informação útil chegue a mais pessoas.";
 
           if (navigator.clipboard) {
             navigator.clipboard.writeText(textoCompartilhamento).then(function () {
