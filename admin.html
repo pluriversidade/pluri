@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pluriversidade — Painel Administrativo</title>
-  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
-  <!-- Carrega os dados para edição -->
   <script src="js/dados-grupos.js"></script>
   <script src="js/dados-festas.js"></script>
 </head>
@@ -20,24 +18,26 @@
   </header>
 
   <main class="container-admin">
-    <!-- TELA DE LOGIN -->
+    <!-- LOGIN -->
     <div id="admin-login-box" class="admin-card">
       <h2>Área Restrita — Acesso do Administrador</h2>
-      <form id="form-login-admin" class="form-admin">
-        <div class="campo-grupo">
+      <form id="form-login-admin" class="grid-form" style="max-width: 400px; margin: 0 auto;">
+        <div class="campo-grupo col-full">
           <label for="login-usuario">Usuário:</label>
           <input type="text" id="login-usuario" required placeholder="Digite seu usuário">
         </div>
-        <div class="campo-grupo">
+        <div class="campo-grupo col-full">
           <label for="login-senha">Senha:</label>
           <input type="password" id="login-senha" required placeholder="Digite sua senha">
         </div>
-        <button type="submit" class="btn-acao btn-acao--primary">Entrar no Painel</button>
+        <div class="botoes-form col-full">
+          <button type="submit" class="btn-acao btn-acao--primary" style="width:100%;">Entrar no Painel</button>
+        </div>
         <p id="login-erro" class="msg-erro-login" hidden>Usuário ou senha incorretos!</p>
       </form>
     </div>
 
-    <!-- PAINEL DE GERENCIAMENTO -->
+    <!-- PAINEL PRINCIPAL -->
     <div id="admin-painel-box" class="admin-card" hidden>
       <div class="admin-header-top">
         <h2>Painel de Gerenciamento</h2>
@@ -46,46 +46,54 @@
 
       <nav class="subabas-admin">
         <button id="subaba-grupos" class="btn-subaba ativa" type="button">Gerenciar Grupos</button>
+        <button id="subaba-universidades" class="btn-subaba" type="button">Gerenciar Universidades</button>
         <button id="subaba-festas" class="btn-subaba" type="button">Gerenciar Festas</button>
         <button id="subaba-exportar" class="btn-subaba btn-subaba--destaque" type="button">💾 Exportar JS Atualizado</button>
       </nav>
 
       <!-- ABA GRUPOS -->
       <div id="painel-sub-grupos" class="subpainel-admin">
-        <h3>Adicionar / Editar Grupo</h3>
+        <h3 id="titulo-form-grupo">Adicionar Novo Grupo</h3>
         <form id="form-admin-grupo" class="grid-form">
           <input type="hidden" id="admin-grupo-index" value="-1">
+          
           <div class="campo-grupo">
-            <label>Nome do Grupo:</label>
+            <label>Nome do Grupo *:</label>
             <input type="text" id="adm-g-nome" required>
           </div>
           <div class="campo-grupo">
-            <label>Universidade:</label>
-            <input type="text" id="adm-g-uni" required>
+            <label>Universidade *:</label>
+            <select id="adm-g-uni" required></select>
           </div>
           <div class="campo-grupo">
-            <label>Categoria:</label>
+            <label>Categoria *:</label>
             <select id="adm-g-cat" required></select>
           </div>
           <div class="campo-grupo">
-            <label>Link WhatsApp:</label>
+            <label>Link WhatsApp *:</label>
             <input type="url" id="adm-g-url" required>
+          </div>
+          <div class="campo-grupo">
+            <label>Link Imagem/Card:</label>
+            <input type="url" id="adm-g-card" placeholder="https://...">
           </div>
           <div class="campo-grupo">
             <label>Qtd Membros:</label>
             <input type="number" id="adm-g-membros" value="0">
           </div>
-          <div class="campo-grupo">
-            <label>Descrição:</label>
-            <input type="text" id="adm-g-desc">
+          <div class="campo-grupo col-full">
+            <label>Descrição detalhada:</label>
+            <textarea id="adm-g-desc" rows="2"></textarea>
           </div>
           <div class="campo-grupo checkbox-linha">
             <label><input type="checkbox" id="adm-g-lotado"> Grupo Lotado?</label>
           </div>
           <div class="botoes-form">
-            <button type="submit" class="btn-acao btn-acao--primary">Salvar Grupo</button>
+            <button type="submit" class="btn-acao btn-acao--primary" id="btn-salvar-grupo">Salvar Grupo</button>
+            <button type="button" class="btn-acao btn-acao--secondary" id="btn-cancelar-grupo" hidden>Cancelar Edição</button>
           </div>
         </form>
+
         <hr class="divisor">
         <h3>Grupos Cadastrados</h3>
         <div class="tabela-wrapper">
@@ -93,13 +101,78 @@
             <thead>
               <tr>
                 <th>Nome</th>
-                <th>Uni</th>
+                <th>Universidade / Local</th>
+                <th>Cat.</th>
                 <th>Membros</th>
+                <th>WhatsApp</th>
+                <th>Card</th>
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody id="tb-admin-grupos"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABA UNIVERSIDADES -->
+      <div id="painel-sub-universidades" class="subpainel-admin" hidden>
+        <h3 id="titulo-form-uni">Adicionar Nova Universidade</h3>
+        <form id="form-admin-uni" class="grid-form">
+          <input type="hidden" id="admin-uni-key" value="">
+          <div class="campo-grupo">
+            <label>Nome da Universidade (Único) *:</label>
+            <input type="text" id="adm-u-nome" required placeholder="Ex: UFMG">
+          </div>
+          <div class="campo-grupo">
+            <label>Estado (UF):</label>
+            <input type="text" id="adm-u-estado" placeholder="Ex: MG">
+          </div>
+          <div class="campo-grupo">
+            <label>Cidade:</label>
+            <input type="text" id="adm-u-cidade" placeholder="Ex: Belo Horizonte">
+          </div>
+          <div class="campo-grupo">
+            <label>Link do Site:</label>
+            <input type="url" id="adm-u-site" placeholder="https://...">
+          </div>
+          <div class="campo-grupo">
+            <label>Link da Logomarca:</label>
+            <input type="url" id="adm-u-logo" placeholder="https://...">
+          </div>
+          <div class="campo-grupo">
+            <label>Endereço Físico:</label>
+            <input type="text" id="adm-u-endereco">
+          </div>
+          <div class="campo-grupo">
+            <label>Telefone Contato 1:</label>
+            <input type="text" id="adm-u-tel1">
+          </div>
+          <div class="campo-grupo">
+            <label>Telefone Contato 2:</label>
+            <input type="text" id="adm-u-tel2">
+          </div>
+          <div class="botoes-form">
+            <button type="submit" class="btn-acao btn-acao--primary" id="btn-salvar-uni">Salvar Universidade</button>
+            <button type="button" class="btn-acao btn-acao--secondary" id="btn-cancelar-uni" hidden>Cancelar Edição</button>
+          </div>
+        </form>
+
+        <hr class="divisor">
+        <h3>Universidades Cadastradas</h3>
+        <div class="tabela-wrapper">
+          <table class="tabela-admin">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Cidade / UF</th>
+                <th>Site</th>
+                <th>Contato 1</th>
+                <th>Contato 2</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tb-admin-unis"></tbody>
           </table>
         </div>
       </div>
@@ -148,8 +221,8 @@
 
       <!-- ABA EXPORTAR -->
       <div id="painel-sub-exportar" class="subpainel-admin" hidden>
-        <h3>Exportar para GitHub Pages</h3>
-        <p>Copie os códigos gerados abaixo e atualize os ficheiros na pasta <code>js/</code> do seu repositório:</p>
+        <h3>Exportar Dados para JS</h3>
+        <p>Copie os códigos gerados abaixo e cole nos ficheiros correspondentes da sua pasta <code>js/</code>:</p>
         <div class="caixa-exportar">
           <h4><code>js/dados-grupos.js</code></h4>
           <textarea id="codigo-grupos-js" readonly class="codigo-textarea"></textarea>
