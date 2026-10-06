@@ -1,47 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Open Graph Dinâmico / Padrão (será atualizado via JS) -->
-  <title id="meta-title">PLURIVERSIDADE — Festa Universitária</title>
-  <meta name="description" id="meta-desc" content="Confira todas as informações, horários, ingressos e comissários desta festa universitária na Pluriversidade.">
-  
-  <meta property="og:title" id="og-title" content="PLURIVERSIDADE — Festa Universitária">
-  <meta property="og:description" id="og-desc" content="Confira todas as informações, horários, ingressos e comissários desta festa universitária.">
-  <meta property="og:image" id="og-image" content="">
-  <meta property="og:type" content="website">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pluriversidade — grupos de WhatsApp e festas universitárias</title>
+<meta name="description" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
+<meta name="theme-color" content="#1F3347">
+<meta property="og:title" content="PLURIVERSIDADE.COM.BR">
+<meta property="og:description" content="Repositório de Grupos e Festas das maiores universidades do Brasil!">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
+<meta property="og:image:secure_url" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
-  <link rel="stylesheet" href="css/estilo.css">
-  <style>
-    /* Correção estrutural para preencher a tela inteira e fixar o rodapé embaixo */
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      background: var(--fundo);
-    }
-    .miolo {
-      flex: 1 0 auto;
-      width: 100%;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 0 16px;
-      box-sizing: border-box;
-    }
-    .rodape {
-      flex-shrink: 0;
-      width: 100%;
-      margin-top: auto;
-    }
-  </style>
+<!-- Ícone do Navegador -->
+<link rel="icon" type="image/png" href="https://pluriversidade.github.io/pluri/img/icone-pluri.png">
+<link rel="stylesheet" href="css/estilo.css">
 </head>
+
+<body>
+
+<!-- ================================================================ capa -->
+<header class="capa">
+  <div class="topo-video-container">
+    <video class="topo-video" src="https://pluriversidade.github.io/pluri/img/video-topo-site.mp4" autoplay muted loop playsinline></video>
+    <div class="efeito-tv" aria-hidden="true"></div>
+  </div>
+
+  <div class="miolo marca">
+    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema com comunidade em volta">
+      <defs>
+        <g id="pessoa">
+          <circle cy="-9.5" r="6.4"/>
+          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8 a9.2 9.2 0 0 1 9.2 -9.2 z"/>
+        </g>
+      </defs>
+      <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
+      
+      <g opacity="0.9">
+        <use href="#pessoa" fill="#2E7D53" transform="translate(0, -74) scale(0.95)"/>
+        <use href="#pessoa" fill="#B24232" transform="translate(52, -52) rotate(45) scale(0.95)"/>
+        <use href="#pessoa" fill="#C08A1E" transform="translate(74, 0) rotate(90) scale(0.95)"/>
+        <use href="#pessoa" fill="#2E7D53" transform="translate(52, 52) rotate(135) scale(0.95)"/>
+        <use href="#pessoa" fill="#B24232" transform="translate(0, 74) rotate(180) scale(0.95)"/>
+        <use href="#pessoa" fill="#C08A1E" transform="translate(-52, 52) rotate(225) scale(0.95)"/>
+        <use href="#pessoa" fill="-2E7D53" transform="translate(-74, 0) rotate(270) scale(0.95)"/>
+        <use href="#pessoa" fill="#B24232" transform="translate(-52, -52) rotate(315) scale(0.95)"/>
+      </g>
+
+      <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
+      <image href="https://pluriversidade.github.io/pluri/img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
+    </svg>
+
+    <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
+    <p class="subtitulo" data-texto="subtitulo">Brechó, sebo, bandeco, caronas, idiomas e o que mais a comunidade inventar.</p>
+    <p class="atualizado" id="atualizado" hidden></p>
+  </div>
+</header>
 <body>
 
   <div class="miolo">
