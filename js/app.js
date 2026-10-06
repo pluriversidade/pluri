@@ -564,7 +564,7 @@
 
         var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
-        var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+        var mensagemComissario = encodeURIComponent("*Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
         var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
         var urlPaginaFesta = "festa.html#" + slugFesta;
