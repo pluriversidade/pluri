@@ -584,7 +584,7 @@
                   '<h3 class="festa__titulo"><a class="festa__titulo-link" href="' + urlPaginaFesta + '">' + escapar(f.titulo) + '</a></h3>' +
                 '</div>' +
               '</div>' +
-              '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
+              '<p class="festa__descricao">' + escapar(f.resumo || f.descricao || f.desc || "") + '</p>' +
               '<div class="festa__links">' +
                 '<a class="festa__link" href="' + urlPaginaFesta + '">Ver Informações Completas</a>' +
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
@@ -664,7 +664,7 @@
   }
 
   /* -------------------------------------------------------------------------
-     SEÇÃO DE DETALHES DA FESTA (FESTA.HTML)
+     SEÇÃO DE DETALHES DA FESTA (FESTA.HTML) COM DADOS OG E BOTÃO DE COMPARTILHAMENTO
      ------------------------------------------------------------------------- */
   window.montarDetalheFesta = function () {
     var container = document.getElementById("detalhe-festa-container");
@@ -690,7 +690,7 @@
     var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : festa.data;
     var corFesta = festa.cor || "var(--terracota)";
 
-    // Atualizar meta tags Open Graph
+    // Atualizar meta tags Open Graph dinamicamente
     var metaTitle = document.getElementById("meta-title");
     var metaDesc = document.getElementById("meta-desc");
     var ogTitle = document.getElementById("og-title");
@@ -698,7 +698,7 @@
     var ogImage = document.getElementById("og-image");
 
     var tituloCompleto = festa.titulo + " — Pluriversidade";
-    var descricaoCompleta = festa.descricao || festa.desc || "Confira os detalhes desta festa universitária.";
+    var descricaoCompleta = festa.descricao || festa.desc || "Confira os detalhes completos desta festa universitária.";
 
     if (metaTitle) metaTitle.textContent = tituloCompleto;
     if (metaDesc) metaDesc.content = descricaoCompleta;
@@ -720,17 +720,33 @@
     var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + festa.titulo + "*, como faço?");
     var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
+    // Montar texto de compartilhamento via WhatsApp com os dados OG da festa
+    var urlPaginaAtual = window.location.href;
+    var textoWhatsApp = 
+      "*🎉 " + festa.titulo.toUpperCase() + " *\n\n" +
+      "📅 *Data:* " + dataFormatada + (festa.hora ? " às " + festa.hora : "") + "\n" +
+      "🏫 *Universidade:* " + u.nome + "\n\n" +
+      descricaoCompleta + "\n\n" +
+      (pareceLink(festa.ingresso) ? "🎟️ *Ingresso:* " + festa.ingresso + "\n" : "") +
+      "🔗 *Saiba mais e compartilhe:* " + urlPaginaAtual;
+
+    var linkCompartilharWhatsApp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoWhatsApp);
+
     container.innerHTML =
       '<div class="bloco" style="border-left: 6px solid ' + corFesta + '; padding: 1.5rem;">' +
         '<p style="font-family: var(--mono); font-size: .75rem; text-transform: uppercase; color: ' + corFesta + '; margin: 0 0 .3rem;">' + escapar(u.nome) + (festa.hora ? ' • ' + escapar(festa.hora) : '') + '</p>' +
         '<h2 style="font-size: 1.8rem; margin: 0 0 .5rem;">' + escapar(festa.titulo) + '</h2>' +
         '<p style="font-size: 1.05rem; font-family: var(--mono); color: var(--tinta-fraca); margin: 0 0 1rem;">📅 Data: ' + dataFormatada + '</p>' +
         midiaHtml +
-        '<p style="font-size: 1.05rem; line-height: 1.6; margin: 1rem 0 1.5rem; white-space: pre-line;">' + escapar(festa.descricao || festa.desc || "") + '</p>' +
+        '<div style="margin: 1.5rem 0;">' +
+          '<h3 style="font-size: 1.1rem; margin-bottom: .5rem; color: var(--tinta);">📝 Descrição Completa</h3>' +
+          '<p style="font-size: 1.05rem; line-height: 1.6; margin: 0; white-space: pre-line;">' + escapar(festa.descricao || festa.desc || "") + '</p>' +
+        '</div>' +
         '<div style="display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem;">' +
           (pareceLink(festa.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + festa.ingresso + '" target="_blank" rel="noopener" style="font-size: 1rem; padding: .7rem 1.2rem;">Comprar Ingresso 🎟️</a>' : '') +
           (pareceLink(festa.perfil) ? '<a class="festa__link festa__link--perfil" href="' + festa.perfil + '" target="_blank" rel="noopener" style="font-size: 1rem; padding: .7rem 1.2rem;">Instagram Oficial 📸</a>' : '') +
           '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener" style="font-size: 1rem; padding: .7rem 1.2rem;">Quero ser Comissário 🤝</a>' +
+          '<a class="festa__link festa__link--ingresso" href="' + linkCompartilharWhatsApp + '" target="_blank" rel="noopener" style="font-size: 1rem; padding: .7rem 1.2rem; background: #25D366; border-color: #25D366; color: #fff;">Compartilhar no WhatsApp 🔗</a>' +
         '</div>' +
       '</div>';
   };
