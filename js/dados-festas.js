@@ -87,7 +87,8 @@ var FESTAS = [
     ingresso: "https://exemplo.com/ingresso",
     perfil: "https://instagram.com/exemplo",
     grupo: "https://chat.whatsapp.com/exemplo",
-    midia: "img/banner_festa1.jpg"
+    midia: "img/banner_festa1.jpg",
+    comissarios: true
   },
 
   {
@@ -113,7 +114,8 @@ var FESTAS = [
     ingresso: "",
     perfil: "https://instagram.com/exemplo",
     grupo: "https://chat.whatsapp.com/exemplo",
-    midia: ""
+    midia: "",
+    comissarios: true
   },
 
   {
