@@ -55,22 +55,15 @@ a { color: inherit; }
 
 /* ------------------------------------------------------------------ capa --- */
 
-.capa { 
-  position: relative; 
-  overflow: hidden; 
-  width: 100%;
-}
+.capa { position: relative; overflow: hidden; }
 
-/* Capa com altura aumentada mantendo formato horizontal e topo absoluto estruturado */
+/* Capa com altura aumentada mantendo formato horizontal */
 .topo-video-container {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   height: clamp(210px, 33vw, 300px);
   overflow: hidden;
   background: #111;
-  z-index: 0;
 }
 
 .topo-video {
@@ -104,7 +97,7 @@ a { color: inherit; }
 }
 
 .marca {
-  margin-top: clamp(160px, 25vw, 240px);
+  margin-top: -48px;
   position: relative;
   text-align: center;
   z-index: 3;
@@ -152,7 +145,16 @@ a { color: inherit; }
 }
 
 .atualizado {
-  display: none !important;
+  margin-top: .7rem;
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .06em;
+  color: var(--tinta-fraca);
+  background: rgba(46, 125, 83, .09);
+  border: 1px solid rgba(46, 125, 83, .25);
+  border-radius: 999px;
+  padding: .25rem .7rem;
 }
 
 /* ------------------------------------------------------------- parceiros --- */
