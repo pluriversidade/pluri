@@ -1,10 +1,10 @@
 (function () {
   "use strict";
 
-  // Inicializar Universidades caso não existam no objeto global
-  if (!window.UNIVERSIDADES) {
-    window.UNIVERSIDADES = {};
-  }
+  // Garantir estruturas globais
+  if (!window.UNIVERSIDADES) window.UNIVERSIDADES = {};
+  if (!window.GRUPOS) window.GRUPOS = [];
+  if (!window.FESTAS) window.FESTAS = [];
 
   function inicializarAdmin() {
     var formLogin = document.getElementById("form-login-admin");
@@ -47,7 +47,7 @@
       });
     }
 
-    // Navegação Sub-abas
+    // Sub-abas
     var subabas = ["grupos", "universidades", "festas", "exportar"];
     subabas.forEach(function (nome) {
       var btn = document.getElementById("subaba-" + nome);
@@ -67,7 +67,7 @@
       }
     });
 
-    // Salvar / Editar Grupo
+    // --- MANIPULAÇÃO DE GRUPOS ---
     var formGrupo = document.getElementById("form-admin-grupo");
     if (formGrupo) {
       formGrupo.addEventListener("submit", function (e) {
@@ -79,7 +79,6 @@
           uni: document.getElementById("adm-g-uni").value,
           cat: document.getElementById("adm-g-cat").value,
           url: document.getElementById("adm-g-url").value,
-          card: document.getElementById("adm-g-card").value,
           membros: Number(document.getElementById("adm-g-membros").value) || 0,
           desc: document.getElementById("adm-g-desc").value,
           lotado: document.getElementById("adm-g-lotado").checked
@@ -93,13 +92,13 @@
 
         resetarFormGrupo();
         renderizarTabelas();
-        alert("Grupo guardado com sucesso em memória!");
+        alert("Grupo salvo com sucesso na memória!");
       });
 
       document.getElementById("btn-cancelar-grupo").addEventListener("click", resetarFormGrupo);
     }
 
-    // Salvar / Editar Universidade
+    // --- MANIPULAÇÃO DE UNIVERSIDADES ---
     var formUni = document.getElementById("form-admin-uni");
     if (formUni) {
       formUni.addEventListener("submit", function (e) {
@@ -127,10 +126,42 @@
         resetarFormUni();
         atualizarSelects();
         renderizarTabelas();
-        alert("Universidade guardada com sucesso!");
+        alert("Universidade salva com sucesso!");
       });
 
       document.getElementById("btn-cancelar-uni").addEventListener("click", resetarFormUni);
+    }
+
+    // --- MANIPULAÇÃO DE FESTAS ---
+    var formFesta = document.getElementById("form-admin-festa");
+    if (formFesta) {
+      formFesta.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var idx = Number(document.getElementById("admin-festa-index").value);
+
+        var fData = {
+          titulo: document.getElementById("adm-f-titulo").value,
+          data: document.getElementById("adm-f-data").value,
+          hora: document.getElementById("adm-f-hora").value,
+          uni: document.getElementById("adm-f-uni").value,
+          ingresso: document.getElementById("adm-f-ingresso").value,
+          instagram: document.getElementById("adm-f-instagram").value,
+          flyer: document.getElementById("adm-f-flyer").value,
+          comissarios: document.getElementById("adm-f-comissarios").checked
+        };
+
+        if (idx >= 0) {
+          window.FESTAS[idx] = fData;
+        } else {
+          window.FESTAS.unshift(fData);
+        }
+
+        resetarFormFesta();
+        renderizarTabelas();
+        alert("Festa salva com sucesso!");
+      });
+
+      document.getElementById("btn-cancelar-festa").addEventListener("click", resetarFormFesta);
     }
   }
 
@@ -168,22 +199,30 @@
     document.getElementById("btn-cancelar-uni").hidden = true;
   }
 
+  function resetarFormFesta() {
+    document.getElementById("form-admin-festa").reset();
+    document.getElementById("admin-festa-index").value = "-1";
+    document.getElementById("titulo-form-festa").textContent = "Adicionar Nova Festa";
+    document.getElementById("btn-salvar-festa").textContent = "Salvar Festa";
+    document.getElementById("btn-cancelar-festa").hidden = true;
+  }
+
   function renderizarTabelas() {
-    // Tabela Grupos
+    // --- TABELA GRUPOS ---
     var tbGrupos = document.getElementById("tb-admin-grupos");
     if (tbGrupos && window.GRUPOS) {
       tbGrupos.innerHTML = window.GRUPOS.map(function (g, i) {
         var uniData = window.UNIVERSIDADES[g.uni] || {};
-        var localStr = (uniData.cidade ? uniData.cidade : "") + (uniData.estado ? "/" + uniData.estado : "");
-        
+        var localStr = (uniData.cidade || "") + (uniData.estado ? " - " + uniData.estado : "");
+        var linkCard = "index.html#grupo-" + i;
+
         return (
           '<tr>' +
-            '<td><strong>' + (g.nome || "") + '</strong><br><small style="color:#94a3b8;">' + (g.desc || "Sem descrição") + '</small></td>' +
+            '<td><a href="' + linkCard + '" target="_blank" style="color:#6366f1; font-weight:bold; text-decoration:none;">' + (g.nome || "Sem Nome") + ' 🔗</a><br><small style="color:#94a3b8;">' + (g.desc || "Sem descrição") + '</small></td>' +
             '<td><strong>' + (g.uni || "") + '</strong>' + (localStr ? '<br><small style="color:#94a3b8;">' + localStr + '</small>' : '') + '</td>' +
             '<td>' + (g.cat || "") + '</td>' +
             '<td>' + (g.membros || 0) + '</td>' +
-            '<td>' + (g.url ? '<a href="' + g.url + '" target="_blank" style="color:#10b981;">Abrir</a>' : '-') + '</td>' +
-            '<td>' + (g.card ? '<a href="' + g.card + '" target="_blank" style="color:#6366f1;">Ver Card</a>' : '-') + '</td>' +
+            '<td>' + (g.url ? '<a href="' + g.url + '" target="_blank" style="color:#10b981;">WhatsApp</a>' : '-') + '</td>' +
             '<td>' + (g.lotado ? '🔴 Lotado' : '🟢 OK') + '</td>' +
             '<td>' +
               '<button class="btn-acao btn-sm btn-acao--secondary btn-edit-g" data-idx="' + i + '">Editar</button> ' +
@@ -203,7 +242,6 @@
           document.getElementById("adm-g-uni").value = g.uni || "";
           document.getElementById("adm-g-cat").value = g.cat || "";
           document.getElementById("adm-g-url").value = g.url || "";
-          document.getElementById("adm-g-card").value = g.card || "";
           document.getElementById("adm-g-membros").value = g.membros || 0;
           document.getElementById("adm-g-desc").value = g.desc || "";
           document.getElementById("adm-g-lotado").checked = !!g.lotado;
@@ -218,7 +256,9 @@
       document.querySelectorAll(".btn-del-g").forEach(function (b) {
         b.addEventListener("click", function () {
           var idx = Number(b.getAttribute("data-idx"));
-          if (confirm("Deseja realmente excluir o grupo " + window.GRUPOS[idx].nome + "?")) {
+          var nomeGrupo = window.GRUPOS[idx] ? window.GRUPOS[idx].nome : "este grupo";
+          
+          if (confirm("Tem certeza de que deseja excluir o grupo '" + nomeGrupo + "'? Esta ação não pode ser desfeita.")) {
             window.GRUPOS.splice(idx, 1);
             renderizarTabelas();
           }
@@ -226,16 +266,17 @@
       });
     }
 
-    // Tabela Universidades
+    // --- TABELA UNIVERSIDADES ---
     var tbUnis = document.getElementById("tb-admin-unis");
     if (tbUnis && window.UNIVERSIDADES) {
       var keys = Object.keys(window.UNIVERSIDADES);
       tbUnis.innerHTML = keys.map(function (k) {
         var u = window.UNIVERSIDADES[k];
+        var localStr = (u.cidade || "") + (u.estado ? " - " + u.estado : "");
         return (
           '<tr>' +
             '<td><strong>' + u.nome + '</strong></td>' +
-            '<td>' + (u.cidade || "") + (u.estado ? "/" + u.estado : "") + '</td>' +
+            '<td>' + (localStr || "-") + '</td>' +
             '<td>' + (u.site ? '<a href="' + u.site + '" target="_blank" style="color:#10b981;">Site</a>' : '-') + '</td>' +
             '<td>' + (u.tel1 || "-") + '</td>' +
             '<td>' + (u.tel2 || "-") + '</td>' +
@@ -272,9 +313,71 @@
       document.querySelectorAll(".btn-del-u").forEach(function (b) {
         b.addEventListener("click", function () {
           var key = b.getAttribute("data-key");
-          if (confirm("Excluir a universidade " + key + "?")) {
+          if (confirm("Tem certeza de que deseja excluir a universidade '" + key + "'? Isso pode impactar os grupos vinculados.")) {
             delete window.UNIVERSIDADES[key];
             atualizarSelects();
+            renderizarTabelas();
+          }
+        });
+      });
+    }
+
+    // --- TABELA FESTAS ---
+    var tbFestas = document.getElementById("tb-admin-festas");
+    if (tbFestas && window.FESTAS) {
+      tbFestas.innerHTML = window.FESTAS.map(function (f, i) {
+        var uniData = window.UNIVERSIDADES[f.uni] || {};
+        var localStr = (uniData.cidade || "") + (uniData.estado ? " - " + uniData.estado : "");
+
+        var botoesLinks = [];
+        if (f.ingresso) botoesLinks.push('<a href="' + f.ingresso + '" target="_blank" style="color:#10b981;">Ingresso</a>');
+        if (f.instagram) botoesLinks.push('<a href="' + f.instagram + '" target="_blank" style="color:#e1306c;">Insta</a>');
+        if (f.flyer) botoesLinks.push('<a href="' + f.flyer + '" target="_blank" style="color:#6366f1;">Flyer</a>');
+
+        return (
+          '<tr>' +
+            '<td>' + (f.data || "") + (f.hora ? ' às ' + f.hora : '') + '</td>' +
+            '<td><strong>' + (f.titulo || "") + '</strong></td>' +
+            '<td><strong>' + (f.uni || "") + '</strong>' + (localStr ? '<br><small style="color:#94a3b8;">' + localStr + '</small>' : '') + '</td>' +
+            '<td>' + (botoesLinks.length ? botoesLinks.join(" | ") : "-") + '</td>' +
+            '<td>' + (f.comissarios ? '✅ Sim' : '❌ Não') + '</td>' +
+            '<td>' +
+              '<button class="btn-acao btn-sm btn-acao--secondary btn-edit-f" data-idx="' + i + '">Editar</button> ' +
+              '<button class="btn-acao btn-sm btn-acao--danger btn-del-f" data-idx="' + i + '">Excluir</button>' +
+            '</td>' +
+          '</tr>'
+        );
+      }).join("");
+
+      document.querySelectorAll(".btn-edit-f").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var idx = Number(b.getAttribute("data-idx"));
+          var f = window.FESTAS[idx];
+
+          document.getElementById("admin-festa-index").value = idx;
+          document.getElementById("adm-f-titulo").value = f.titulo || "";
+          document.getElementById("adm-f-data").value = f.data || "";
+          document.getElementById("adm-f-hora").value = f.hora || "";
+          document.getElementById("adm-f-uni").value = f.uni || "";
+          document.getElementById("adm-f-ingresso").value = f.ingresso || "";
+          document.getElementById("adm-f-instagram").value = f.instagram || "";
+          document.getElementById("adm-f-flyer").value = f.flyer || "";
+          document.getElementById("adm-f-comissarios").checked = !!f.comissarios;
+
+          document.getElementById("titulo-form-festa").textContent = "Editar Festa: " + f.titulo;
+          document.getElementById("btn-salvar-festa").textContent = "Atualizar Festa";
+          document.getElementById("btn-cancelar-festa").hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      document.querySelectorAll(".btn-del-f").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var idx = Number(b.getAttribute("data-idx"));
+          var tituloFesta = window.FESTAS[idx] ? window.FESTAS[idx].titulo : "esta festa";
+
+          if (confirm("Tem certeza de que deseja excluir a festa '" + tituloFesta + "'?")) {
+            window.FESTAS.splice(idx, 1);
             renderizarTabelas();
           }
         });

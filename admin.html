@@ -71,11 +71,7 @@
           </div>
           <div class="campo-grupo">
             <label>Link WhatsApp *:</label>
-            <input type="url" id="adm-g-url" required>
-          </div>
-          <div class="campo-grupo">
-            <label>Link Imagem/Card:</label>
-            <input type="url" id="adm-g-card" placeholder="https://...">
+            <input type="url" id="adm-g-url" required placeholder="https://chat.whatsapp.com/...">
           </div>
           <div class="campo-grupo">
             <label>Qtd Membros:</label>
@@ -100,12 +96,11 @@
           <table class="tabela-admin">
             <thead>
               <tr>
-                <th>Nome</th>
+                <th>Nome / Card Link</th>
                 <th>Universidade / Local</th>
                 <th>Cat.</th>
                 <th>Membros</th>
                 <th>WhatsApp</th>
-                <th>Card</th>
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
@@ -165,7 +160,7 @@
             <thead>
               <tr>
                 <th>Nome</th>
-                <th>Cidade / UF</th>
+                <th>Cidade / Estado</th>
                 <th>Site</th>
                 <th>Contato 1</th>
                 <th>Contato 2</th>
@@ -179,38 +174,57 @@
 
       <!-- ABA FESTAS -->
       <div id="painel-sub-festas" class="subpainel-admin" hidden>
-        <h3>Adicionar / Editar Festa</h3>
+        <h3 id="titulo-form-festa">Adicionar Nova Festa</h3>
         <form id="form-admin-festa" class="grid-form">
           <input type="hidden" id="admin-festa-index" value="-1">
           <div class="campo-grupo">
-            <label>Título:</label>
+            <label>Título da Festa *:</label>
             <input type="text" id="adm-f-titulo" required>
           </div>
           <div class="campo-grupo">
-            <label>Data (AAAA-MM-DD):</label>
+            <label>Data (AAAA-MM-DD) *:</label>
             <input type="date" id="adm-f-data" required>
           </div>
           <div class="campo-grupo">
-            <label>Universidade:</label>
+            <label>Horário (HH:MM):</label>
+            <input type="time" id="adm-f-hora">
+          </div>
+          <div class="campo-grupo">
+            <label>Universidade *:</label>
             <select id="adm-f-uni" required></select>
           </div>
           <div class="campo-grupo">
-            <label>Link Ingresso:</label>
-            <input type="url" id="adm-f-ingresso">
+            <label>Link do Ingresso:</label>
+            <input type="url" id="adm-f-ingresso" placeholder="https://...">
+          </div>
+          <div class="campo-grupo">
+            <label>Instagram (@ ou link):</label>
+            <input type="text" id="adm-f-instagram" placeholder="@perfil ou link">
+          </div>
+          <div class="campo-grupo">
+            <label>Link do Flyer/Imagem:</label>
+            <input type="url" id="adm-f-flyer" placeholder="https://...">
+          </div>
+          <div class="campo-grupo checkbox-linha">
+            <label><input type="checkbox" id="adm-f-comissarios"> Permite cadastro de comissários?</label>
           </div>
           <div class="botoes-form">
-            <button type="submit" class="btn-acao btn-acao--primary">Salvar Festa</button>
+            <button type="submit" class="btn-acao btn-acao--primary" id="btn-salvar-festa">Salvar Festa</button>
+            <button type="button" class="btn-acao btn-acao--secondary" id="btn-cancelar-festa" hidden>Cancelar Edição</button>
           </div>
         </form>
+
         <hr class="divisor">
         <h3>Festas Cadastradas</h3>
         <div class="tabela-wrapper">
           <table class="tabela-admin">
             <thead>
               <tr>
-                <th>Data</th>
+                <th>Data / Hora</th>
                 <th>Título</th>
-                <th>Uni</th>
+                <th>Universidade / Local</th>
+                <th>Links / Botões</th>
+                <th>Comissários</th>
                 <th>Ações</th>
               </tr>
             </thead>
