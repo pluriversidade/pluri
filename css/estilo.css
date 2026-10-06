@@ -406,7 +406,6 @@ a { color: inherit; }
 
 /* ---------------------------------------------------- chips de categorias --- */
 
-/* Grade responsiva para organizar as categorias sem estouro */
 .chips {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -417,7 +416,6 @@ a { color: inherit; }
   box-sizing: border-box;
 }
 
-/* O primeiro botão ("Todas as Categorias") ocupa toda a largura */
 .chip-grupo--todas {
   grid-column: 1 / -1;
 }
@@ -583,7 +581,7 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: .85rem 1rem .85rem .9rem;
+  padding: .95rem 1.1rem .95rem 1rem;
   text-decoration: none;
   color: inherit;
   min-height: 62px;
@@ -601,34 +599,34 @@ a { color: inherit; }
 
 .grupo__nome {
   display: block;
-  font-weight: 650;
-  font-size: 1.25rem;
+  font-weight: 750;
+  font-size: 1.35rem;
   line-height: 1.25;
   word-break: break-word;
 }
 
 .grupo__desc {
   display: block;
-  margin-top: .2rem;
-  font-size: .88rem;
+  margin-top: .3rem;
+  font-size: .98rem;
   color: var(--tinta-fraca);
-  line-height: 1.35;
+  line-height: 1.4;
   word-break: break-word;
 }
 
 .grupo__meta {
-  margin-top: .35rem;
-  font-size: .78rem;
+  margin-top: .45rem;
+  font-size: .85rem;
   color: var(--tinta-fraca);
   display: flex;
   align-items: center;
-  gap: .4rem;
+  gap: .45rem;
   flex-wrap: wrap;
 }
 
 .ponto {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--cor, var(--verde));
   flex: 0 0 auto;
@@ -637,10 +635,10 @@ a { color: inherit; }
 .grupo__etiqueta-admin {
   display: inline-block;
   font-family: var(--mono);
-  font-size: .62rem;
+  font-size: .7rem;
   letter-spacing: .08em;
   text-transform: uppercase;
-  padding: .15rem .45rem;
+  padding: .18rem .5rem;
   border-radius: 4px;
   background: rgba(46, 125, 83, .15);
   color: var(--verde);
@@ -649,10 +647,10 @@ a { color: inherit; }
 
 .etiqueta {
   font-family: var(--mono);
-  font-size: .62rem;
+  font-size: .7rem;
   letter-spacing: .08em;
   text-transform: uppercase;
-  padding: .12rem .4rem;
+  padding: .15rem .45rem;
   border-radius: 4px;
 }
 
@@ -664,15 +662,14 @@ a { color: inherit; }
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--regua);
-  width: 48px;
+  width: 52px;
 }
 
-/* Estilo do texto na vertical nos botões de ação na extrema direita dos cards */
 .texto-vertical {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: var(--sans);
-  font-size: .55rem;
+  font-size: .62rem;
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -696,7 +693,7 @@ a { color: inherit; }
   border: none;
   cursor: pointer;
   padding: .4rem .1rem;
-  font-size: .9rem;
+  font-size: 1rem;
   transition: background-color .2s ease, color .2s ease;
 }
 
@@ -726,17 +723,16 @@ a { color: inherit; }
   color: var(--terracota);
 }
 
-/* Botão do WhatsApp no final do Card */
 .grupo__btn-entrar {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: .75rem 1rem;
+  padding: .85rem 1rem;
   background: var(--verde);
   color: #FFFFFF;
-  font-weight: 700;
-  font-size: .88rem;
+  font-weight: 750;
+  font-size: .98rem;
   text-decoration: none;
   text-align: center;
   border-top: 1px solid var(--regua);
@@ -1132,7 +1128,7 @@ a { color: inherit; }
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  background: #000;
+  background: #111;
   border-left: 1px solid var(--regua);
   transition: opacity .2s ease;
 }
@@ -1153,16 +1149,18 @@ a { color: inherit; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.65);
   color: #fff;
-  font-size: .8rem;
-  width: 26px;
-  height: 26px;
+  font-size: .85rem;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 /* Modal de Visualização em Tela Cheia */

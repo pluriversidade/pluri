@@ -445,7 +445,7 @@
           if (ehVideo) {
             miniHtml =
               '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
-                '<video class="festa__mini-media" src="' + f.midia + '" muted playsinline preload="none"></video>' +
+                '<video class="festa__mini-media" src="' + f.midia + '#t=0.5" muted playsinline preload="metadata"></video>' +
                 '<span class="festa__play-icon">▶</span>' +
               '</div>';
           } else {
@@ -955,13 +955,23 @@
     var container = document.getElementById("modal-container-midia");
     if (modal) modal.hidden = true;
     if (container) {
-      // Interrompe qualquer áudio/vídeo rodando no modal ao fechar
       var midias = container.querySelectorAll("video, audio");
       Array.prototype.forEach.call(midias, function (m) {
         m.pause();
         m.src = "";
       });
       container.innerHTML = "";
+    }
+  }
+
+  function pausarVideoComissario() {
+    var modalComissario = document.getElementById("modal-comissario");
+    if (modalComissario) {
+      var videos = modalComissario.querySelectorAll("video");
+      Array.prototype.forEach.call(videos, function (v) {
+        v.pause();
+        v.currentTime = 0;
+      });
     }
   }
 
@@ -980,6 +990,9 @@
     var modalComissario = document.getElementById("modal-comissario");
     var btnFecharComissario = document.getElementById("modal-comissario-fechar");
 
+    // Garante que o vídeo dentro do modal comissário esteja pausado e com preload desativado
+    pausarVideoComissario();
+
     if (btnComissarioInfo && modalComissario) {
       btnComissarioInfo.addEventListener("click", function () {
         modalComissario.hidden = false;
@@ -989,12 +1002,16 @@
     if (btnFecharComissario && modalComissario) {
       btnFecharComissario.addEventListener("click", function () {
         modalComissario.hidden = true;
+        pausarVideoComissario();
       });
     }
 
     if (modalComissario) {
       modalComissario.addEventListener("click", function (e) {
-        if (e.target === modalComissario) modalComissario.hidden = true;
+        if (e.target === modalComissario) {
+          modalComissario.hidden = true;
+          pausarVideoComissario();
+        }
       });
     }
   }
@@ -1023,41 +1040,58 @@
       }
     }
 
-    if (abaGrupos) abaGrupos.addEventListener("click", function () { ativarAba("grupos"); location.hash = "grupos"; });
-    if (abaFestas) abaFestas.addEventListener("click", function () { ativarAba("festas"); location.hash = "festas"; });
+    if (abaGrupos) {
+      abaGrupos.addEventListener("click", function () {
+        ativarAba("grupos");
+        location.hash = "grupos";
+      });
+    }
+
+    if (abaFestas) {
+      abaFestas.addEventListener("click", function () {
+        ativarAba("festas");
+        location.hash = "festas";
+      });
+    }
 
     function processarHash() {
-      var hash = String(location.hash || "").replace(/^#/, "");
-      if (!hash) return;
+      var hash = unescape(location.hash.replace(/^#/, "")).trim();
+      if (!hash) {
+        ativarAba("grupos");
+        return;
+      }
 
       var partes = hash.split("/");
-      var rotaPrincipal = partes[0];
+      var rotaPai = partes[0];
       var parametro = partes[1] || "";
 
-      if (rotaPrincipal === "festas") {
+      if (rotaPai === "festas") {
         ativarAba("festas");
         if (parametro) {
           setTimeout(function () {
             var elFesta = document.getElementById("festa-" + parametro);
             if (elFesta) {
               elFesta.scrollIntoView({ behavior: "smooth", block: "center" });
-              elFesta.classList.add("festa--destaque");
-              setTimeout(function () { elFesta.classList.remove("festa--destaque"); }, 3500);
+              elFesta.style.transition = "outline 0.3s ease";
+              elFesta.style.outline = "3px solid var(--terracota)";
+              setTimeout(function () { elFesta.style.outline = "none"; }, 3000);
             }
-          }, 400);
+          }, 300);
         }
-      } else if (rotaPrincipal === "grupos") {
+      } else if (rotaPai === "grupos") {
         ativarAba("grupos");
         if (parametro) {
           if (parametro.indexOf("grupo-") === 0) {
-            var slugGrupo = parametro.replace(/^grupo-/, "");
+            var slugApenas = parametro.replace("grupo-", "");
             if (typeof irParaGrupoPeloSlug === "function") {
-              irParaGrupoPeloSlug(slugGrupo);
+              irParaGrupoPeloSlug(slugApenas);
             }
           } else if (typeof selecionarCategoriaExternamente === "function") {
             selecionarCategoriaExternamente(parametro);
           }
         }
+      } else {
+        ativarAba("grupos");
       }
     }
 
@@ -1066,16 +1100,16 @@
   }
 
   /* -------------------------------------------------------------------------
-     INICIALIZAÇÃO DA PÁGINA
+     INICIALIZAÇÃO
      ------------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     aplicarTextos();
+    mostrarProblemas();
     configurarPix();
     montarParceiros();
     montarFestas();
     montarGrupos();
     configurarModais();
     configurarAbasERotas();
-    mostrarProblemas();
   });
 })();
