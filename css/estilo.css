@@ -118,22 +118,24 @@ a { color: inherit; }
 }
 
 /* Animação Ola de Torcida para o Titulo */
-.titulo .letra-ola {
+/* Estilo das letras */
+.titulo-onda span {
   display: inline-block;
-  animation: olaTorcida 2s ease-in-out infinite;
-  transform-origin: bottom center;
+  /* 
+     1. Dura 1.2s para a onda ficar um pouco mais lenta (ajuste se quiser mais/menos lenta)
+     2. Começa após 1.5s de atraso (delay)
+     3. Roda exatamente 6 vezes (6)
+  */
+  animation: olaTorcida 1.2s ease-in-out 1.5s 6 normal forwards;
 }
 
+/* Animação do movimento */
 @keyframes olaTorcida {
   0%, 100% {
-    transform: scale(1);
+    transform: translateY(0);
   }
-  30% {
-    transform: scale(1.4);
-    color: var(--terracota);
-  }
-  60% {
-    transform: scale(1);
+  50% {
+    transform: translateY(-15px); /* Altura do pulo da onda */
   }
 }
 
