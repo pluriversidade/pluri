@@ -14,6 +14,22 @@
   <meta property="og:type" content="website">
 
   <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    /* Ajuste para garantir que o layout preencha a altura total da tela e fixe o rodapé em baixo se o conteúdo for curto */
+    html, body {
+      height: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    .miolo {
+      flex: 1 0 auto;
+    }
+    .rodape {
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -44,18 +60,18 @@
         <p style="text-align: center; color: var(--tinta-fraca); padding: 2rem;">Carregando informações da festa...</p>
       </div>
     </main>
-
-    <!-- RODAPÉ DO SITE -->
-    <footer class="rodape">
-      <div class="rodape__texto">
-        <div class="rodape__direitos">
-          <span class="rodape__marca">Pluriversidade</span>
-          <span class="rodape__subdireitos">© 2026 • Todos os direitos reservados</span>
-        </div>
-        <p>Contato via WhatsApp: <a href="https://wa.me/5531991579687" target="_blank" rel="noopener">(31) 99157-9687</a></p>
-      </div>
-    </footer>
   </div>
+
+  <!-- RODAPÉ DO SITE -->
+  <footer class="rodape">
+    <div class="rodape__texto">
+      <div class="rodape__direitos">
+        <span class="rodape__marca">Pluriversidade</span>
+        <span class="rodape__subdireitos">© 2026 • Todos os direitos reservados</span>
+      </div>
+      <p>Contato via WhatsApp: <a href="https://wa.me/5531991579687" target="_blank" rel="noopener">(31) 99157-9687</a></p>
+    </div>
+  </footer>
 
   <!-- SCRIPTS DE DADOS E FUNCIONAMENTO -->
   <script src="js/dados-textos.js"></script>
