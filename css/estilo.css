@@ -57,6 +57,7 @@ a { color: inherit; }
 
 .capa { position: relative; overflow: hidden; }
 
+/* Capa com altura aumentada mantendo formato horizontal */
 .topo-video-container {
   position: relative;
   width: 100%;
@@ -73,6 +74,7 @@ a { color: inherit; }
   display: block;
 }
 
+/* Efeito leve de TV (scanlines e vinheta sutil) */
 .efeito-tv {
   position: absolute;
   top: 0;
@@ -84,6 +86,14 @@ a { color: inherit; }
   background-size: 100% 3px, 6px 100%;
   z-index: 2;
   opacity: 0.6;
+}
+
+.carro-a { animation: atravessa 26s linear infinite; }
+.carro-b { animation: atravessa 38s linear infinite; animation-delay: -14s; }
+
+@keyframes atravessa {
+  0%   { transform: translateX(-100px); }
+  100% { transform: translateX(100vw); }
 }
 
 .marca {
@@ -107,6 +117,7 @@ a { color: inherit; }
   line-height: 1.05;
 }
 
+/* Animação Ola de Torcida para o Titulo */
 .titulo .letra-ola {
   display: inline-block;
   animation: olaTorcida 2s ease-in-out infinite;
@@ -114,9 +125,16 @@ a { color: inherit; }
 }
 
 @keyframes olaTorcida {
-  0%, 100% { transform: scale(1); }
-  30% { transform: scale(1.4); color: var(--terracota); }
-  60% { transform: scale(1); }
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.4);
+    color: var(--terracota);
+  }
+  60% {
+    transform: scale(1);
+  }
 }
 
 .subtitulo {
@@ -238,6 +256,13 @@ a { color: inherit; }
 }
 
 .parceiro__cta:hover { background: #D69C2C; }
+
+.bolinhas {
+  display: flex;
+  justify-content: center;
+  gap: .4rem;
+  margin-top: .7rem;
+}
 
 /* ------------------------------------------------------------- botoes abas --- */
 
@@ -500,6 +525,44 @@ a { color: inherit; }
 .btn-share-cat:hover {
   background: #f0ece1;
   transform: scale(1.05);
+}
+
+@media (max-width: 420px) {
+  .chips {
+    grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+    gap: .4rem;
+  }
+  
+  .chip-grupo {
+    padding: .35rem .4rem;
+  }
+  
+  .chip-conteudo {
+    font-size: .78rem;
+    gap: .3rem;
+  }
+  
+  .chip-img {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+}
+
+.contagem {
+  margin: 1.2rem 0 .4rem;
+  font-family: var(--sans);
+  font-size: 1.66rem;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  color: var(--tinta);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.contagem strong {
+  font-weight: 800;
+  color: var(--tinta);
 }
 
 /* ----------------------------------------------------------------- lista --- */
@@ -1042,26 +1105,6 @@ a { color: inherit; }
 
 .festa__link:hover { border-color: var(--cor, var(--terracota)); }
 
-/* ------------------------------------------------------------- página de detalhe da festa --- */
-.detalhe-festa {
-  background: var(--papel);
-  border: 1px solid var(--regua);
-  border-left: 6px solid var(--cor, var(--terracota));
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: var(--sombra);
-}
-
-.detalhe-festa__midia-grande {
-  width: 100%;
-  max-height: 450px;
-  border-radius: 10px;
-  background: #111;
-  object-fit: contain;
-  display: block;
-  margin: 1rem 0;
-}
-
 /* ------------------------------------------------------------- paginação --- */
 
 .paginas {
@@ -1140,6 +1183,7 @@ a { color: inherit; }
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
+/* Modal de Visualização em Tela Cheia */
 .modal-midia {
   position: fixed;
   top: 0;
