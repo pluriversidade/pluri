@@ -445,7 +445,7 @@
           if (ehVideo) {
             miniHtml =
               '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
-                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
+                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata" playsinline></video>' +
                 '<span class="festa__play-icon">▶</span>' +
               '</div>';
           } else {
@@ -465,7 +465,6 @@
           '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
             '<div class="festa__conteudo-principal">' +
               '<div class="festa__topo-linha">' +
-                miniHtml +
                 '<div class="festa__data">' +
                   '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
                   '<span class="festa__dia">' + dois(d.dia) + '</span>' +
@@ -476,6 +475,7 @@
                   '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
                   '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
                 '</div>' +
+                miniHtml +
               '</div>' +
               '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
               '<div class="festa__links">' +
@@ -954,7 +954,14 @@
     var modal = document.getElementById("modal-midia");
     var container = document.getElementById("modal-container-midia");
     if (modal) modal.hidden = true;
-    if (container) container.innerHTML = "";
+    if (container) {
+      var videos = container.querySelectorAll("video");
+      Array.prototype.forEach.call(videos, function (v) {
+        v.pause();
+        v.src = "";
+      });
+      container.innerHTML = "";
+    }
   }
 
   function configurarModais() {

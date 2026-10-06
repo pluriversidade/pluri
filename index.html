@@ -1,285 +1,244 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pluriversidade — grupos de WhatsApp e festas universitárias</title>
-<meta name="description" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
-<meta name="theme-color" content="#1F3347">
-<meta property="og:title" content="PLURIVERSIDADE.COM.BR">
-<meta property="og:description" content="Repositório de Grupos e Festas das maiores universidades do Brasil!">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
-<meta property="og:image:secure_url" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<!-- Ícone do Navegador -->
-<link rel="icon" type="image/png" href="https://pluriversidade.github.io/pluri/img/icone-pluri.png">
-<link rel="stylesheet" href="css/estilo.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluriversidade — Grupos de WhatsApp e Festas Universitárias</title>
+  
+  <meta name="description" content="Encontre grupos de WhatsApp e festas universitárias em Belo Horizonte e região. UFMG, PUC, FUMEC e mais.">
+  
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- ================================================================ capa -->
-<header class="capa">
-  <div class="topo-video-container">
-    <video class="topo-video" src="https://pluriversidade.github.io/pluri/img/video-topo-site.mp4" autoplay muted loop playsinline></video>
-    <div class="efeito-tv" aria-hidden="true"></div>
-  </div>
+  <!-- CABEÇALHO -->
+  <header class="cabecalho">
+    <div class="cabecalho__conteudo">
+      <div class="cabecalho__marca">
+        <h1 class="cabecalho__titulo">Pluriversidade</h1>
+        <p class="cabecalho__subtitulo">Grupos de WhatsApp e Festas Universitárias</p>
+      </div>
 
-  <div class="miolo marca">
-    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema com comunidade em volta">
-      <defs>
-        <g id="pessoa">
-          <circle cy="-9.5" r="6.4"/>
-          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8 a9.2 9.2 0 0 1 9.2 -9.2 z"/>
-        </g>
-      </defs>
-      <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
-      
-      <g opacity="0.9">
-        <use href="#pessoa" fill="#2E7D53" transform="translate(0, -74) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(52, -52) rotate(45) scale(0.95)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="translate(74, 0) rotate(90) scale(0.95)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="translate(52, 52) rotate(135) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(0, 74) rotate(180) scale(0.95)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="translate(-52, 52) rotate(225) scale(0.95)"/>
-        <use href="#pessoa" fill="-2E7D53" transform="translate(-74, 0) rotate(270) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(-52, -52) rotate(315) scale(0.95)"/>
-      </g>
+      <!-- PAINEL DE ESTATÍSTICAS -->
+      <div class="painel-stats">
+        <div class="stat-item">
+          <span class="stat-num" id="painel-grupos">0</span>
+          <span class="stat-lbl">grupos</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="painel-membros">0</span>
+          <span class="stat-lbl">estudantes</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="painel-media">0</span>
+          <span class="stat-lbl">por grupo</span>
+        </div>
+      </div>
+    </div>
+  </header>
 
-      <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
-      <image href="https://pluriversidade.github.io/pluri/img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
-    </svg>
-
-    <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
-    <p class="subtitulo" data-texto="subtitulo">Brechó, sebo, bandeco, caronas, idiomas e o que mais a comunidade inventar.</p>
-    <p class="atualizado" id="atualizado" hidden></p>
-  </div>
-</header>
-
-<div class="miolo">
-  <div class="diagnostico" id="diagnostico" hidden></div>
-</div>
-
-<main class="miolo">
-
-  <!-- parceiros -->
-  <section class="secao-parceiros" id="secao-parceiros" aria-label="Parceiros">
-    <div class="carrossel" id="parceiros"></div>
-    <div class="bolinhas" id="parceiros-bolinhas" role="tablist" aria-label="Escolher parceiro"></div>
+  <!-- CARROSSEL DE PARCEIROS -->
+  <section class="secao-parceiros">
+    <div class="trilho-parceiros" id="parceiros"></div>
   </section>
 
-  <!-- abas -->
-  <nav class="abas" id="abas" role="tablist" aria-label="Escolher o que ver">
-    <button class="aba" type="button" role="tab" id="aba-grupos" aria-controls="secao-grupos" aria-selected="true">
-      <span class="aba__nome" data-texto="abaGrupos">Grupos</span>
-      <span class="aba__conta" id="aba-grupos-conta"></span>
+  <!-- ABAS PRINCIPAIS -->
+  <nav class="navegacao-abas" role="tablist">
+    <button class="btn-aba btn-aba--ativa" id="aba-grupos" role="tab" aria-selected="true" aria-controls="secao-grupos">
+      💬 Grupos de WhatsApp <span class="badge-conta" id="aba-grupos-conta">0</span>
     </button>
-    <button class="aba" type="button" role="tab" id="aba-festas" aria-controls="secao-festas" aria-selected="false" tabindex="-1">
-      <span class="aba__nome" data-texto="abaFestas">Festas</span>
-      <span class="aba__conta" id="aba-festas-conta"></span>
+    <button class="btn-aba" id="aba-festas" role="tab" aria-selected="false" aria-controls="secao-festas" tabindex="-1">
+      🎉 Festas Universitárias <span class="badge-conta" id="aba-festas-conta">0</span>
     </button>
   </nav>
 
-  <!-- festas -->
-  <section class="secao" id="secao-festas" role="tabpanel" aria-labelledby="aba-festas" tabindex="-1" hidden>
-    
-    <!-- CARD FIXO COMISSÁRIO PLURI -->
-    <div class="card-comissario">
-      <h3 class="card-comissario__titulo">QUER SER UM COMISSÁRIO PLURI?</h3>
-      <p class="card-comissario__desc">Clique no botão abaixo e saiba como se tornar um comissário de vendas de ingressos das festas universitárias! Você pode garantir seu ingresso na faixa e não pagar nada para ir nas festas em que estiver vendendo.</p>
-      <button type="button" class="card-comissario__btn" id="btn-comissario-info">QUERO SABER MAIS INFORMAÇÕES..</button>
+  <main class="conteudo-principal">
+
+    <!-- DIAGNÓSTICO DE ERROS (LOCAL) -->
+    <div id="diagnostico" class="diagnostico-box" hidden></div>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SEÇÃO 1: GRUPOS DE WHATSAPP
+         ════════════════════════════════════════════════════════════════════ -->
+    <section id="secao-grupos" class="secao-aba" role="tabpanel" aria-labelledby="aba-grupos">
+
+      <!-- FILTROS DE REGIONALIZAÇÃO -->
+      <div class="filtros-regional">
+        <div class="campo-filtro">
+          <label for="select-estado">Estado</label>
+          <select id="select-estado" class="select-padrao">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="select-cidade">Cidade</label>
+          <select id="select-cidade" class="select-padrao">
+            <option value="">Selecione primeiro o estado</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="select-uni">Universidade</label>
+          <select id="select-uni" class="select-padrao">
+            <option value="">Selecione primeiro o estado</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CAMPO DE BUSCA -->
+      <div class="caixa-busca">
+        <input type="text" id="busca" class="input-busca" placeholder="🔍 Buscar por nome do grupo, curso ou assunto...">
+      </div>
+
+      <!-- CARROSSEL DE CATEGORIAS (CHIPS) -->
+      <div class="conteiner-chips">
+        <div id="chips" class="trilho-chips"></div>
+      </div>
+
+      <!-- CONTAGEM DE RESULTADOS -->
+      <div class="info-contagem">
+        <span id="contagem">0 grupos encontrados</span>
+      </div>
+
+      <!-- LISTA DE GRUPOS -->
+      <ul id="lista" class="lista-grupos"></ul>
+
+      <!-- MENSAGEM SE NADA FOR ENCONTRADO -->
+      <div id="vazio" class="mensagem-vazia" hidden>
+        <p>Nenhum grupo encontrado com os filtros selecionados.</p>
+      </div>
+
+      <!-- PAGINAÇÃO DE GRUPOS -->
+      <div id="grupos-paginas" class="paginacao" hidden>
+        <button id="grupos-voltar" class="btn-paginacao" type="button">← Anterior</button>
+        <span id="grupos-onde" class="info-pagina">página 1 de 1</span>
+        <button id="grupos-avancar" class="btn-paginacao" type="button">Próxima →</button>
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SEÇÃO 2: FESTAS UNIVERSITÁRIAS
+         ════════════════════════════════════════════════════════════════════ -->
+    <section id="secao-festas" class="secao-aba" role="tabpanel" aria-labelledby="aba-festas" hidden>
+
+      <!-- FILTROS DE REGIONALIZAÇÃO DE FESTAS -->
+      <div class="filtros-regional">
+        <div class="campo-filtro">
+          <label for="select-estado-festas">Estado</label>
+          <select id="select-estado-festas" class="select-padrao">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="select-cidade-festas">Cidade</label>
+          <select id="select-cidade-festas" class="select-padrao">
+            <option value="">Selecione primeiro o estado</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="select-uni-festas">Universidade</label>
+          <select id="select-uni-festas" class="select-padrao">
+            <option value="">Selecione primeiro o estado</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- FILTRO DE DATA -->
+      <div class="caixa-busca-festa">
+        <div class="campo-filtro-data">
+          <label for="festas-dia">Filtrar por data específica:</label>
+          <div class="linha-input-data">
+            <input type="date" id="festas-dia" class="input-data">
+            <button id="festas-limpar" class="btn-limpar-data" type="button" hidden>Limpar Data</button>
+          </div>
+        </div>
+
+        <button id="btn-comissario-info" class="btn-comissario-chamada" type="button">
+          🎟️ Quer vender ingressos das festas? Clique aqui!
+        </button>
+      </div>
+
+      <!-- LISTA DE FESTAS -->
+      <ul id="festas-lista" class="lista-festas"></ul>
+
+      <!-- MENSAGEM SE NENHUMA FESTA FOR ENCONTRADA -->
+      <div id="festas-vazio" class="mensagem-vazia" hidden>
+        <p>Nenhuma festa encontrada para os filtros selecionados.</p>
+      </div>
+
+      <!-- PAGINAÇÃO DE FESTAS -->
+      <div id="festas-paginas" class="paginacao" hidden>
+        <button id="festas-voltar" class="btn-paginacao" type="button">← Anterior</button>
+        <span id="festas-onde" class="info-pagina">página 1 de 1</span>
+        <button id="festas-avancar" class="btn-paginacao" type="button">Próxima →</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- SEÇÃO DE APOIO / PIX -->
+  <section class="secao-pix">
+    <div class="caixa-pix">
+      <h2>Apoie o Projeto Pluriversidade 💚</h2>
+      <p>O Pluriversidade é mantido de forma independente para conectar estudantes. Se o site te ajudou, considere fazer uma contribuição de qualquer valor!</p>
+      
+      <div class="linha-pix">
+        <span id="pix-numero" class="chave-pix">pix@pluri.com</span>
+        <button id="copiar-pix" class="btn-copiar-pix">
+          📋 <span id="pix-rotulo">Copiar Chave Pix</span>
+        </button>
+      </div>
     </div>
-
-    <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
-    <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
-
-    <div class="localizacao">
-      <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
-        <option value="">Selecione o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-cidade-festas" aria-label="Filtrar por Cidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-uni-festas" aria-label="Filtrar por Universidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-    </div>
-
-    <div class="chips" id="festas-chips" role="group" aria-label="Universidades"></div>
-
-    <div class="linha-data">
-      <label class="rotulo-data" for="festas-dia" data-texto="festasFiltroDia">Ver um dia específico</label>
-      <span class="linha-data__campos">
-        <input class="campo-data" type="date" id="festas-dia">
-        <button class="limpar-data" type="button" id="festas-limpar" hidden>limpar</button>
-      </span>
-    </div>
-
-    <ul class="festas" id="festas-lista"></ul>
-    <p class="vazio" id="festas-vazio" hidden></p>
-
-    <nav class="paginas" id="festas-paginas" aria-label="Páginas das festas" hidden>
-      <button class="pagina" type="button" id="festas-voltar">
-        <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
-      </button>
-      <span class="paginas__onde" id="festas-onde" aria-live="polite"></span>
-      <button class="pagina" type="button" id="festas-avancar">
-        <span data-texto="paginaProxima">próxima</span> <span aria-hidden="true">→</span>
-      </button>
-    </nav>
   </section>
 
-  <!-- grupos -->
-  <section class="secao" id="secao-grupos" role="tabpanel" aria-labelledby="aba-grupos" tabindex="-1">
-    <h2 class="secao__titulo" id="grupos-titulo" data-texto="gruposTitulo">Todos os grupos</h2>
-    <p class="secao__nota" data-texto="gruposSubtitulo">Toque no grupo para entrar direto no WhatsApp.</p>
-
-    <div class="painel">
-      <div class="dado"><b id="painel-grupos">—</b><span>grupos na lista</span></div>
-      <div class="dado"><b id="painel-membros">—</b><span>membros somados</span></div>
-      <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
-    </div>
-
-    <div class="localizacao">
-      <select class="seletor-local" id="select-estado" aria-label="Filtrar por Estado">
-        <option value="">Selecione o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-cidade" aria-label="Filtrar por Cidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-uni" aria-label="Filtrar por Universidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-    </div>
-
-    <input class="busca" id="busca" type="search" autocomplete="off"
-           aria-label="Buscar grupo pelo nome"
-           data-texto-dica="gruposBusca"
-           placeholder="Buscar grupo…">
-
-    <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
-    <p class="contagem" id="contagem"></p>
-
-    <ul class="lista" id="lista"></ul>
-    <p class="vazio" id="vazio" data-texto="gruposVazio" hidden></p>
-
-    <nav class="paginas" id="grupos-paginas" aria-label="Páginas dos grupos" hidden>
-      <button class="pagina" type="button" id="grupos-voltar">
-        <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
-      </button>
-      <span class="paginas__onde" id="grupos-onde" aria-live="polite"></span>
-      <button class="pagina" type="button" id="grupos-avancar">
-        <span data-texto="paginaProxima">próxima</span> <span aria-hidden="true">→</span>
-      </button>
-    </nav>
-  </section>
-
-  <!-- blocos adicionais -->
-  <section class="bloco">
-    <h2>A PLURIVERSIDADE É DE TODOS NÓS!</h2>
-    <p>Alimente-nos!</p>
-
-    <!-- Quer incluir sua festa aqui? -->
-    <a class="botao" id="festa-incluir" href="https://wa.me/5531991579687?text=Oi!%20Gostaria%20de%20adicionar%20minha%20festa%20no%20reposit%C3%B3rio%20da%20Pluriversidade." target="_blank" rel="noopener">
-      <span>
-        <span>Quer incluir sua festa aqui?</span>
-        <small>Clique aqui para saber como adicionar sua festa em nosso repositório.</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <!-- Quer indicar um grupo já existente? -->
-    <a class="botao" id="grupo-indicar" href="https://wa.me/5531991579687?text=Oi!%20Gostaria%20de%20indicar%20um%20grupo%20j%C3%A1%20existente%20da%20minha%20universidade." target="_blank" rel="noopener">
-      <span>
-        <span>Quer indicar um grupo já existente?</span>
-        <small>Clique aqui para saber como adicionar um grupo já existente da sua universidade em nosso repositório.</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <!-- Cadastrar meu grupo -->
-    <a class="botao" id="grupo-cadastrar" href="https://wa.me/5531991579687?text=Oi!%20Gostaria%20de%20cadastrar%20o%20meu%20grupo%20para%20divulgar%20no%20site%20da%20Pluri." target="_blank" rel="noopener">
-      <span>
-        <span>Cadastrar meu grupo</span>
-        <small>divulgar no site da Pluri</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <!-- Seja Administrador(a) -->
-    <a class="botao" id="grupo-admin" href="https://wa.me/5531991579687?text=Oi!%20Tenho%20interesse%20em%20ser%20administrador(a)%20para%20ajudar%20a%20moderar%20a%20comunidade." target="_blank" rel="noopener">
-      <span>
-        <span>Seja Administrador(a)</span>
-        <small>ajude a moderar a comunidade</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
-  <section class="bloco">
-    <h2 data-texto="apoioTitulo">Ajude a manter os grupos</h2>
-    <p data-texto="apoioTexto">Administrar mais de cem grupos toma tempo e paciência.</p>
-
-    <button class="botao" id="copiar-pix" type="button">
-      <span class="pix"><span id="pix-numero">caronas.ufmg@gmail.com</span><small id="pix-rotulo">Chave pix</small></span>
-      <span aria-hidden="true">⧉</span>
-    </button>
-
-    <a class="botao" id="sugerir-novo-grupo" href="https://wa.me/5531991579687?text=EI%20GALERA%20DA%20PLURIVERSIDADE%2C%20QUERO%20SUGERIR%20A%20CRIA%C3%87%C3%83O%20DE%20UM%20GRUPO%21" target="_blank" rel="noopener">
-      <span><span>Sugerir a criação de um grupo novo</span><small>falar no privado</small></span>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
-</main>
-
-<footer class="rodape">
-  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
-    <rect width="1200" height="300" fill="#1F3347"/>
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#17232E"/>
-  </svg>
-
-  <div class="rodape__texto">
-    <p class="rodape__isencao" data-texto="rodapeIsencao">
-      Página independente, mantida pela comunidade.
-    </p>
-  </div>
-</footer>
-
-<!-- Modais -->
-<div class="modal-midia" id="modal-midia" hidden>
-  <div class="modal-midia__conteudo">
-    <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar">&times;</button>
-    <div id="modal-container-midia"></div>
-  </div>
-</div>
-
-<div class="modal-comissario" id="modal-comissario" hidden>
-  <div class="modal-comissario__conteudo">
-    <button class="modal-comissario__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
-    <div class="modal-comissario__corpo">
-      <video class="modal-comissario__video" id="video-comissario" src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" controls autoplay playsinline></video>
-      <p class="modal-comissario__texto">
-        Ter vários comissários é essencial para o sucesso de uma festa universitária! Os comissários arrecadam a grana inicial necessária para viabilizar todo o evento, permitindo que a comissão organize a estrutura, contrate DJs de peso, alugue o espaço e invista pesado no marketing. Nós da Pluriversidade somos a ponte oficial entre os organizadores (comissão) e os vendedores de ingressos (comissários).
+  <!-- RODAPÉ -->
+  <footer class="rodape">
+    <div class="rodape__conteudo">
+      <div class="rodape__direitos">
+        WWW.PLURIVERSIDADE.COM.BR ® TODOS OS DIREITOS RESERVADOS
+      </div>
+      <p class="rodape__aviso">
+        PÁGINA INDEPENDENTE, SEM VÍNCULO COM A ADMINISTRAÇÃO DIRETA DE NENHUMA UNIVERSIDADE. OS GRUPOS SÃO GERENCIADOS POR ESTUDANTES E USUÁRIOS DA COMUNIDADE.
       </p>
-      <a class="modal-comissario__btn-form" href="https://wa.me/5531991579687?text=Oi!%20Quero%20me%20cadastrar%20como%20comiss%C3%A1rio(a)%20de%20festas!" target="_blank" rel="noopener">PREENCHER FORMULÁRIO</a>
+      <div class="rodape__links">
+        <a href="admin.html" class="rodape__link-admin">Área Administrativa</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE MÍDIA (FLYER / VÍDEO) -->
+  <div id="modal-midia" class="modal-overlay" hidden>
+    <div class="modal-conteudo modal-conteudo--midia">
+      <button id="modal-fechar" class="btn-fechar-modal" type="button" aria-label="Fechar modal">✕</button>
+      <div id="modal-container-midia" class="modal-body-midia"></div>
     </div>
   </div>
-</div>
 
-<script src="js/dados-textos.js"></script>
-<script src="js/dados-grupos.js"></script>
-<script src="js/dados-festas.js"></script>
-<script src="js/dados-parceiros.js"></script>
-<script src="js/app.js"></script>
+  <!-- MODAL DE INFORMAÇÕES DE COMISSÁRIO -->
+  <div id="modal-comissario" class="modal-overlay" hidden>
+    <div class="modal-conteudo">
+      <button id="modal-comissario-fechar" class="btn-fechar-modal" type="button" aria-label="Fechar modal">✕</button>
+      <h2>Seja Comissário de Festas! 🎉</h2>
+      <p>Quer faturar uma grana extra vendendo ingressos para as maiores festas universitárias?</p>
+      <p>Entre em contato direto com a nossa equipe no WhatsApp para ter acesso ao painel de vendas e comissões exclusivas.</p>
+      <div class="modal-acoes">
+        <a href="https://wa.me/5531991579687?text=Oi!%20Tenho%20interesse%20em%20ser%20comiss%C3%A1rio%20de%20festas!" target="_blank" rel="noopener" class="btn-modal-wa">
+          💬 Falar com Suporte no WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
 
+  <!-- SCRIPTS DA APLICAÇÃO -->
+  <script src="js/dados-textos.js"></script>
+  <script src="js/dados-grupos.js"></script>
+  <script src="js/dados-festas.js"></script>
+  <script src="js/dados-parceiros.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

@@ -9,6 +9,15 @@
   if (!window.GRUPOS) window.GRUPOS = [];
   if (!window.FESTAS) window.FESTAS = [];
 
+  function slugify(texto) {
+    return String(texto || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   function inicializarAdmin() {
     var formLogin = document.getElementById("form-login-admin");
     var boxLogin  = document.getElementById("admin-login-box");
@@ -226,7 +235,8 @@
         var cid = g.cidade || uniData.cidade || "";
         var est = g.estado || uniData.estado || "";
         var localStr = cid + (est ? " - " + est : "");
-        var linkCard = "index.html#grupo-" + i;
+        var slugGrupo = slugify(g.nome);
+        var linkCard = "index.html#grupos/grupo-" + slugGrupo;
 
         return (
           '<tr>' +
@@ -354,7 +364,7 @@
         return (
           '<tr>' +
             '<td>' + (f.data || "") + (f.hora ? ' às ' + f.hora : '') + '</td>' +
-            '<td><strong>' + (f.titulo || "") + '</strong></td>' +
+            '<td><strong>' + (f.titulo || "") + '</strong>' + '</td>' +
             '<td><strong>' + (f.uni || "") + '</strong>' + (localStr ? '<br><small style="color:#94a3b8;">' + localStr + '</small>' : '') + '</td>' +
             '<td>' + (botoesLinks.length ? botoesLinks.join(" | ") : "-") + '</td>' +
             '<td>' + (f.comissarios ? '✅ Sim' : '❌ Não') + '</td>' +
