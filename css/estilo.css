@@ -1105,20 +1105,18 @@ a { color: inherit; }
 
 .festa__mini-container {
   flex: 0 0 74px;
-  height: 88px;
-  border-radius: 8px;
+  width: 74px;
+  align-self: stretch;
   overflow: hidden;
   position: relative;
   cursor: pointer;
   background: #000;
-  border: 1px solid var(--regua);
-  transition: transform .2s ease, box-shadow .2s ease;
-  align-self: flex-start;
+  border-left: 1px solid var(--regua);
+  transition: opacity .2s ease;
 }
 
 .festa__mini-container:hover {
-  transform: scale(1.03);
-  box-shadow: var(--sombra);
+  opacity: .9;
 }
 
 .festa__mini-media {

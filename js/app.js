@@ -465,7 +465,6 @@
           '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
             '<div class="festa__conteudo-principal">' +
               '<div class="festa__topo-linha">' +
-                miniHtml +
                 '<div class="festa__data">' +
                   '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
                   '<span class="festa__dia">' + dois(d.dia) + '</span>' +
@@ -484,6 +483,7 @@
                 '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Seja Comissário</a>' +
               '</div>' +
             '</div>' +
+            (miniHtml ? miniHtml : '') +
             '<div class="grupo__acoes festa__acoes">' +
               '<button class="festa__btn-share btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '" title="Compartilhar Festa no WhatsApp">🔗 <span class="texto-vertical">COMPARTILHAR</span></button>' +
             '</div>' +
@@ -1046,10 +1046,8 @@
             if (typeof irParaGrupoPeloSlug === "function") {
               irParaGrupoPeloSlug(slugGrupo);
             }
-          } else {
-            if (typeof selecionarCategoriaExternamente === "function") {
-              selecionarCategoriaExternamente(parametro);
-            }
+          } else if (typeof selecionarCategoriaExternamente === "function") {
+            selecionarCategoriaExternamente(parametro);
           }
         }
       }
@@ -1060,17 +1058,16 @@
   }
 
   /* -------------------------------------------------------------------------
-     INICIALIZAÇÃO DO SITE
+     INICIALIZAÇÃO DA PÁGINA
      ------------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     aplicarTextos();
     configurarPix();
-    mostrarProblemas();
     montarParceiros();
     montarFestas();
     montarGrupos();
     configurarModais();
     configurarAbasERotas();
+    mostrarProblemas();
   });
-
 })();
