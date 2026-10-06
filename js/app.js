@@ -445,7 +445,7 @@
           if (ehVideo) {
             miniHtml =
               '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
-                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
+                '<video class="festa__mini-media" src="' + f.midia + '" muted playsinline preload="none"></video>' +
                 '<span class="festa__play-icon">▶</span>' +
               '</div>';
           } else {
@@ -954,7 +954,15 @@
     var modal = document.getElementById("modal-midia");
     var container = document.getElementById("modal-container-midia");
     if (modal) modal.hidden = true;
-    if (container) container.innerHTML = "";
+    if (container) {
+      // Interrompe qualquer áudio/vídeo rodando no modal ao fechar
+      var midias = container.querySelectorAll("video, audio");
+      Array.prototype.forEach.call(midias, function (m) {
+        m.pause();
+        m.src = "";
+      });
+      container.innerHTML = "";
+    }
   }
 
   function configurarModais() {
