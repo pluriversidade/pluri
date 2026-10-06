@@ -88,7 +88,6 @@ var FESTAS = [
     perfil: "https://instagram.com/exemplo",
     grupo: "https://chat.whatsapp.com/exemplo",
     midia: "img/banner_festa1.jpg"
-    comissarios: true
   },
 
   {
@@ -102,7 +101,6 @@ var FESTAS = [
     perfil: "https://instagram.com/exemplo",
     grupo: "",
     midia: ""
-    comissarios: true
   },
 
   {
@@ -116,7 +114,6 @@ var FESTAS = [
     perfil: "https://instagram.com/exemplo",
     grupo: "https://chat.whatsapp.com/exemplo",
     midia: ""
-    comissarios: true
   },
 
   {
@@ -130,7 +127,6 @@ var FESTAS = [
     perfil: "",
     grupo: "https://chat.whatsapp.com/exemplo",
     midia: ""
-    comissarios: true
   },
 
   {
@@ -144,7 +140,6 @@ var FESTAS = [
     perfil: "https://instagram.com/exemplo",
     grupo: "https://chat.whatsapp.com/exemplo",
     midia: ""
-    comissarios: true
   }
 
 ];
