@@ -463,15 +463,20 @@
 
         return (
           '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
-            '<div class="festa__data">' +
-              '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
-              '<span class="festa__dia">' + dois(d.dia) + '</span>' +
-              '<span class="festa__mes">' + MESES[d.mes - 1] + '</span>' +
-              (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
-            '</div>' +
-            '<div class="festa__corpo">' +
-              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
-              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+            '<div class="festa__conteudo-principal">' +
+              '<div class="festa__topo-linha">' +
+                miniHtml +
+                '<div class="festa__data">' +
+                  '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
+                  '<span class="festa__dia">' + dois(d.dia) + '</span>' +
+                  '<span class="festa__mes">' + MESES[d.mes - 1] + '</span>' +
+                  (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
+                '</div>' +
+                '<div class="festa__corpo">' +
+                  '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
+                  '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+                '</div>' +
+              '</div>' +
               '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
               '<div class="festa__links">' +
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
@@ -479,7 +484,6 @@
                 '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Seja Comissário</a>' +
               '</div>' +
             '</div>' +
-            miniHtml +
             '<div class="grupo__acoes festa__acoes">' +
               '<button class="festa__btn-share btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '" title="Compartilhar Festa no WhatsApp">🔗 <span class="texto-vertical">COMPARTILHAR</span></button>' +
             '</div>' +
@@ -492,6 +496,14 @@
 
       var contaAba = document.getElementById("aba-festas-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
+
+      Array.prototype.forEach.call(document.querySelectorAll(".festa__mini-container"), function (elem) {
+        elem.addEventListener("click", function () {
+          var midiaSrc = elem.getAttribute("data-midia");
+          var tipo = elem.getAttribute("data-tipo");
+          abrirModalMidia(midiaSrc, tipo);
+        });
+      });
 
       Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-festa"), function (btn) {
         btn.addEventListener("click", function (e) {
@@ -697,62 +709,14 @@
           var nomeUni = "universidade";
           if (selUni && selUni.value && unisData[selUni.value]) {
             nomeUni = unisData[selUni.value].nome;
-          } else if (uniSel && unisData[uniSel]) {
-            nomeUni = unisData[uniSel].nome;
           }
-          var uniMaiuscula = nomeUni.toUpperCase();
 
-          var msgTexto = "*Ei*, segue a lista de links de grupos da categoria *" + nomeCat + "* que contém vários grupos do whatsapp da " + nomeUni + ", no site da *Pluriversidade*.\n" +
-            urlShare + "\n\n" +
-            "*Faça sua parte!* Ajude a promover os grupos da *" + uniMaiuscula + "* compartilhando essa mensagem em outros grupos da " + nomeUni + ".";
-
-          var msg = encodeURIComponent(msgTexto);
-          window.open("https://api.whatsapp.com/send?text=" + msg, "_blank");
+          var textoShare = "*Ei*, encontrei os grupos da categoria *" + nomeCat + "* da *" + nomeUni + "*!\n\nConfira todos os grupos aqui:\n" + urlShare;
+          var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoShare);
+          window.open(urlWhatsapp, "_blank");
         });
       });
     }
-
-    selecionarCategoriaExternamente = function (keyCat) {
-      catSel = keyCat || "";
-      montarChips();
-      paginasGrupos.reiniciar();
-      desenhar();
-      if (catSel) {
-        setTimeout(function () {
-          rolarParaCards();
-        }, 300);
-      }
-    };
-
-    irParaGrupoPeloSlug = function (slugAlvo) {
-      if (!slugAlvo) return false;
-      var index = -1;
-      for (var i = 0; i < gruposBons.length; i++) {
-        if (slugify(gruposBons[i].nome) === slugAlvo) {
-          index = i;
-          break;
-        }
-      }
-      if (index === -1) return false;
-
-      // Limpa os filtros temporariamente para garantir exibição do card correto
-      catSel = "";
-      buscaTexto = "";
-      if (busca) busca.value = "";
-      montarChips();
-
-      var numPagina = Math.floor(index / POR_PAGINA) + 1;
-      paginasGrupos.irParaPagina(numPagina);
-      desenhar();
-
-      setTimeout(function () {
-        var elCard = document.getElementById("grupo-" + slugAlvo);
-        if (elCard) {
-          elCard.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 300);
-      return true;
-    };
 
     if (selEstado) {
       selEstado.addEventListener("change", function () {
@@ -792,68 +756,93 @@
       });
     }
 
+    function atualizarPainel(visiveis) {
+      var pGrupos = document.getElementById("painel-grupos");
+      var pMembros = document.getElementById("painel-membros");
+      var pMedia = document.getElementById("painel-media");
+
+      var total = visiveis.length;
+      var soma = 0;
+
+      visiveis.forEach(function (g) {
+        soma += Number(g.membros) || 0;
+      });
+
+      var media = total > 0 ? Math.round(soma / total) : 0;
+
+      if (pGrupos) pGrupos.textContent = total;
+      if (pMembros) pMembros.textContent = soma.toLocaleString("pt-BR");
+      if (pMedia) pMedia.textContent = media;
+    }
+
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
-        var uniDoGrupo = unisData[g.uni];
-        var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
+        var catObj = categorias[g.cat];
+        var uniDoGrupo = g.uni || (catObj ? catObj.uni : "");
 
-        var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
-        var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
+        var uniObj = unisData[uniDoGrupo];
+        var cidObj = uniObj ? cidadesData[uniObj.cidade] : null;
+
+        var bateEstado = !estadoSel || (cidObj && cidObj.estado === estadoSel);
+        var bateCidade = !cidadeSel || (uniObj && uniObj.cidade === cidadeSel);
+        var bateUni = !uniSel || uniDoGrupo === uniSel || simples(uniDoGrupo) === simples(uniSel);
         var bateCat = !catSel || g.cat === catSel;
 
+        var buscaNormalizada = simples(buscaTexto);
+        var nomeNormalizado  = simples(g.nome);
+        var descNormalizada  = simples(g.desc);
+        var catNomeNorm      = catObj ? simples(catObj.nome) : "";
+
         var bateBusca = !buscaTexto ||
-          simples(g.nome).indexOf(buscaTexto) !== -1 ||
-          simples(g.desc).indexOf(buscaTexto) !== -1;
+          nomeNormalizado.indexOf(buscaNormalizada) !== -1 ||
+          descNormalizada.indexOf(buscaNormalizada) !== -1 ||
+          catNomeNorm.indexOf(buscaNormalizada) !== -1;
 
         return bateEstado && bateCidade && bateUni && bateCat && bateBusca;
       });
 
+      if (contagem) {
+        var textoSufixo = visiveis.length === 1 ? " grupo encontrado" : " grupos encontrados";
+        contagem.innerHTML = "<strong>" + visiveis.length + "</strong>" + textoSufixo;
+      }
+
+      atualizarPainel(visiveis);
+
       lista.innerHTML = paginasGrupos.recortar(visiveis).map(function (g) {
-        var cat = categorias[g.cat] || {};
-        var corCat = cat.cor || "var(--verde)";
+        var catObj = categorias[g.cat] || {};
+        var corGrupo = catObj.cor || "var(--verde)";
+        var ehLotado = Boolean(g.lotado);
+        var ehNovo = Boolean(g.novo);
+        var ehAdmin = Boolean(g.admin);
         var slugGrupo = slugify(g.nome);
 
-        /* Identificação de Universidade e Cidade */
-        var uniObj = unisData[g.uni] || {};
-        var nomeUni = uniObj.nome || g.uni || "Não informada";
-        var cidObj = uniObj.cidade ? cidadesData[uniObj.cidade] : null;
-        var nomeCidade = cidObj ? cidObj.nome : "Não informada";
-
-        /* Link direto para o card do grupo específico */
-        var urlCard = location.origin + location.pathname + "#grupos/" + slugGrupo;
-
-        /* Mensagem de reporte incluindo o link direto do card do grupo */
-        var suporteBase = contatos.suporte || "https://wa.me/5531991579687";
-        var textoReport = "Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + ", Cidade: " + nomeCidade + ") está com o link quebrado ou lotado. Segue o link do card do grupo no site: " + urlCard;
-        var urlReporteFinal = suporteBase + (suporteBase.indexOf("?") !== -1 ? "&" : "?") + "text=" + encodeURIComponent(textoReport);
-
-        var ehLotado = Boolean(g.lotado);
+        var msgSuporte = encodeURIComponent("Oi! Encontrei um problema no grupo *" + g.nome + "* (link quebrado ou lotado).");
+        var linkSuporte = "https://wa.me/5531991579687?text=" + msgSuporte;
 
         return (
-          '<li class="item" id="grupo-' + slugGrupo + '" style="--cor:' + corCat + '">' +
+          '<li class="item" id="grupo-' + slugGrupo + '" style="--cor:' + corGrupo + '">' +
             '<div class="grupo__conteudo">' +
-              '<a class="grupo" href="' + g.url + '" target="_blank" rel="noopener">' +
+              '<a class="grupo" href="' + (ehLotado ? 'javascript:void(0)' : g.url) + '" ' + (ehLotado ? '' : 'target="_blank" rel="noopener"') + '>' +
                 '<div class="grupo__topo-linha">' +
                   '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
                 '</div>' +
                 (g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + '</span>' : '') +
                 '<span class="grupo__meta">' +
                   '<span class="ponto"></span> ' +
-                  escapar(cat.nome || g.cat) +
+                  (catObj.nome ? escapar(catObj.nome) : '') +
                   (g.membros ? ' • ' + g.membros + ' membros' : '') +
-                  (g.admin ? ' • <span class="grupo__etiqueta-admin">ADMIN PLURI</span>' : '') +
+                  (ehAdmin ? ' • <span class="grupo__etiqueta-admin">ADMIN</span>' : '') +
+                  (ehNovo ? ' • <span class="etiqueta etiqueta--novo">NOVO</span>' : '') +
                   (ehLotado ? ' • <span class="etiqueta etiqueta--lotado">LOTADO</span>' : '') +
-                  (g.novo ? ' • <span class="etiqueta etiqueta--novo">NOVO</span>' : '') +
                 '</span>' +
               '</a>' +
               '<div class="grupo__acoes">' +
                 '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Grupo no WhatsApp">💬 <span class="texto-vertical">COMPARTILHAR</span></button>' +
-                '<a class="reportar" href="' + urlReporteFinal + '" target="_blank" rel="noopener" title="Reportar erro no WhatsApp">⚠️ <span class="texto-vertical">REPORTAR</span></a>' +
+                '<a class="reportar" href="' + linkSuporte + '" target="_blank" rel="noopener" title="Reportar erro ou grupo lotado">⚠️ <span class="texto-vertical">REPORTAR</span></a>' +
               '</div>' +
             '</div>' +
-            '<a class="grupo__btn-entrar ' + (ehLotado ? 'grupo__btn-entrar--lotado' : '') + '" href="' + g.url + '" target="_blank" rel="noopener">' +
-              (ehLotado ? 'GRUPO LOTADO' : 'ENTRAR NO GRUPO DO WHATSAPP') +
+            '<a class="grupo__btn-entrar ' + (ehLotado ? 'grupo__btn-entrar--lotado' : '') + '" href="' + (ehLotado ? 'javascript:void(0)' : g.url) + '" ' + (ehLotado ? '' : 'target="_blank" rel="noopener"') + '>' +
+              (ehLotado ? 'GRUPO LOTADO' : 'ENTRAR NO GRUPO') +
             '</a>' +
           '</li>'
         );
@@ -862,10 +851,6 @@
       var vazio = document.getElementById("vazio");
       if (vazio) vazio.hidden = visiveis.length > 0;
 
-      if (contagem) {
-        contagem.textContent = visiveis.length + " " + (visiveis.length === 1 ? "grupo encontrado" : "grupos encontrados");
-      }
-
       var contaAba = document.getElementById("aba-grupos-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
 
@@ -873,32 +858,22 @@
         btn.addEventListener("click", function (e) {
           e.stopPropagation();
           var slug = btn.getAttribute("data-slug");
-          var urlCard = location.origin + location.pathname + "#grupos/" + slug;
+          var urlGrupoCard = location.origin + location.pathname + "#grupos/grupo-" + slug;
 
-          var g = gruposBons.find(function (grupo) {
-            return slugify(grupo.nome) === slug;
+          var g = gruposBons.find(function (grp) {
+            return slugify(grp.nome) === slug;
           });
 
           if (!g) return;
 
-          var cat = categorias[g.cat] || {};
-          var nomeCat = cat.nome || g.cat;
-
-          var uniObj = unisData[g.uni] || {};
-          var nomeUni = uniObj.nome || g.uni || "UFMG";
-          var uniMaiuscula = nomeUni.toUpperCase();
-
+          var catObj = categorias[g.cat] || {};
           var textoCompartilhamento =
-            "*Ei*, achei esse grupo do Whatsapp da *" + uniMaiuscula + "* e resolvi *compartilhar* a informação útil!\n" +
-            urlCard + "\n\n" +
-            "#############\n\n" +
+            "*Ei*, achei esse grupo e resolvi *compartilhar*!\n\n" +
             "*" + g.nome.toUpperCase() + "*\n" +
-            "*" + nomeCat + "* • " + nomeUni + "\n" +
-            (g.desc ? "\n" + g.desc + "\n" : "") +
-            "\n*Entrar no grupo:* " + g.url + "\n\n" +
-            "*Pluriversidade.com.br*\n" +
-            "31991579687 - Whatsapp\n\n" +
-            "#############";
+            (g.desc ? g.desc + "\n" : "") +
+            "Categoria: " + (catObj.nome || "") + "\n\n" +
+            "Entrar no grupo: " + g.url + "\n\n" +
+            "Veja mais grupos em: " + urlGrupoCard;
 
           var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
           window.open(urlWhatsapp, "_blank");
@@ -912,210 +887,190 @@
     montarChips();
     desenhar();
 
-    /* Painel de Estatísticas */
-    var totalMembros = 0;
-    gruposBons.forEach(function (g) {
-      if (g.membros) totalMembros += Number(g.membros) || 0;
-    });
+    selecionarCategoriaExternamente = function (catKey) {
+      if (categorias[catKey]) {
+        catSel = catKey;
+        montarChips();
+        paginasGrupos.reiniciar();
+        desenhar();
+        rolarParaCards();
+      }
+    };
 
-    var pGrupos = document.getElementById("painel-grupos");
-    var pMembros = document.getElementById("painel-membros");
-    var pMedia = document.getElementById("painel-media");
+    irParaGrupoPeloSlug = function (slug) {
+      catSel = "";
+      buscaTexto = "";
+      if (busca) busca.value = "";
+      montarChips();
 
-    if (pGrupos) pGrupos.textContent = gruposBons.length;
-    if (pMembros) pMembros.textContent = totalMembros.toLocaleString("pt-BR");
-    if (pMedia && gruposBons.length > 0) {
-      pMedia.textContent = Math.round(totalMembros / gruposBons.length).toLocaleString("pt-BR");
-    }
+      var idx = -1;
+      var visiveis = gruposBons.filter(function (g) { return true; });
+
+      for (var i = 0; i < visiveis.length; i++) {
+        if (slugify(visiveis[i].nome) === slug) {
+          idx = i;
+          break;
+        }
+      }
+
+      if (idx !== -1) {
+        var pagTarget = Math.floor(idx / POR_PAGINA) + 1;
+        paginasGrupos.irParaPagina(pagTarget);
+        desenhar();
+
+        setTimeout(function () {
+          var elCard = document.getElementById("grupo-" + slug);
+          if (elCard) {
+            elCard.scrollIntoView({ behavior: "smooth", block: "center" });
+            elCard.style.transition = "outline 0.3s ease";
+            elCard.style.outline = "3px solid var(--verde)";
+            setTimeout(function () { elCard.style.outline = "none"; }, 3000);
+          }
+        }, 300);
+      }
+    };
 
     return gruposBons.length;
   }
 
   /* -------------------------------------------------------------------------
-     SISTEMA DE ABAS
+     MODAIS DE MÍDIA E COMISSÁRIO
      ------------------------------------------------------------------------- */
-  function configurarAbas() {
-    var btnGrupos = document.getElementById("aba-grupos");
-    var btnFestas = document.getElementById("aba-festas");
-    var secGrupos = document.getElementById("secao-grupos");
-    var secFestas = document.getElementById("secao-festas");
+  function abrirModalMidia(src, tipo) {
+    var modal = document.getElementById("modal-midia");
+    var container = document.getElementById("modal-container-midia");
+    if (!modal || !container) return;
 
-    if (!btnGrupos || !btnFestas || !secGrupos || !secFestas) return;
-
-    function ativar(aba) {
-      var ehGrupos = aba === "grupos";
-
-      btnGrupos.setAttribute("aria-selected", ehGrupos ? "true" : "false");
-      btnFestas.setAttribute("aria-selected", ehGrupos ? "false" : "true");
-
-      secGrupos.hidden = !ehGrupos;
-      secFestas.hidden = ehGrupos;
+    if (tipo === "video") {
+      container.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay playsinline></video>';
+    } else {
+      container.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Mídia em tamanho real">';
     }
 
-    btnGrupos.addEventListener("click", function () { ativar("grupos"); });
-    btnFestas.addEventListener("click", function () { ativar("festas"); });
-
-    window.ativarAba = ativar;
+    modal.hidden = false;
   }
 
-  /* -------------------------------------------------------------------------
-     SISTEMA DE MODAIS
-     ------------------------------------------------------------------------- */
+  function fecharModalMidia() {
+    var modal = document.getElementById("modal-midia");
+    var container = document.getElementById("modal-container-midia");
+    if (modal) modal.hidden = true;
+    if (container) container.innerHTML = "";
+  }
+
   function configurarModais() {
+    var btnFecharMidia = document.getElementById("modal-fechar");
     var modalMidia = document.getElementById("modal-midia");
-    var modalContainerMidia = document.getElementById("modal-container-midia");
-    var modalFecharMidia = document.getElementById("modal-fechar");
 
-    function abrirModalMidia(src, tipo) {
-      if (!modalMidia || !modalContainerMidia) return;
-      if (tipo === "video") {
-        modalContainerMidia.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay></video>';
-      } else {
-        modalContainerMidia.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Midia em Tela Cheia">';
-      }
-      modalMidia.hidden = false;
-    }
-
-    function fecharModalMidia() {
-      if (!modalMidia || !modalContainerMidia) return;
-      modalMidia.hidden = true;
-      modalContainerMidia.innerHTML = "";
-    }
-
-    if (modalFecharMidia) {
-      modalFecharMidia.addEventListener("click", fecharModalMidia);
-    }
-
+    if (btnFecharMidia) btnFecharMidia.addEventListener("click", fecharModalMidia);
     if (modalMidia) {
       modalMidia.addEventListener("click", function (e) {
         if (e.target === modalMidia) fecharModalMidia();
       });
     }
 
-    document.addEventListener("click", function (e) {
-      var mini = e.target.closest(".festa__mini-container");
-      if (mini) {
-        var src = mini.getAttribute("data-midia");
-        var tipo = mini.getAttribute("data-tipo");
-        if (src) abrirModalMidia(src, tipo);
-      }
-    });
-
-    var modalComissario = document.getElementById("modal-comissario");
     var btnComissarioInfo = document.getElementById("btn-comissario-info");
-    var modalComissarioFechar = document.getElementById("modal-comissario-fechar");
-    var videoComissario = document.getElementById("video-comissario");
+    var modalComissario = document.getElementById("modal-comissario");
+    var btnFecharComissario = document.getElementById("modal-comissario-fechar");
 
-    function abrirModalComissario() {
-      if (!modalComissario) return;
-      modalComissario.hidden = false;
-      if (videoComissario) videoComissario.play();
+    if (btnComissarioInfo && modalComissario) {
+      btnComissarioInfo.addEventListener("click", function () {
+        modalComissario.hidden = false;
+      });
     }
 
-    function fecharModalComissario() {
-      if (!modalComissario) return;
-      modalComissario.hidden = true;
-      if (videoComissario) videoComissario.pause();
-    }
-
-    if (btnComissarioInfo) {
-      btnComissarioInfo.addEventListener("click", abrirModalComissario);
-    }
-
-    if (modalComissarioFechar) {
-      modalComissarioFechar.addEventListener("click", fecharModalComissario);
+    if (btnFecharComissario && modalComissario) {
+      btnFecharComissario.addEventListener("click", function () {
+        modalComissario.hidden = true;
+      });
     }
 
     if (modalComissario) {
       modalComissario.addEventListener("click", function (e) {
-        if (e.target === modalComissario) fecharModalComissario();
+        if (e.target === modalComissario) modalComissario.hidden = true;
       });
     }
   }
 
   /* -------------------------------------------------------------------------
-     SUPORTE NO RODAPÉ
+     SISTEMA DE ABAS E ROUTER (#HASH)
      ------------------------------------------------------------------------- */
-  function configurarSuporte() {
-    var sup = document.getElementById("suporte");
-    if (!sup) return;
-    var linkSuporte = contatos.suporte || "https://wa.me/5531991579687";
-    sup.href = linkSuporte;
-    sup.textContent = linkSuporte;
-  }
+  function configurarAbasERotas() {
+    var abaGrupos = document.getElementById("aba-grupos");
+    var abaFestas = document.getElementById("aba-festas");
 
-  /* -------------------------------------------------------------------------
-     LEITURA DE HASH DE ROTAS (#grupos/slug, #festas/slug, etc)
-     ------------------------------------------------------------------------- */
-  function lerHash() {
-    var hash = location.hash || "";
-    if (!hash || hash === "#") return;
+    var secGrupos = document.getElementById("secao-grupos");
+    var secFestas = document.getElementById("secao-festas");
 
-    var partes = hash.substring(1).split("/");
-    var secao = partes[0];
-    var valor = partes[1] || "";
-
-    if (secao === "grupos") {
-      if (window.ativarAba) window.ativarAba("grupos");
-      if (valor) {
-        if (typeof irParaGrupoPeloSlug === "function" && irParaGrupoPeloSlug(valor)) {
-          return;
-        }
-        if (categorias[valor] && typeof selecionarCategoriaExternamente === "function") {
-          selecionarCategoriaExternamente(valor);
-          return;
-        }
-      }
-    } else if (secao === "festas") {
-      if (window.ativarAba) window.ativarAba("festas");
-      if (valor) {
-        setTimeout(function () {
-          var elFesta = document.getElementById("festa-" + valor);
-          if (elFesta) {
-            elFesta.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }, 300);
-      }
-    } else {
-      var elGenerico = document.getElementById(hash.substring(1));
-      if (elGenerico) {
-        elGenerico.scrollIntoView({ behavior: "smooth", block: "start" });
+    function ativarAba(abaNome) {
+      if (abaNome === "festas") {
+        if (abaFestas) { abaFestas.setAttribute("aria-selected", "true"); abaFestas.removeAttribute("tabindex"); }
+        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "false"); abaGrupos.setAttribute("tabindex", "-1"); }
+        if (secFestas) secFestas.hidden = false;
+        if (secGrupos) secGrupos.hidden = true;
+      } else {
+        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "true"); abaGrupos.removeAttribute("tabindex"); }
+        if (abaFestas) { abaFestas.setAttribute("aria-selected", "false"); abaFestas.setAttribute("tabindex", "-1"); }
+        if (secGrupos) secGrupos.hidden = false;
+        if (secFestas) secFestas.hidden = true;
       }
     }
+
+    if (abaGrupos) abaGrupos.addEventListener("click", function () { ativarAba("grupos"); location.hash = "grupos"; });
+    if (abaFestas) abaFestas.addEventListener("click", function () { ativarAba("festas"); location.hash = "festas"; });
+
+    function processarHash() {
+      var hash = String(location.hash || "").replace(/^#/, "");
+      if (!hash) return;
+
+      var partes = hash.split("/");
+      var rotaPrincipal = partes[0];
+      var parametro = partes[1] || "";
+
+      if (rotaPrincipal === "festas") {
+        ativarAba("festas");
+        if (parametro) {
+          setTimeout(function () {
+            var elFesta = document.getElementById("festa-" + parametro);
+            if (elFesta) {
+              elFesta.scrollIntoView({ behavior: "smooth", block: "center" });
+              elFesta.classList.add("festa--destaque");
+              setTimeout(function () { elFesta.classList.remove("festa--destaque"); }, 3500);
+            }
+          }, 400);
+        }
+      } else if (rotaPrincipal === "grupos") {
+        ativarAba("grupos");
+        if (parametro) {
+          if (parametro.indexOf("grupo-") === 0) {
+            var slugGrupo = parametro.replace(/^grupo-/, "");
+            if (typeof irParaGrupoPeloSlug === "function") {
+              irParaGrupoPeloSlug(slugGrupo);
+            }
+          } else {
+            if (typeof selecionarCategoriaExternamente === "function") {
+              selecionarCategoriaExternamente(parametro);
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener("hashchange", processarHash);
+    processarHash();
   }
 
   /* -------------------------------------------------------------------------
-     INICIALIZAÇÃO DA APLICAÇÃO
+     INICIALIZAÇÃO DO SITE
      ------------------------------------------------------------------------- */
-  function iniciar() {
+  document.addEventListener("DOMContentLoaded", function () {
     aplicarTextos();
     configurarPix();
+    mostrarProblemas();
     montarParceiros();
     montarFestas();
     montarGrupos();
-    configurarAbas();
     configurarModais();
-    configurarSuporte();
-    mostrarProblemas();
-
-    // Executa a navegação de hash imediatamente ao carregar
-    lerHash();
-
-    // Captura cliques globais em links com hash no WhatsApp/Browser para forçar releitura do hash
-    document.addEventListener("click", function (e) {
-      var a = e.target.closest("a");
-      if (a && a.getAttribute("href") && a.getAttribute("href").indexOf("#") !== -1) {
-        setTimeout(lerHash, 50);
-      }
-    });
-  }
-
-  window.addEventListener("hashchange", lerHash);
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", iniciar);
-  } else {
-    iniciar();
-  }
+    configurarAbasERotas();
+  });
 
 })();
