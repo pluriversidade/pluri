@@ -190,13 +190,38 @@
   }
 
   /* -------------------------------------------------------------------------
-     TEXTOS DINÂMICOS NA TELA
+     TEXTOS DINÂMICOS NA TELA E ANIMAÇÃO OLA DE TORCIDA
      ------------------------------------------------------------------------- */
   function aplicarTextos() {
     Array.prototype.forEach.call(document.querySelectorAll("[data-texto]"), function (el) {
       var chave = el.getAttribute("data-texto");
       if (typeof textos[chave] === "string") el.textContent = textos[chave];
     });
+
+    animarTituloOla();
+  }
+
+  function animarTituloOla() {
+    var elTitulo = document.querySelector(".titulo");
+    if (!elTitulo) return;
+
+    var texto = elTitulo.textContent.trim();
+    if (!texto) return;
+
+    var html = "";
+    var atrasoBase = 0.1;
+
+    for (var i = 0; i < texto.length; i++) {
+      var char = texto[i];
+      if (char === " ") {
+        html += "&nbsp;";
+      } else {
+        var delay = (i * atrasoBase).toFixed(2);
+        html += '<span class="letra-ola" style="animation-delay: ' + delay + 's">' + escapar(char) + '</span>';
+      }
+    }
+
+    elTitulo.innerHTML = html;
   }
 
   /* -------------------------------------------------------------------------

@@ -117,6 +117,26 @@ a { color: inherit; }
   line-height: 1.05;
 }
 
+/* Animação Ola de Torcida para o Titulo */
+.titulo .letra-ola {
+  display: inline-block;
+  animation: olaTorcida 2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes olaTorcida {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.4);
+    color: var(--terracota);
+  }
+  60% {
+    transform: scale(1);
+  }
+}
+
 .subtitulo {
   margin: .5rem auto 0;
   max-width: 34ch;
