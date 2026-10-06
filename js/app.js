@@ -1,10 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   PLURIVERSIDADE - SISTEMA COMPLETO + PAINEL DE ADMINISTRAÇÃO
+   O FUNCIONAMENTO DA PÁGINA
    ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
   "use strict";
 
+  /* -------------------------------------------------------------------------
+     MODO EDIÇÃO / LOCAL
+     ------------------------------------------------------------------------- */
   var editando =
     location.protocol === "file:" ||
     location.hostname === "localhost" ||
@@ -18,42 +21,49 @@
 
   function existe(nome, valor, arquivo) {
     if (typeof valor === "undefined") {
-      reclamar(arquivo, "O arquivo não foi lido até o fim, então " + nome + " não existe.");
+      reclamar(
+        arquivo,
+        "O arquivo não foi lido até o fim, então " + nome + " não existe."
+      );
       return false;
     }
     return true;
   }
 
   /* -------------------------------------------------------------------------
-     LEITURA DOS ARQUIVOS DE DADOS
+     VERIFICAÇÃO DE ARQUIVOS DE DADOS
      ------------------------------------------------------------------------- */
-  var temTextos     = existe("TEXTOS",               window.TEXTOS,               "js/dados-textos.js");
-  var temContatos   = existe("CONTATOS",             window.CONTATOS,             "js/dados-textos.js");
-  var temGrupos     = existe("GRUPOS",               window.GRUPOS,               "js/dados-grupos.js");
-  var temCategorias = existe("CATEGORIAS",           window.CATEGORIAS,           "js/dados-grupos.js");
-  var temFestas     = existe("FESTAS",               window.FESTAS,               "js/dados-festas.js");
-  var temUnis       = existe("UNIVERSIDADES",        window.UNIVERSIDADES,        "js/dados-festas.js");
-  var temUnisG      = existe("UNIVERSIDADES_GRUPOS", window.UNIVERSIDADES_GRUPOS, "js/dados-grupos.js");
-  var temParceiros  = existe("PARCEIROS",            window.PARCEIROS,            "js/dados-parceiros.js");
+  var temTextos    = existe("TEXTOS",        window.TEXTOS,        "js/dados-textos.js");
+  var temContatos  = existe("CONTATOS",      window.CONTATOS,      "js/dados-textos.js");
+  var temGrupos    = existe("GRUPOS",        window.GRUPOS,        "js/dados-grupos.js");
+  var temCategorias= existe("CATEGORIAS",    window.CATEGORIAS,    "js/dados-grupos.js");
+  var temFestas    = existe("FESTAS",        window.FESTAS,        "js/dados-festas.js");
+  var temUnis      = existe("UNIVERSIDADES", window.UNIVERSIDADES, "js/dados-festas.js");
+  var temParceiros = existe("PARCEIROS",     window.PARCEIROS,     "js/dados-parceiros.js");
 
-  var textos      = temTextos     ? TEXTOS               : {};
-  var contatos    = temContatos   ? CONTATOS             : {};
-  var grupos      = temGrupos     ? GRUPOS               : [];
-  var categorias  = temCategorias ? CATEGORIAS           : {};
-  var festas      = temFestas     ? FESTAS               : [];
-  var unis        = temUnis       ? UNIVERSIDADES        : {};
-  var unisGrupos  = temUnisG      ? UNIVERSIDADES_GRUPOS : {};
-  var parceiros   = temParceiros  ? PARCEIROS            : [];
-  var ajustes     = (typeof window.AJUSTES === "object" && AJUSTES) ? AJUSTES : {};
+  var textos    = temTextos     ? TEXTOS        : {};
+  var contatos  = temContatos   ? CONTATOS      : {};
+  var grupos    = temGrupos     ? GRUPOS        : [];
+  var categorias= temCategorias ? CATEGORIAS    : {};
+  var festas    = temFestas     ? FESTAS        : [];
+  var unis      = temUnis       ? UNIVERSIDADES : {};
+  var parceiros = temParceiros  ? PARCEIROS     : [];
+  var ajustes   = (typeof window.AJUSTES === "object" && AJUSTES) ? AJUSTES : {};
 
   var POR_PAGINA = 5;
+
   if (typeof ajustes.porPagina !== "undefined") {
     var pedido = Number(ajustes.porPagina);
-    if (isFinite(pedido) && pedido >= 1) POR_PAGINA = Math.floor(pedido);
+    if (isFinite(pedido) && pedido >= 1) {
+      POR_PAGINA = Math.floor(pedido);
+    }
   }
 
   var MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
+  /* -------------------------------------------------------------------------
+     FUNÇÕES UTILITÁRIAS
+     ------------------------------------------------------------------------- */
   function dois(n) { return n < 10 ? "0" + n : String(n); }
 
   function partesDaData(iso) {
@@ -87,39 +97,64 @@
   }
 
   /* -------------------------------------------------------------------------
-     MODAL DE MÍDIA COMPLETA (FESTAS)
+     FILTRAGEM INICIAL DE DADOS VÁLIDOS
      ------------------------------------------------------------------------- */
-  function configurarModalMidia() {
-    var modal = document.getElementById("modal-midia");
-    var container = document.getElementById("modal-container-midia");
-    var btnFechar = document.getElementById("modal-fechar");
+  var gruposBons = grupos.filter(function (g) {
+    return g && g.nome && pareceLink(g.url) && categorias[g.cat];
+  });
 
-    if (!modal || !container) return;
+  var festasBoas = [];
 
-    function fechar() {
-      modal.hidden = true;
-      container.innerHTML = "";
-    }
+  var parceirosBons = parceiros.filter(function (p) {
+    return p && p.nome && pareceLink(p.link);
+  });
 
-    if (btnFechar) btnFechar.addEventListener("click", fechar);
-    modal.addEventListener("click", function (e) {
-      if (e.target === modal) fechar();
-    });
-
-    window.abrirModalMidia = function (src) {
-      if (!src) return;
-      var ext = src.split(".").pop().toLowerCase();
-      if (ext === "mp4" || ext === "webm") {
-        container.innerHTML = '<video src="' + src + '" controls autoplay style="max-width:100%; max-height:80vh;"></video>';
-      } else {
-        container.innerHTML = '<img src="' + src + '" alt="Mídia da festa" style="max-width:100%; max-height:80vh; object-fit:contain;">';
-      }
-      modal.hidden = false;
-    };
+  /* -------------------------------------------------------------------------
+     DIAGNOSTICO DE ERROS DE PREENCHIMENTO
+     ------------------------------------------------------------------------- */
+  function mostrarProblemas() {
+    var caixa = document.getElementById("diagnostico");
+    if (!caixa || !editando || problemas.length === 0) return;
+    var html = "<strong>" + problemas.length + " coisas para arrumar</strong><ul>";
+    problemas.forEach(function (p) { html += "<li>" + p.texto + "</li>"; });
+    html += "</ul>";
+    caixa.innerHTML = html;
+    caixa.hidden = false;
   }
 
   /* -------------------------------------------------------------------------
-     PAGINAÇÃO E SUPORTE
+     CONFIGURAR BOTÃO DE PIX
+     ------------------------------------------------------------------------- */
+  function configurarPix() {
+    var botaoPix = document.getElementById("copiar-pix");
+    var pixNumero = document.getElementById("pix-numero");
+    var pixRotulo = document.getElementById("pix-rotulo");
+
+    var chavePix = (contatos && contatos.pix) ? contatos.pix : (window.CHAVE_PIX || "pix@pluri.com");
+
+    if (pixNumero) {
+      pixNumero.textContent = chavePix;
+    }
+
+    if (botaoPix) {
+      botaoPix.addEventListener("click", function () {
+        navigator.clipboard.writeText(chavePix).then(function () {
+          if (pixRotulo) {
+            var original = pixRotulo.textContent;
+            pixRotulo.textContent = "Chave copiada!";
+            setTimeout(function () {
+              pixRotulo.textContent = original;
+            }, 2500);
+          }
+        }).catch(function (err) {
+          console.error("Erro ao copiar Pix: ", err);
+        });
+      });
+    }
+  }
+
+  /* -------------------------------------------------------------------------
+     PAGINAÇÃO REUTILIZÁVEL
      ------------------------------------------------------------------------- */
   function fazerPaginas(nomes, redesenhar) {
     var caixa = document.getElementById(nomes.caixa);
@@ -154,50 +189,26 @@
     };
   }
 
+  /* -------------------------------------------------------------------------
+     TEXTOS DINÂMICOS NA TELA
+     ------------------------------------------------------------------------- */
   function aplicarTextos() {
     Array.prototype.forEach.call(document.querySelectorAll("[data-texto]"), function (el) {
       var chave = el.getAttribute("data-texto");
       if (typeof textos[chave] === "string") el.textContent = textos[chave];
     });
-
-    var elSuporte = document.getElementById("suporte");
-    if (elSuporte && contatos && contatos.suporte) {
-      elSuporte.href = "https://wa.me/" + contatos.suporte.replace(/\D/g, "");
-    }
   }
 
-  function configurarPix() {
-    var botaoPix = document.getElementById("copiar-pix");
-    var pixNumero = document.getElementById("pix-numero");
-    var pixRotulo = document.getElementById("pix-rotulo");
-
-    var chavePix = (contatos && contatos.pix) ? contatos.pix : "pix@pluri.com";
-
-    if (pixNumero) pixNumero.textContent = chavePix;
-
-    if (botaoPix) {
-      botaoPix.addEventListener("click", function () {
-        navigator.clipboard.writeText(chavePix).then(function () {
-          if (pixRotulo) {
-            var original = pixRotulo.textContent;
-            pixRotulo.textContent = "Chave copiada!";
-            setTimeout(function () { pixRotulo.textContent = original; }, 2500);
-          }
-        });
-      });
-    }
-  }
-
+  /* -------------------------------------------------------------------------
+     CARROSSEL DE PARCEIROS
+     ------------------------------------------------------------------------- */
   function montarParceiros() {
     var trilho = document.getElementById("parceiros");
-    if (!trilho) return;
-
-    var parceirosBons = parceiros.filter(function (p) {
-      return p && p.nome && pareceLink(p.link);
-    });
+    if (!trilho || parceirosBons.length === 0) return;
 
     trilho.innerHTML = parceirosBons.map(function (p) {
       var imgSrc = p.logo || p.imagem || p.foto || "";
+
       return (
         '<article class="parceiro">' +
           '<div class="parceiro__topo">' +
@@ -210,12 +221,41 @@
         '</article>'
       );
     }).join("");
+
+    var velocidade = 4000;
+    var intervalo = null;
+
+    function rolarProximo() {
+      if (trilho.scrollLeft + trilho.clientWidth >= trilho.scrollWidth - 10) {
+        trilho.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        trilho.scrollBy({ left: 292, behavior: 'smooth' });
+      }
+    }
+
+    function ligarCarrossel() {
+      if (!intervalo) {
+        intervalo = setInterval(rolarProximo, velocidade);
+      }
+    }
+
+    function desligarCarrossel() {
+      if (intervalo) {
+        clearInterval(intervalo);
+        intervalo = null;
+      }
+    }
+
+    ligarCarrossel();
+    trilho.addEventListener("mouseenter", desligarCarrossel);
+    trilho.addEventListener("mouseleave", ligarCarrossel);
   }
 
   /* -------------------------------------------------------------------------
-     RENDERIZAÇÃO COMPLETA DE FESTAS
+     SEÇÃO DE FESTAS
      ------------------------------------------------------------------------- */
   var paginasFestas;
+
   function montarFestas() {
     var lista = document.getElementById("festas-lista");
     if (!lista) return 0;
@@ -223,99 +263,530 @@
     var selEstadoFesta = document.getElementById("select-estado-festas");
     var selCidadeFesta = document.getElementById("select-cidade-festas");
     var selUniFesta    = document.getElementById("select-uni-festas");
-    var campoData      = document.getElementById("festas-dia");
-    var btnLimparData  = document.getElementById("festas-limpar");
+    var buscaFesta     = document.getElementById("festas-dia");
 
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
     var unisData    = window.UNIVERSIDADES || {};
 
-    var festasBoas = festas.filter(function (f) {
-      return f && f.titulo && partesDaData(f.data);
+    festasBoas = festas.filter(function (f) {
+      return f && f.titulo && partesDaData(f.data) && unisData[f.uni];
     });
+
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    var estadoSel = Object.keys(estadosData).find(function(k) {
+      return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
+    }) || "MG";
+
+    var cidadeSel = Object.keys(cidadesData).find(function(k) {
+      return k === "bh" || simples(k) === "bh" || simples(cidadesData[k].nome) === "belo horizonte";
+    }) || "bh";
+
+    var uniSel = Object.keys(unisData).find(function(k) {
+      return k === "ufmg" || simples(k) === "ufmg" || simples(unisData[k].nome) === "ufmg";
+    }) || "ufmg";
+
+    var dataFiltroSel = "";
 
     paginasFestas = fazerPaginas({
       caixa: "festas-paginas", voltar: "festas-voltar", avancar: "festas-avancar", onde: "festas-onde"
     }, function () { desenhar(); });
 
-    function desenhar() {
-      var dataSel = campoData ? campoData.value : "";
-      var uniSel = selUniFesta ? selUniFesta.value : "";
-
-      var visiveis = festasBoas.filter(function (f) {
-        var bateUni = !uniSel || f.uni === uniSel;
-        var bateData = !dataSel || f.data === dataSel;
-        return bateUni && bateData;
-      });
-
-      lista.innerHTML = paginasFestas.recortar(visiveis).map(function (f) {
-        var d = partesDaData(f.data);
-        var u = unisData[f.uni] || { nome: f.uni || "" };
-
-        return (
-          '<li class="festa">' +
-            '<div class="festa__corpo">' +
-              '<p class="festa__uni">' + escapar(u.nome) + '</p>' +
-              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
-              '<p class="festa__data-hora">' + d.dia + '/' + MESES[d.mes - 1] + ' - ' + (f.hora || '') + '</p>' +
-              '<p class="festa__descricao">' + escapar(f.descricao || "") + '</p>' +
-              '<div class="festa__acoes">' +
-                (f.midia ? '<button class="btn-midia" type="button" onclick="abrirModalMidia(\'' + f.midia + '\')">Ver Mídia</button>' : '') +
-                (f.ingresso ? '<a class="btn-ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Ingresso</a>' : '') +
-              '</div>' +
-            '</div>' +
-          '</li>'
-        );
-      }).join("");
-
-      var contaAba = document.getElementById("aba-festas-conta");
-      if (contaAba) contaAba.textContent = visiveis.length;
+    function renderEstadosFesta() {
+      if (!selEstadoFesta) return;
+      selEstadoFesta.innerHTML = '<option value="">Selecione o Estado</option>' +
+        Object.keys(estadosData).map(function (key) {
+          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
+        }).join("");
+      selEstadoFesta.value = estadoSel;
     }
 
-    if (campoData) {
-      campoData.addEventListener("change", function () {
-        if (btnLimparData) btnLimparData.hidden = !campoData.value;
+    function atualizarSelectCidadesFesta() {
+      if (!selCidadeFesta) return;
+      if (!estadoSel) {
+        selCidadeFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selCidadeFesta.disabled = true;
+        cidadeSel = "";
+        return;
+      }
+
+      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
+        return cidadesData[key].estado === estadoSel;
+      });
+
+      selCidadeFesta.innerHTML = '<option value="">Todas as Cidades</option>' +
+        cidadesFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
+        }).join("");
+
+      selCidadeFesta.disabled = false;
+      selCidadeFesta.value = cidadeSel;
+    }
+
+    function atualizarSelectUnisFesta() {
+      if (!selUniFesta) return;
+      if (!estadoSel) {
+        selUniFesta.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selUniFesta.disabled = true;
+        uniSel = "";
+        return;
+      }
+
+      var unisFiltradas = Object.keys(unisData).filter(function (key) {
+        var u = unisData[key];
+        var c = cidadesData[u.cidade];
+        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
+        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
+        return bateEstado && bateCidade;
+      });
+
+      selUniFesta.innerHTML = '<option value="">Todas as Universidades</option>' +
+        unisFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
+        }).join("");
+
+      selUniFesta.disabled = false;
+      selUniFesta.value = uniSel;
+    }
+
+    if (selEstadoFesta) {
+      selEstadoFesta.addEventListener("change", function () {
+        estadoSel = selEstadoFesta.value;
+        cidadeSel = "";
+        uniSel = "";
+        atualizarSelectCidadesFesta();
+        atualizarSelectUnisFesta();
         paginasFestas.reiniciar();
         desenhar();
       });
     }
 
+    if (selCidadeFesta) {
+      selCidadeFesta.addEventListener("change", function () {
+        cidadeSel = selCidadeFesta.value;
+        uniSel = "";
+        atualizarSelectUnisFesta();
+        paginasFestas.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (selUniFesta) {
+      selUniFesta.addEventListener("change", function () {
+        uniSel = selUniFesta.value;
+        paginasFestas.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (buscaFesta) {
+      buscaFesta.addEventListener("change", function () {
+        dataFiltroSel = buscaFesta.value;
+        var btnLimpar = document.getElementById("festas-limpar");
+        if (btnLimpar) btnLimpar.hidden = !dataFiltroSel;
+        paginasFestas.reiniciar();
+        desenhar();
+      });
+    }
+
+    var btnLimparData = document.getElementById("festas-limpar");
     if (btnLimparData) {
       btnLimparData.addEventListener("click", function () {
-        campoData.value = "";
+        if (buscaFesta) buscaFesta.value = "";
+        dataFiltroSel = "";
         btnLimparData.hidden = true;
         paginasFestas.reiniciar();
         desenhar();
       });
     }
 
+    function diasFaltam(iso) {
+      var p = partesDaData(iso);
+      if (!p) return "";
+      var dFesta = new Date(p.ano, p.mes - 1, p.dia);
+      var dHoje = new Date();
+      dHoje.setHours(0, 0, 0, 0);
+      dFesta.setHours(0, 0, 0, 0);
+      var diff = Math.round((dFesta - dHoje) / (1000 * 60 * 60 * 24));
+      if (diff < 0) return "passou";
+      if (diff === 0) return "hoje";
+      if (diff === 1) return "amanhã";
+      return "faltam " + diff + " dias";
+    }
+
+    function desenhar() {
+      var visiveis = festasBoas.filter(function (f) {
+        var uniDaFesta = unisData[f.uni];
+        var cidDaFesta = uniDaFesta ? cidadesData[uniDaFesta.cidade] : null;
+
+        var bateEstado = !estadoSel || (cidDaFesta && cidDaFesta.estado === estadoSel);
+        var bateCidade = !cidadeSel || (uniDaFesta && uniDaFesta.cidade === cidadeSel);
+        var bateUni = !uniSel || f.uni === uniSel || simples(f.uni) === simples(uniSel);
+        var bateData = !dataFiltroSel || f.data === dataFiltroSel;
+
+        return bateEstado && bateCidade && bateUni && bateData;
+      });
+
+      lista.innerHTML = paginasFestas.recortar(visiveis).map(function (f) {
+        var d = partesDaData(f.data);
+        var u = unisData[f.uni] || { nome: f.uni || "" };
+        var corFesta = f.cor || "var(--terracota)";
+        var faltam = diasFaltam(f.data);
+        var slugFesta = slugify(f.titulo);
+
+        var temMidia = Boolean(f.midia);
+        var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
+
+        var miniHtml = "";
+        if (temMidia) {
+          if (ehVideo) {
+            miniHtml =
+              '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="video">' +
+                '<video class="festa__mini-media" src="' + f.midia + '" muted preload="metadata"></video>' +
+                '<span class="festa__play-icon">▶</span>' +
+              '</div>';
+          } else {
+            miniHtml =
+              '<div class="festa__mini-container" data-midia="' + f.midia + '" data-tipo="imagem">' +
+                '<img class="festa__mini-media" src="' + f.midia + '" alt="Flyer ' + escapar(f.titulo) + '" loading="lazy">' +
+              '</div>';
+          }
+        }
+
+        var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+
+        var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+        var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
+
+        return (
+          '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
+            '<div class="festa__data">' +
+              '<span class="festa__semana">' + DIAS_SEMANA[d.semana] + '</span>' +
+              '<span class="festa__dia">' + dois(d.dia) + '</span>' +
+              '<span class="festa__mes">' + MESES[d.mes - 1] + '</span>' +
+              (faltam ? '<span class="festa__faltam">' + faltam + '</span>' : '') +
+            '</div>' +
+            '<div class="festa__corpo">' +
+              '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
+              '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+              '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
+              '<div class="festa__links">' +
+                (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
+                (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
+                '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Seja Comissário</a>' +
+              '</div>' +
+            '</div>' +
+            miniHtml +
+            '<div class="grupo__acoes festa__acoes">' +
+              '<button class="festa__btn-share btn-compartilhar-festa" type="button" data-slug="' + slugFesta + '" title="Compartilhar Festa no WhatsApp">🔗 <span class="texto-vertical">COMPARTILHAR</span></button>' +
+            '</div>' +
+          '</li>'
+        );
+      }).join("");
+
+      var vazio = document.getElementById("festas-vazio");
+      if (vazio) vazio.hidden = visiveis.length > 0;
+
+      var contaAba = document.getElementById("aba-festas-conta");
+      if (contaAba) contaAba.textContent = visiveis.length;
+
+      Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-festa"), function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var slug = btn.getAttribute("data-slug");
+          var urlCard = location.origin + location.pathname + "#festas/" + slug;
+
+          var f = festasBoas.find(function (festa) {
+            return slugify(festa.titulo) === slug;
+          });
+
+          if (!f) return;
+
+          var d = partesDaData(f.data);
+          var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : f.data;
+          var horaFormatada = f.hora ? " : " + f.hora : "";
+          var descricaoFesta = f.descricao || f.desc || "";
+
+          var linhaIngresso = pareceLink(f.ingresso)
+            ? "\n\n*Comprar ingresso:* " + f.ingresso
+            : "";
+
+          var mensagemComissario = encodeURIComponent("*Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+          var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
+          var linhaRevenda = "\n\n*Revenda ingressos da festa:* " + linkComissario;
+
+          var textoCompartilhamento =
+            "*Ei*, achei essa festa e resolvi *compartilhar* a informação útil!\n" +
+            urlCard + "\n\n" +
+            "#############\n\n" +
+            "*" + f.titulo.toUpperCase() + "*\n" +
+            "*" + dataFormatada + "*" + horaFormatada +
+            (descricaoFesta ? "\n\n" + descricaoFesta : "") +
+            linhaIngresso +
+            linhaRevenda + "\n\n" +
+            "*Pluriversidade.com.br*\n" +
+            "31991579687 - Whatsapp\n\n" +
+            "#############";
+
+          var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
+          window.open(urlWhatsapp, "_blank");
+        });
+      });
+    }
+
+    renderEstadosFesta();
+    atualizarSelectCidadesFesta();
+    atualizarSelectUnisFesta();
     desenhar();
+
     return festasBoas.length;
   }
 
   /* -------------------------------------------------------------------------
-     RENDERIZAÇÃO COMPLETA DE GRUPOS
+     SEÇÃO DE GRUPOS
      ------------------------------------------------------------------------- */
+  var selecionarCategoriaExternamente = null;
+  var irParaGrupoPeloSlug = null;
   var paginasGrupos;
+
   function montarGrupos() {
     var lista = document.getElementById("lista");
     if (!lista) return 0;
 
-    var busca = document.getElementById("busca");
-    var contagem = document.getElementById("contagem");
-    var buscaTexto = "";
+    var selEstado = document.getElementById("select-estado");
+    var selCidade = document.getElementById("select-cidade");
+    var selUni    = document.getElementById("select-uni");
+    var busca     = document.getElementById("busca");
+    var contagem  = document.getElementById("contagem");
+    var divChips  = document.getElementById("chips");
 
-    var gruposBons = grupos.filter(function (g) {
-      return g && g.nome && pareceLink(g.url);
-    });
+    var estadoSel = "MG";
+    var cidadeSel = "bh";
+    var uniSel    = "ufmg";
+    var catSel    = "";
+    var buscaTexto= "";
+
+    var estadosData = window.ESTADOS || {};
+    var cidadesData = window.CIDADES || {};
+    var unisData = window.UNIVERSIDADES || {};
 
     paginasGrupos = fazerPaginas({
       caixa: "grupos-paginas", voltar: "grupos-voltar", avancar: "grupos-avancar", onde: "grupos-onde"
     }, function () { desenhar(); });
 
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function renderEstados() {
+      if (!selEstado) return;
+      selEstado.innerHTML = '<option value="">Selecione o Estado</option>' +
+        Object.keys(estadosData).map(function (key) {
+          return '<option value="' + key + '">' + estadosData[key].nome + '</option>';
+        }).join("");
+      selEstado.value = estadoSel;
+    }
+
+    function atualizarSelectCidades() {
+      if (!selCidade) return;
+      if (!estadoSel) {
+        selCidade.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selCidade.disabled = true;
+        cidadeSel = "";
+        return;
+      }
+
+      var cidadesFiltradas = Object.keys(cidadesData).filter(function (key) {
+        return cidadesData[key].estado === estadoSel;
+      });
+
+      selCidade.innerHTML = '<option value="">Todas as Cidades</option>' +
+        cidadesFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + cidadesData[key].nome + '</option>';
+        }).join("");
+
+      selCidade.disabled = false;
+      selCidade.value = cidadeSel;
+    }
+
+    function atualizarSelectUnis() {
+      if (!selUni) return;
+      if (!estadoSel) {
+        selUni.innerHTML = '<option value="">Selecione primeiro o Estado</option>';
+        selUni.disabled = true;
+        uniSel = "";
+        return;
+      }
+
+      var unisFiltradas = Object.keys(unisData).filter(function (key) {
+        var u = unisData[key];
+        var c = cidadesData[u.cidade];
+        var bateEstado = !estadoSel || (c && c.estado === estadoSel);
+        var bateCidade = !cidadeSel || u.cidade === cidadeSel;
+        return bateEstado && bateCidade;
+      });
+
+      selUni.innerHTML = '<option value="">Todas as Universidades</option>' +
+        unisFiltradas.map(function (key) {
+          return '<option value="' + key + '">' + unisData[key].nome + '</option>';
+        }).join("");
+
+      selUni.disabled = false;
+      selUni.value = uniSel;
+    }
+
+    function rolarParaCards() {
+      if (!divChips) return;
+      var rect = divChips.getBoundingClientRect();
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      var targetY = scrollTop + rect.top - 100;
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth"
+      });
+    }
+
+    function montarChips() {
+      if (!divChips) return;
+
+      var html = '<div class="chip-grupo chip-grupo--todas" aria-pressed="' + (!catSel ? 'true' : 'false') + '">' +
+        '<button class="chip-conteudo" type="button" data-cat="">' +
+          '<span class="chip-nome" style="text-align: center; width: 100%;">Todas as Categorias</span>' +
+        '</button>' +
+        '</div>';
+
+      Object.keys(categorias).forEach(function (key) {
+        var cat = categorias[key];
+        var ativa = catSel === key;
+        var imgUrl = cat.imagem || cat.icone || cat.foto || "";
+
+        html += '<div class="chip-grupo" aria-pressed="' + (ativa ? 'true' : 'false') + '">' +
+          '<button class="chip-conteudo" type="button" data-cat="' + key + '">' +
+            (imgUrl ? '<img class="chip-img" src="' + imgUrl + '" alt="" loading="lazy">' : '') +
+            '<span class="chip-nome">' + escapar(cat.nome) + '</span>' +
+          '</button>' +
+          '<button class="btn-share-cat" type="button" data-share-cat="' + key + '" title="Compartilhar Categoria no WhatsApp">💬</button>' +
+          '</div>';
+      });
+
+      divChips.innerHTML = html;
+
+      Array.prototype.forEach.call(divChips.querySelectorAll("[data-cat]"), function (btn) {
+        btn.addEventListener("click", function () {
+          catSel = btn.getAttribute("data-cat") || "";
+          montarChips();
+          paginasGrupos.reiniciar();
+          desenhar();
+          if (catSel) {
+            rolarParaCards();
+          }
+        });
+      });
+
+      Array.prototype.forEach.call(divChips.querySelectorAll("[data-share-cat]"), function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var keyCat = btn.getAttribute("data-share-cat");
+          var catObj = categorias[keyCat];
+          var nomeCat = catObj ? catObj.nome : keyCat;
+          var urlShare = location.origin + location.pathname + "#grupos/" + keyCat;
+
+          var nomeUni = "universidade";
+          if (selUni && selUni.value && unisData[selUni.value]) {
+            nomeUni = unisData[selUni.value].nome;
+          } else if (uniSel && unisData[uniSel]) {
+            nomeUni = unisData[uniSel].nome;
+          }
+          var uniMaiuscula = nomeUni.toUpperCase();
+
+          var msgTexto = "*Ei*, segue a lista de links de grupos da categoria *" + nomeCat + "* que contém vários grupos do whatsapp da " + nomeUni + ", no site da *Pluriversidade*.\n" +
+            urlShare + "\n\n" +
+            "*Faça sua parte!* Ajude a promover os grupos da *" + uniMaiuscula + "* compartilhando essa mensagem em outros grupos da " + nomeUni + ".";
+
+          var msg = encodeURIComponent(msgTexto);
+          window.open("https://api.whatsapp.com/send?text=" + msg, "_blank");
+        });
+      });
+    }
+
+    selecionarCategoriaExternamente = function (keyCat) {
+      catSel = keyCat || "";
+      montarChips();
+      paginasGrupos.reiniciar();
+      desenhar();
+      if (catSel) {
+        setTimeout(function () {
+          rolarParaCards();
+        }, 300);
+      }
+    };
+
+    irParaGrupoPeloSlug = function (slugAlvo) {
+      if (!slugAlvo) return false;
+      var index = -1;
+      for (var i = 0; i < gruposBons.length; i++) {
+        if (slugify(gruposBons[i].nome) === slugAlvo) {
+          index = i;
+          break;
+        }
+      }
+      if (index === -1) return false;
+
+      // Limpa os filtros temporariamente para garantir exibição do card correto
+      catSel = "";
+      buscaTexto = "";
+      if (busca) busca.value = "";
+      montarChips();
+
+      var numPagina = Math.floor(index / POR_PAGINA) + 1;
+      paginasGrupos.irParaPagina(numPagina);
+      desenhar();
+
+      setTimeout(function () {
+        var elCard = document.getElementById("grupo-" + slugAlvo);
+        if (elCard) {
+          elCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 300);
+      return true;
+    };
+
+    if (selEstado) {
+      selEstado.addEventListener("change", function () {
+        estadoSel = selEstado.value;
+        cidadeSel = "";
+        uniSel = "";
+        atualizarSelectCidades();
+        atualizarSelectUnis();
+        paginasGrupos.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (selCidade) {
+      selCidade.addEventListener("change", function () {
+        cidadeSel = selCidade.value;
+        uniSel = "";
+        atualizarSelectUnis();
+        paginasGrupos.reiniciar();
+        desenhar();
+      });
+    }
+
+    if (selUni) {
+      selUni.addEventListener("change", function () {
+        uniSel = selUni.value;
+        paginasGrupos.reiniciar();
+        desenhar();
+      });
+    }
+
     if (busca) {
       busca.addEventListener("input", function () {
-        buscaTexto = busca.value.toLowerCase();
+        buscaTexto = simples(busca.value);
         paginasGrupos.reiniciar();
         desenhar();
       });
@@ -323,379 +794,328 @@
 
     function desenhar() {
       var visiveis = gruposBons.filter(function (g) {
-        return !buscaTexto || g.nome.toLowerCase().indexOf(buscaTexto) !== -1;
+        var uniDoGrupo = unisData[g.uni];
+        var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
+
+        var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
+        var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
+        var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
+        var bateCat = !catSel || g.cat === catSel;
+
+        var bateBusca = !buscaTexto ||
+          simples(g.nome).indexOf(buscaTexto) !== -1 ||
+          simples(g.desc).indexOf(buscaTexto) !== -1;
+
+        return bateEstado && bateCidade && bateUni && bateCat && bateBusca;
       });
 
       lista.innerHTML = paginasGrupos.recortar(visiveis).map(function (g) {
-        var ehLotado = Boolean(g.lotado) || (Number(g.membros) >= 1024);
+        var cat = categorias[g.cat] || {};
+        var corCat = cat.cor || "var(--verde)";
+        var slugGrupo = slugify(g.nome);
+
+        /* Identificação de Universidade e Cidade */
+        var uniObj = unisData[g.uni] || {};
+        var nomeUni = uniObj.nome || g.uni || "Não informada";
+        var cidObj = uniObj.cidade ? cidadesData[uniObj.cidade] : null;
+        var nomeCidade = cidObj ? cidObj.nome : "Não informada";
+
+        /* Link direto para o card do grupo específico */
+        var urlCard = location.origin + location.pathname + "#grupos/" + slugGrupo;
+
+        /* Mensagem de reporte incluindo o link direto do card do grupo */
+        var suporteBase = contatos.suporte || "https://wa.me/5531991579687";
+        var textoReport = "Olá, o grupo '" + g.nome + "' (Universidade: " + nomeUni + ", Cidade: " + nomeCidade + ") está com o link quebrado ou lotado. Segue o link do card do grupo no site: " + urlCard;
+        var urlReporteFinal = suporteBase + (suporteBase.indexOf("?") !== -1 ? "&" : "?") + "text=" + encodeURIComponent(textoReport);
+
+        var ehLotado = Boolean(g.lotado);
 
         return (
-          '<li class="item">' +
+          '<li class="item" id="grupo-' + slugGrupo + '" style="--cor:' + corCat + '">' +
             '<div class="grupo__conteudo">' +
               '<a class="grupo" href="' + g.url + '" target="_blank" rel="noopener">' +
-                '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
+                '<div class="grupo__topo-linha">' +
+                  '<span class="grupo__nome">' + escapar(g.nome) + '</span>' +
+                '</div>' +
                 (g.desc ? '<span class="grupo__desc">' + escapar(g.desc) + '</span>' : '') +
                 '<span class="grupo__meta">' +
-                  (g.membros ? g.membros + ' membros' : '') +
+                  '<span class="ponto"></span> ' +
+                  escapar(cat.nome || g.cat) +
+                  (g.membros ? ' • ' + g.membros + ' membros' : '') +
+                  (g.admin ? ' • <span class="grupo__etiqueta-admin">ADMIN PLURI</span>' : '') +
                   (ehLotado ? ' • <span class="etiqueta etiqueta--lotado">LOTADO</span>' : '') +
+                  (g.novo ? ' • <span class="etiqueta etiqueta--novo">NOVO</span>' : '') +
                 '</span>' +
               '</a>' +
+              '<div class="grupo__acoes">' +
+                '<button class="grupo__btn-share btn-compartilhar-grupo" type="button" data-slug="' + slugGrupo + '" title="Compartilhar Grupo no WhatsApp">💬 <span class="texto-vertical">COMPARTILHAR</span></button>' +
+                '<a class="reportar" href="' + urlReporteFinal + '" target="_blank" rel="noopener" title="Reportar erro no WhatsApp">⚠️ <span class="texto-vertical">REPORTAR</span></a>' +
+              '</div>' +
             '</div>' +
             '<a class="grupo__btn-entrar ' + (ehLotado ? 'grupo__btn-entrar--lotado' : '') + '" href="' + g.url + '" target="_blank" rel="noopener">' +
-              (ehLotado ? 'GRUPO LOTADO' : 'ENTRAR NO GRUPO') +
+              (ehLotado ? 'GRUPO LOTADO' : 'ENTRAR NO GRUPO DO WHATSAPP') +
             '</a>' +
           '</li>'
         );
       }).join("");
 
-      if (contagem) contagem.textContent = visiveis.length + " grupos encontrados";
+      var vazio = document.getElementById("vazio");
+      if (vazio) vazio.hidden = visiveis.length > 0;
+
+      if (contagem) {
+        contagem.textContent = visiveis.length + " " + (visiveis.length === 1 ? "grupo encontrado" : "grupos encontrados");
+      }
+
       var contaAba = document.getElementById("aba-grupos-conta");
       if (contaAba) contaAba.textContent = visiveis.length;
+
+      Array.prototype.forEach.call(document.querySelectorAll(".btn-compartilhar-grupo"), function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var slug = btn.getAttribute("data-slug");
+          var urlCard = location.origin + location.pathname + "#grupos/" + slug;
+
+          var g = gruposBons.find(function (grupo) {
+            return slugify(grupo.nome) === slug;
+          });
+
+          if (!g) return;
+
+          var cat = categorias[g.cat] || {};
+          var nomeCat = cat.nome || g.cat;
+
+          var uniObj = unisData[g.uni] || {};
+          var nomeUni = uniObj.nome || g.uni || "UFMG";
+          var uniMaiuscula = nomeUni.toUpperCase();
+
+          var textoCompartilhamento =
+            "*Ei*, achei esse grupo do Whatsapp da *" + uniMaiuscula + "* e resolvi *compartilhar* a informação útil!\n" +
+            urlCard + "\n\n" +
+            "#############\n\n" +
+            "*" + g.nome.toUpperCase() + "*\n" +
+            "*" + nomeCat + "* • " + nomeUni + "\n" +
+            (g.desc ? "\n" + g.desc + "\n" : "") +
+            "\n*Entrar no grupo:* " + g.url + "\n\n" +
+            "*Pluriversidade.com.br*\n" +
+            "31991579687 - Whatsapp\n\n" +
+            "#############";
+
+          var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
+          window.open(urlWhatsapp, "_blank");
+        });
+      });
     }
 
+    renderEstados();
+    atualizarSelectCidades();
+    atualizarSelectUnis();
+    montarChips();
     desenhar();
+
+    /* Painel de Estatísticas */
+    var totalMembros = 0;
+    gruposBons.forEach(function (g) {
+      if (g.membros) totalMembros += Number(g.membros) || 0;
+    });
+
+    var pGrupos = document.getElementById("painel-grupos");
+    var pMembros = document.getElementById("painel-membros");
+    var pMedia = document.getElementById("painel-media");
+
+    if (pGrupos) pGrupos.textContent = gruposBons.length;
+    if (pMembros) pMembros.textContent = totalMembros.toLocaleString("pt-BR");
+    if (pMedia && gruposBons.length > 0) {
+      pMedia.textContent = Math.round(totalMembros / gruposBons.length).toLocaleString("pt-BR");
+    }
+
     return gruposBons.length;
   }
 
+  /* -------------------------------------------------------------------------
+     SISTEMA DE ABAS
+     ------------------------------------------------------------------------- */
   function configurarAbas() {
     var btnGrupos = document.getElementById("aba-grupos");
     var btnFestas = document.getElementById("aba-festas");
-    var btnAdmin  = document.getElementById("aba-admin");
-
     var secGrupos = document.getElementById("secao-grupos");
     var secFestas = document.getElementById("secao-festas");
-    var secAdmin  = document.getElementById("secao-admin");
+
+    if (!btnGrupos || !btnFestas || !secGrupos || !secFestas) return;
 
     function ativar(aba) {
-      if (btnGrupos) btnGrupos.setAttribute("aria-selected", aba === "grupos");
-      if (btnFestas) btnFestas.setAttribute("aria-selected", aba === "festas");
-      if (btnAdmin)  btnAdmin.setAttribute("aria-selected", aba === "admin");
+      var ehGrupos = aba === "grupos";
 
-      if (secGrupos) secGrupos.hidden = (aba !== "grupos");
-      if (secFestas) secFestas.hidden = (aba !== "festas");
-      if (secAdmin)  secAdmin.hidden = (aba !== "admin");
+      btnGrupos.setAttribute("aria-selected", ehGrupos ? "true" : "false");
+      btnFestas.setAttribute("aria-selected", ehGrupos ? "false" : "true");
+
+      secGrupos.hidden = !ehGrupos;
+      secFestas.hidden = ehGrupos;
     }
 
-    if (btnGrupos) btnGrupos.addEventListener("click", function () { ativar("grupos"); });
-    if (btnFestas) btnFestas.addEventListener("click", function () { ativar("festas"); });
-    if (btnAdmin)  btnAdmin.addEventListener("click", function () { ativar("admin"); });
+    btnGrupos.addEventListener("click", function () { ativar("grupos"); });
+    btnFestas.addEventListener("click", function () { ativar("festas"); });
+
+    window.ativarAba = ativar;
   }
 
   /* -------------------------------------------------------------------------
-     PAINEL ADMINISTRATIVO INTEGRADO
+     SISTEMA DE MODAIS
      ------------------------------------------------------------------------- */
-  function configurarAdmin() {
-    var formLogin = document.getElementById("form-login-admin");
-    var boxLogin = document.getElementById("admin-login-box");
-    var boxPainel = document.getElementById("admin-painel-box");
-    var msgErro = document.getElementById("login-erro");
-    var btnLogout = document.getElementById("btn-admin-logout");
+  function configurarModais() {
+    var modalMidia = document.getElementById("modal-midia");
+    var modalContainerMidia = document.getElementById("modal-container-midia");
+    var modalFecharMidia = document.getElementById("modal-fechar");
 
-    if (sessionStorage.getItem("admin_logado") === "true") {
-      if (boxLogin) boxLogin.hidden = true;
-      if (boxPainel) boxPainel.hidden = false;
-      renderizarAdmin();
+    function abrirModalMidia(src, tipo) {
+      if (!modalMidia || !modalContainerMidia) return;
+      if (tipo === "video") {
+        modalContainerMidia.innerHTML = '<video class="modal-midia__midia" src="' + src + '" controls autoplay></video>';
+      } else {
+        modalContainerMidia.innerHTML = '<img class="modal-midia__midia" src="' + src + '" alt="Midia em Tela Cheia">';
+      }
+      modalMidia.hidden = false;
     }
 
-    if (formLogin) {
-      formLogin.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var user = document.getElementById("login-usuario").value;
-        var pass = document.getElementById("login-senha").value;
+    function fecharModalMidia() {
+      if (!modalMidia || !modalContainerMidia) return;
+      modalMidia.hidden = true;
+      modalContainerMidia.innerHTML = "";
+    }
 
-        if (user === "lucastroy" && pass === "#Maconha420") {
-          sessionStorage.setItem("admin_logado", "true");
-          boxLogin.hidden = true;
-          boxPainel.hidden = false;
-          msgErro.hidden = true;
-          renderizarAdmin();
-        } else {
-          msgErro.hidden = false;
-        }
+    if (modalFecharMidia) {
+      modalFecharMidia.addEventListener("click", fecharModalMidia);
+    }
+
+    if (modalMidia) {
+      modalMidia.addEventListener("click", function (e) {
+        if (e.target === modalMidia) fecharModalMidia();
       });
     }
 
-    if (btnLogout) {
-      btnLogout.addEventListener("click", function () {
-        sessionStorage.removeItem("admin_logado");
-        boxLogin.hidden = false;
-        boxPainel.hidden = true;
-      });
-    }
-
-    var subabas = ["grupos", "festas", "config", "exportar"];
-    subabas.forEach(function (nome) {
-      var btn = document.getElementById("subaba-" + nome);
-      if (btn) {
-        btn.addEventListener("click", function () {
-          subabas.forEach(function (s) {
-            var b = document.getElementById("subaba-" + s);
-            var p = document.getElementById("painel-sub-" + s);
-            if (b) b.classList.remove("ativa");
-            if (p) p.hidden = true;
-          });
-          btn.classList.add("ativa");
-          var painel = document.getElementById("painel-sub-" + nome);
-          if (painel) painel.hidden = false;
-
-          if (nome === "exportar") gerarCodigosExportacao();
-        });
+    document.addEventListener("click", function (e) {
+      var mini = e.target.closest(".festa__mini-container");
+      if (mini) {
+        var src = mini.getAttribute("data-midia");
+        var tipo = mini.getAttribute("data-tipo");
+        if (src) abrirModalMidia(src, tipo);
       }
     });
 
-    var selCatAdm = document.getElementById("adm-g-cat");
-    if (selCatAdm) {
-      selCatAdm.innerHTML = Object.keys(categorias).map(function (k) {
-        return '<option value="' + k + '">' + categorias[k].nome + '</option>';
-      }).join("");
+    var modalComissario = document.getElementById("modal-comissario");
+    var btnComissarioInfo = document.getElementById("btn-comissario-info");
+    var modalComissarioFechar = document.getElementById("modal-comissario-fechar");
+    var videoComissario = document.getElementById("video-comissario");
+
+    function abrirModalComissario() {
+      if (!modalComissario) return;
+      modalComissario.hidden = false;
+      if (videoComissario) videoComissario.play();
     }
 
-    var selUniAdm = document.getElementById("adm-f-uni");
-    if (selUniAdm) {
-      selUniAdm.innerHTML = Object.keys(unis).map(function (k) {
-        return '<option value="' + k + '">' + unis[k].nome + '</option>';
-      }).join("");
+    function fecharModalComissario() {
+      if (!modalComissario) return;
+      modalComissario.hidden = true;
+      if (videoComissario) videoComissario.pause();
     }
 
-    var formGrupo = document.getElementById("form-admin-grupo");
-    if (formGrupo) {
-      formGrupo.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var idx = Number(document.getElementById("admin-grupo-index").value);
+    if (btnComissarioInfo) {
+      btnComissarioInfo.addEventListener("click", abrirModalComissario);
+    }
 
-        var gData = {
-          nome: document.getElementById("adm-g-nome").value,
-          uni: document.getElementById("adm-g-uni").value,
-          cat: document.getElementById("adm-g-cat").value,
-          url: document.getElementById("adm-g-url").value,
-          membros: Number(document.getElementById("adm-g-membros").value) || 0,
-          desc: document.getElementById("adm-g-desc").value,
-          lotado: document.getElementById("adm-g-lotado").checked,
-          novo: document.getElementById("adm-g-novo").checked
-        };
+    if (modalComissarioFechar) {
+      modalComissarioFechar.addEventListener("click", fecharModalComissario);
+    }
 
-        if (idx >= 0) {
-          grupos[idx] = gData;
-        } else {
-          grupos.unshift(gData);
-        }
-
-        formGrupo.reset();
-        document.getElementById("admin-grupo-index").value = "-1";
-        montarGrupos();
-        renderizarAdmin();
-        alert("Grupo salvo!");
+    if (modalComissario) {
+      modalComissario.addEventListener("click", function (e) {
+        if (e.target === modalComissario) fecharModalComissario();
       });
     }
-
-    var formFesta = document.getElementById("form-admin-festa");
-    if (formFesta) {
-      formFesta.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var idx = Number(document.getElementById("admin-festa-index").value);
-
-        var fData = {
-          id: document.getElementById("adm-f-id").value,
-          titulo: document.getElementById("adm-f-titulo").value,
-          data: document.getElementById("adm-f-data").value,
-          hora: document.getElementById("adm-f-hora").value,
-          uni: document.getElementById("adm-f-uni").value,
-          midia: document.getElementById("adm-f-midia").value,
-          ingresso: document.getElementById("adm-f-ingresso").value,
-          perfil: document.getElementById("adm-f-perfil").value,
-          descricao: document.getElementById("adm-f-desc").value
-        };
-
-        if (idx >= 0) {
-          festas[idx] = fData;
-        } else {
-          festas.unshift(fData);
-        }
-
-        formFesta.reset();
-        document.getElementById("admin-festa-index").value = "-1";
-        montarFestas();
-        renderizarAdmin();
-        alert("Festa salva!");
-      });
-    }
-
-    var formConfig = document.getElementById("form-admin-config");
-    if (formConfig) {
-      document.getElementById("adm-c-titulo").value = textos.titulo || "";
-      document.getElementById("adm-c-subtitulo").value = textos.subtitulo || "";
-      document.getElementById("adm-c-pix").value = contatos.pix || "";
-      document.getElementById("adm-c-suporte").value = contatos.suporte || "";
-
-      formConfig.addEventListener("submit", function (e) {
-        e.preventDefault();
-        textos.titulo = document.getElementById("adm-c-titulo").value;
-        textos.subtitulo = document.getElementById("adm-c-subtitulo").value;
-        contatos.pix = document.getElementById("adm-c-pix").value;
-        contatos.suporte = document.getElementById("adm-c-suporte").value;
-
-        aplicarTextos();
-        configurarPix();
-        alert("Configurações salvas!");
-      });
-    }
-
-    Array.prototype.forEach.call(document.querySelectorAll(".btn-copiar-js"), function (btn) {
-      btn.addEventListener("click", function () {
-        var targetId = btn.getAttribute("data-target");
-        var txt = document.getElementById(targetId);
-        if (txt) {
-          txt.select();
-          navigator.clipboard.writeText(txt.value);
-          alert("Código copiado!");
-        }
-      });
-    });
   }
 
-  function renderizarAdmin() {
-    var tbGrupos = document.getElementById("tb-admin-grupos");
-    if (tbGrupos) {
-      tbGrupos.innerHTML = grupos.map(function (g, i) {
-        return (
-          '<tr>' +
-            '<td><strong>' + escapar(g.nome) + '</strong></td>' +
-            '<td>' + g.uni + '</td>' +
-            '<td>' + g.cat + '</td>' +
-            '<td>' + (g.membros || 0) + '</td>' +
-            '<td>' + (g.lotado ? '🔴 Lotado' : '🟢 Ok') + '</td>' +
-            '<td>' +
-              '<button class="btn-acao btn-sm btn-acao--primary btn-adm-edit-g" data-idx="' + i + '">Editar</button>' +
-              '<button class="btn-acao btn-sm btn-acao--secondary btn-adm-toggle-g" data-idx="' + i + '">' + (g.lotado ? 'Desmarcar Lotado' : 'Marcar Lotado') + '</button>' +
-              '<button class="btn-acao btn-sm btn-acao--danger btn-adm-del-g" data-idx="' + i + '">Excluir</button>' +
-            '</td>' +
-          '</tr>'
-        );
-      }).join("");
+  /* -------------------------------------------------------------------------
+     SUPORTE NO RODAPÉ
+     ------------------------------------------------------------------------- */
+  function configurarSuporte() {
+    var sup = document.getElementById("suporte");
+    if (!sup) return;
+    var linkSuporte = contatos.suporte || "https://wa.me/5531991579687";
+    sup.href = linkSuporte;
+    sup.textContent = linkSuporte;
+  }
 
-      Array.prototype.forEach.call(document.querySelectorAll(".btn-adm-edit-g"), function (b) {
-        b.addEventListener("click", function () {
-          var idx = Number(b.getAttribute("data-idx"));
-          var g = grupos[idx];
-          document.getElementById("admin-grupo-index").value = idx;
-          document.getElementById("adm-g-nome").value = g.nome || "";
-          document.getElementById("adm-g-uni").value = g.uni || "";
-          document.getElementById("adm-g-cat").value = g.cat || "";
-          document.getElementById("adm-g-url").value = g.url || "";
-          document.getElementById("adm-g-membros").value = g.membros || 0;
-          document.getElementById("adm-g-desc").value = g.desc || "";
-          document.getElementById("adm-g-lotado").checked = Boolean(g.lotado);
-          document.getElementById("adm-g-novo").checked = Boolean(g.novo);
-        });
-      });
+  /* -------------------------------------------------------------------------
+     LEITURA DE HASH DE ROTAS (#grupos/slug, #festas/slug, etc)
+     ------------------------------------------------------------------------- */
+  function lerHash() {
+    var hash = location.hash || "";
+    if (!hash || hash === "#") return;
 
-      Array.prototype.forEach.call(document.querySelectorAll(".btn-adm-toggle-g"), function (b) {
-        b.addEventListener("click", function () {
-          var idx = Number(b.getAttribute("data-idx"));
-          grupos[idx].lotado = !grupos[idx].lotado;
-          montarGrupos();
-          renderizarAdmin();
-        });
-      });
+    var partes = hash.substring(1).split("/");
+    var secao = partes[0];
+    var valor = partes[1] || "";
 
-      Array.prototype.forEach.call(document.querySelectorAll(".btn-adm-del-g"), function (b) {
-        b.addEventListener("click", function () {
-          var idx = Number(b.getAttribute("data-idx"));
-          if (confirm("Deseja excluir este grupo?")) {
-            grupos.splice(idx, 1);
-            montarGrupos();
-            renderizarAdmin();
+    if (secao === "grupos") {
+      if (window.ativarAba) window.ativarAba("grupos");
+      if (valor) {
+        if (typeof irParaGrupoPeloSlug === "function" && irParaGrupoPeloSlug(valor)) {
+          return;
+        }
+        if (categorias[valor] && typeof selecionarCategoriaExternamente === "function") {
+          selecionarCategoriaExternamente(valor);
+          return;
+        }
+      }
+    } else if (secao === "festas") {
+      if (window.ativarAba) window.ativarAba("festas");
+      if (valor) {
+        setTimeout(function () {
+          var elFesta = document.getElementById("festa-" + valor);
+          if (elFesta) {
+            elFesta.scrollIntoView({ behavior: "smooth", block: "center" });
           }
-        });
-      });
-    }
-
-    var tbFestas = document.getElementById("tb-admin-festas");
-    if (tbFestas) {
-      tbFestas.innerHTML = festas.map(function (f, i) {
-        return (
-          '<tr>' +
-            '<td>' + f.data + '</td>' +
-            '<td><strong>' + escapar(f.titulo) + '</strong></td>' +
-            '<td>' + f.uni + '</td>' +
-            '<td>' + (f.hora || '-') + '</td>' +
-            '<td>' +
-              '<button class="btn-acao btn-sm btn-acao--primary btn-adm-edit-f" data-idx="' + i + '">Editar</button>' +
-              '<button class="btn-acao btn-sm btn-acao--danger btn-adm-del-f" data-idx="' + i + '">Excluir</button>' +
-            '</td>' +
-          '</tr>'
-        );
-      }).join("");
-
-      Array.prototype.forEach.call(document.querySelectorAll(".btn-adm-edit-f"), function (b) {
-        b.addEventListener("click", function () {
-          var idx = Number(b.getAttribute("data-idx"));
-          var f = festas[idx];
-          document.getElementById("admin-festa-index").value = idx;
-          document.getElementById("adm-f-id").value = f.id || "";
-          document.getElementById("adm-f-titulo").value = f.titulo || "";
-          document.getElementById("adm-f-data").value = f.data || "";
-          document.getElementById("adm-f-hora").value = f.hora || "";
-          document.getElementById("adm-f-uni").value = f.uni || "";
-          document.getElementById("adm-f-midia").value = f.midia || "";
-          document.getElementById("adm-f-ingresso").value = f.ingresso || "";
-          document.getElementById("adm-f-perfil").value = f.perfil || "";
-          document.getElementById("adm-f-desc").value = f.descricao || "";
-        });
-      });
-
-      Array.prototype.forEach.call(document.querySelectorAll(".btn-adm-del-f"), function (b) {
-        b.addEventListener("click", function () {
-          var idx = Number(b.getAttribute("data-idx"));
-          if (confirm("Deseja excluir esta festa?")) {
-            festas.splice(idx, 1);
-            montarFestas();
-            renderizarAdmin();
-          }
-        });
-      });
+        }, 300);
+      }
+    } else {
+      var elGenerico = document.getElementById(hash.substring(1));
+      if (elGenerico) {
+        elGenerico.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
   }
 
-  function gerarCodigosExportacao() {
-    var areaGrupos = document.getElementById("codigo-grupos-js");
-    var areaFestas = document.getElementById("codigo-festas-js");
-    var areaTextos = document.getElementById("codigo-textos-js");
-
-    if (areaGrupos) {
-      areaGrupos.value = "var ESTADOS = " + JSON.stringify(window.ESTADOS, null, 2) + ";\n\n" +
-        "var CIDADES = " + JSON.stringify(window.CIDADES, null, 2) + ";\n\n" +
-        "var UNIVERSIDADES_GRUPOS = " + JSON.stringify(unisGrupos, null, 2) + ";\n\n" +
-        "var CATEGORIAS = " + JSON.stringify(categorias, null, 2) + ";\n\n" +
-        "var GRUPOS = " + JSON.stringify(grupos, null, 2) + ";";
-    }
-
-    if (areaFestas) {
-      areaFestas.value = "var UNIVERSIDADES = " + JSON.stringify(unis, null, 2) + ";\n\n" +
-        "var FESTAS = " + JSON.stringify(festas, null, 2) + ";";
-    }
-
-    if (areaTextos) {
-      areaTextos.value = "var TEXTOS = " + JSON.stringify(textos, null, 2) + ";\n\n" +
-        "var AJUSTES = " + JSON.stringify(ajustes, null, 2) + ";\n\n" +
-        "var CONTATOS = " + JSON.stringify(contatos, null, 2) + ";";
-    }
-  }
-
+  /* -------------------------------------------------------------------------
+     INICIALIZAÇÃO DA APLICAÇÃO
+     ------------------------------------------------------------------------- */
   function iniciar() {
     aplicarTextos();
     configurarPix();
-    configurarModalMidia();
     montarParceiros();
     montarFestas();
     montarGrupos();
     configurarAbas();
-    configurarAdmin();
+    configurarModais();
+    configurarSuporte();
+    mostrarProblemas();
+
+    // Executa a navegação de hash imediatamente ao carregar
+    lerHash();
+
+    // Captura cliques globais em links com hash no WhatsApp/Browser para forçar releitura do hash
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest("a");
+      if (a && a.getAttribute("href") && a.getAttribute("href").indexOf("#") !== -1) {
+        setTimeout(lerHash, 50);
+      }
+    });
   }
+
+  window.addEventListener("hashchange", lerHash);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", iniciar);
   } else {
     iniciar();
   }
+
 })();

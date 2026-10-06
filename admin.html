@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluriversidade — Painel Administrativo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <!-- Carrega os dados para edição -->
+  <script src="js/dados-grupos.js"></script>
+  <script src="js/dados-festas.js"></script>
+</head>
+<body class="body-admin">
+
+  <header class="cabecalho-admin">
+    <div class="container-admin">
+      <h1>⚙️ Admin — Pluriversidade</h1>
+      <a href="index.html" class="btn-voltar">← Voltar ao Site</a>
+    </div>
+  </header>
+
+  <main class="container-admin">
+    <!-- TELA DE LOGIN -->
+    <div id="admin-login-box" class="admin-card">
+      <h2>Área Restrita — Acesso do Administrador</h2>
+      <form id="form-login-admin" class="form-admin">
+        <div class="campo-grupo">
+          <label for="login-usuario">Usuário:</label>
+          <input type="text" id="login-usuario" required placeholder="Digite seu usuário">
+        </div>
+        <div class="campo-grupo">
+          <label for="login-senha">Senha:</label>
+          <input type="password" id="login-senha" required placeholder="Digite sua senha">
+        </div>
+        <button type="submit" class="btn-acao btn-acao--primary">Entrar no Painel</button>
+        <p id="login-erro" class="msg-erro-login" hidden>Usuário ou senha incorretos!</p>
+      </form>
+    </div>
+
+    <!-- PAINEL DE GERENCIAMENTO -->
+    <div id="admin-painel-box" class="admin-card" hidden>
+      <div class="admin-header-top">
+        <h2>Painel de Gerenciamento</h2>
+        <button id="btn-admin-logout" class="btn-acao btn-acao--danger" type="button">Sair</button>
+      </div>
+
+      <nav class="subabas-admin">
+        <button id="subaba-grupos" class="btn-subaba ativa" type="button">Gerenciar Grupos</button>
+        <button id="subaba-festas" class="btn-subaba" type="button">Gerenciar Festas</button>
+        <button id="subaba-exportar" class="btn-subaba btn-subaba--destaque" type="button">💾 Exportar JS Atualizado</button>
+      </nav>
+
+      <!-- ABA GRUPOS -->
+      <div id="painel-sub-grupos" class="subpainel-admin">
+        <h3>Adicionar / Editar Grupo</h3>
+        <form id="form-admin-grupo" class="grid-form">
+          <input type="hidden" id="admin-grupo-index" value="-1">
+          <div class="campo-grupo">
+            <label>Nome do Grupo:</label>
+            <input type="text" id="adm-g-nome" required>
+          </div>
+          <div class="campo-grupo">
+            <label>Universidade:</label>
+            <input type="text" id="adm-g-uni" required>
+          </div>
+          <div class="campo-grupo">
+            <label>Categoria:</label>
+            <select id="adm-g-cat" required></select>
+          </div>
+          <div class="campo-grupo">
+            <label>Link WhatsApp:</label>
+            <input type="url" id="adm-g-url" required>
+          </div>
+          <div class="campo-grupo">
+            <label>Qtd Membros:</label>
+            <input type="number" id="adm-g-membros" value="0">
+          </div>
+          <div class="campo-grupo">
+            <label>Descrição:</label>
+            <input type="text" id="adm-g-desc">
+          </div>
+          <div class="campo-grupo checkbox-linha">
+            <label><input type="checkbox" id="adm-g-lotado"> Grupo Lotado?</label>
+          </div>
+          <div class="botoes-form">
+            <button type="submit" class="btn-acao btn-acao--primary">Salvar Grupo</button>
+          </div>
+        </form>
+        <hr class="divisor">
+        <h3>Grupos Cadastrados</h3>
+        <div class="tabela-wrapper">
+          <table class="tabela-admin">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Uni</th>
+                <th>Membros</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tb-admin-grupos"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABA FESTAS -->
+      <div id="painel-sub-festas" class="subpainel-admin" hidden>
+        <h3>Adicionar / Editar Festa</h3>
+        <form id="form-admin-festa" class="grid-form">
+          <input type="hidden" id="admin-festa-index" value="-1">
+          <div class="campo-grupo">
+            <label>Título:</label>
+            <input type="text" id="adm-f-titulo" required>
+          </div>
+          <div class="campo-grupo">
+            <label>Data (AAAA-MM-DD):</label>
+            <input type="date" id="adm-f-data" required>
+          </div>
+          <div class="campo-grupo">
+            <label>Universidade:</label>
+            <select id="adm-f-uni" required></select>
+          </div>
+          <div class="campo-grupo">
+            <label>Link Ingresso:</label>
+            <input type="url" id="adm-f-ingresso">
+          </div>
+          <div class="botoes-form">
+            <button type="submit" class="btn-acao btn-acao--primary">Salvar Festa</button>
+          </div>
+        </form>
+        <hr class="divisor">
+        <h3>Festas Cadastradas</h3>
+        <div class="tabela-wrapper">
+          <table class="tabela-admin">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Título</th>
+                <th>Uni</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tb-admin-festas"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABA EXPORTAR -->
+      <div id="painel-sub-exportar" class="subpainel-admin" hidden>
+        <h3>Exportar para GitHub Pages</h3>
+        <p>Copie os códigos gerados abaixo e atualize os ficheiros na pasta <code>js/</code> do seu repositório:</p>
+        <div class="caixa-exportar">
+          <h4><code>js/dados-grupos.js</code></h4>
+          <textarea id="codigo-grupos-js" readonly class="codigo-textarea"></textarea>
+        </div>
+        <div class="caixa-exportar">
+          <h4><code>js/dados-festas.js</code></h4>
+          <textarea id="codigo-festas-js" readonly class="codigo-textarea"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
