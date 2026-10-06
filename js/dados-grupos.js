@@ -115,7 +115,8 @@ var GRUPOS = [
     "cat": "festas",
     "etiqueta": "Pluriversidade",
     "desc": "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
-    "url": "https://chat.whatsapp.com/Hl9eTVVoR2ABasYy1TZCAm"
+    "url": "https://chat.whatsapp.com/Hl9eTVVoR2ABasYy1TZCAm",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -124,7 +125,8 @@ var GRUPOS = [
     "cat": "festas",
     "etiqueta": "Pluriversidade",
     "desc": "Agenda das festas universitárias de BH, com data, local e link de ingresso.",
-    "url": "https://chat.whatsapp.com/CQu03yFkhYJ3AWyFKfR3Rb"
+    "url": "https://chat.whatsapp.com/CQu03yFkhYJ3AWyFKfR3Rb",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -169,7 +171,8 @@ var GRUPOS = [
     "cat": "festas",
     "etiqueta": "Pluriversidade",
     "desc": "Compra, venda e troca de ingressos de festa entre estudantes.",
-    "url": "https://chat.whatsapp.com/EkltUT5lhocERIMzXZdLeN"
+    "url": "https://chat.whatsapp.com/EkltUT5lhocERIMzXZdLeN",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -196,7 +199,8 @@ var GRUPOS = [
     "cat": "moradia",
     "etiqueta": "Pluriversidade",
     "desc": "Vagas, quartos e repúblicas para alugar em Belo Horizonte.",
-    "url": "https://chat.whatsapp.com/HRXqNFit0ImHvH2dosm9qd"
+    "url": "https://chat.whatsapp.com/HRXqNFit0ImHvH2dosm9qd",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -223,7 +227,8 @@ var GRUPOS = [
     "cat": "moradia",
     "etiqueta": "Pluriversidade",
     "desc": "Vagas e quartos em repúblicas da região da Pampulha, perto do campus.",
-    "url": "https://chat.whatsapp.com/Ess0ZMOROObCBTTnTiP1F2"
+    "url": "https://chat.whatsapp.com/Ess0ZMOROObCBTTnTiP1F2",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -241,7 +246,8 @@ var GRUPOS = [
     "cat": "moradia",
     "etiqueta": "Pluriversidade",
     "desc": "Vagas e quartos em repúblicas da região da Pampulha, perto do campus.",
-    "url": "https://chat.whatsapp.com/CJ9181tWVpV1c1GdSTgxww"
+    "url": "https://chat.whatsapp.com/CJ9181tWVpV1c1GdSTgxww",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -403,7 +409,8 @@ var GRUPOS = [
     "cat": "caronas2",
     "etiqueta": "Pluriversidade",
     "desc": "Comunidade de caronas com grupos da região Centro-Sul para a UFMG, reunindo subgrupos específicos dos bairros locais.",
-    "url": "https://chat.whatsapp.com/K6uAf6VRLjC3gSXj6wT9js"
+    "url": "https://chat.whatsapp.com/K6uAf6VRLjC3gSXj6wT9js",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -430,7 +437,8 @@ var GRUPOS = [
     "cat": "trocas",
     "etiqueta": "Pluriversidade",
     "desc": "Móveis, eletrônicos e tralha de república à venda por preço de estudante.",
-    "url": "https://chat.whatsapp.com/GnBXA8rrKEn1sh5SpMmKpt"
+    "url": "https://chat.whatsapp.com/GnBXA8rrKEn1sh5SpMmKpt",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -457,7 +465,8 @@ var GRUPOS = [
     "cat": "trocas",
     "etiqueta": "Pluriversidade",
     "desc": "Móveis, eletrônicos e tralha de república à venda por preço de estudante.",
-    "url": "https://chat.whatsapp.com/EE030qkc9ct9NZuAWAHHa5"
+    "url": "https://chat.whatsapp.com/EE030qkc9ct9NZuAWAHHa5",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -484,7 +493,8 @@ var GRUPOS = [
     "cat": "trocas",
     "etiqueta": "Pluriversidade",
     "desc": "Só doação: móveis, roupas e utensílios que alguém não usa mais.",
-    "url": "https://chat.whatsapp.com/GjCgDGrWG3HHvm4LoGR8eC"
+    "url": "https://chat.whatsapp.com/GjCgDGrWG3HHvm4LoGR8eC",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -493,7 +503,8 @@ var GRUPOS = [
     "cat": "trocas",
     "etiqueta": "Pluriversidade",
     "desc": "Só doação: móveis, roupas e utensílios que alguém não usa mais.",
-    "url": "https://chat.whatsapp.com/KPEslIuLO7M2LQIEsVthZV"
+    "url": "https://chat.whatsapp.com/KPEslIuLO7M2LQIEsVthZV",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -520,7 +531,8 @@ var GRUPOS = [
     "cat": "trocas",
     "etiqueta": "Pluriversidade",
     "desc": "Compra, venda e troca de livros usados, acadêmicos ou não.",
-    "url": "https://chat.whatsapp.com/B6FWVTaDXiw79NI6CP6RF8"
+    "url": "https://chat.whatsapp.com/B6FWVTaDXiw79NI6CP6RF8",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -538,7 +550,8 @@ var GRUPOS = [
     "cat": "compras",
     "etiqueta": "Pluriversidade",
     "desc": "Bazar de roupas, calçados e acessórios entre estudantes.",
-    "url": "https://chat.whatsapp.com/BA8BiS15IeQ3Q1OI9LfFNE"
+    "url": "https://chat.whatsapp.com/BA8BiS15IeQ3Q1OI9LfFNE",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -547,7 +560,8 @@ var GRUPOS = [
     "cat": "compras",
     "etiqueta": "Pluriversidade",
     "desc": "Bazar de roupas, calçados e acessórios entre estudantes.",
-    "url": "https://chat.whatsapp.com/IEjkqVFVUqy8xRz386E8JC"
+    "url": "https://chat.whatsapp.com/IEjkqVFVUqy8xRz386E8JC",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -592,7 +606,8 @@ var GRUPOS = [
     "cat": "compras",
     "etiqueta": "Pluriversidade",
     "desc": "Brechó de roupas masculinas: venda, troca e garimpo.",
-    "url": "https://chat.whatsapp.com/Bxa7kxcF5sQAliIDvgzK0b"
+    "url": "https://chat.whatsapp.com/Bxa7kxcF5sQAliIDvgzK0b",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -610,7 +625,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    "url": "https://chat.whatsapp.com/FJ56dr6ptaIAcIrXuz5KAW"
+    "url": "https://chat.whatsapp.com/FJ56dr6ptaIAcIrXuz5KAW",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -619,7 +635,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    "url": "https://chat.whatsapp.com/DA4G7huHvOKARnf9SZ2End"
+    "url": "https://chat.whatsapp.com/DA4G7huHvOKARnf9SZ2End",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -628,7 +645,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    "url": "https://chat.whatsapp.com/CcHu3q40VrYIMoUyUrd6A4"
+    "url": "https://chat.whatsapp.com/CcHu3q40VrYIMoUyUrd6A4",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -637,7 +655,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    "url": "https://chat.whatsapp.com/Kmj1ckcnfud4z3uY9wtBF0"
+    "url": "https://chat.whatsapp.com/Kmj1ckcnfud4z3uY9wtBF0",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -646,7 +665,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    "url": "https://chat.whatsapp.com/LQ3QCYUigcb12WujTyfaxg"
+    "url": "https://chat.whatsapp.com/LQ3QCYUigcb12WujTyfaxg",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -655,7 +675,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Trabalhos avulsos e bicos: quem precisa e quem faz se encontram aqui.",
-    "url": "https://chat.whatsapp.com/J2nkArDP6WQ70ehzM29m3A"
+    "url": "https://chat.whatsapp.com/J2nkArDP6WQ70ehzM29m3A",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -673,7 +694,8 @@ var GRUPOS = [
     "cat": "trabalho",
     "etiqueta": "Pluriversidade",
     "desc": "Vagas de estágio abertas para quem ainda está na graduação.",
-    "url": "https://chat.whatsapp.com/FEoxKtC1ffGEJxkZSsMRw9"
+    "url": "https://chat.whatsapp.com/FEoxKtC1ffGEJxkZSsMRw9",
+    "lotado": true
   },
   {
     "uni": "ufmg",
@@ -781,7 +803,8 @@ var GRUPOS = [
     "cat": "academico",
     "etiqueta": "Pluriversidade",
     "desc": "Chamadas de projeto de extensão, pesquisa e monitoria.",
-    "url": "https://chat.whatsapp.com/JV2YTI4XIFoBqPDU5ue244"
+    "url": "https://chat.whatsapp.com/JV2YTI4XIFoBqPDU5ue244",
+    "lotado": true
   },
   {
     "uni": "ufmg",
