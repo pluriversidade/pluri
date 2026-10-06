@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pluriversidade — grupos de WhatsApp e festas universitárias</title>
-<meta name="description" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
+<title id="meta-titulo-pagina">Pluriversidade — grupos de WhatsApp e festas universitárias</title>
+<meta name="description" id="meta-desc-pagina" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
 <meta name="theme-color" content="#1F3347">
-<meta property="og:title" content="PLURIVERSIDADE.COM.BR">
-<meta property="og:description" content="Repositório de Grupos e Festas das maiores universidades do Brasil!">
+<meta property="og:title" id="og-titulo" content="PLURIVERSIDADE.COM.BR">
+<meta property="og:description" id="og-desc" content="Repositório de Grupos e Festas das maiores universidades do Brasil!">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
-<meta property="og:image:secure_url" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
+<meta property="og:image" id="og-imagem" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
+<meta property="og:image:secure_url" id="og-imagem-secure" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -23,7 +23,7 @@
 <body>
 
 <!-- ================================================================ capa -->
-<header class="capa">
+<header class="capa" id="topo-site">
   <div class="topo-video-container">
     <video class="topo-video" src="https://pluriversidade.github.io/pluri/img/video-topo-site.mp4" autoplay muted loop playsinline></video>
     <div class="efeito-tv" aria-hidden="true"></div>
@@ -64,6 +64,8 @@
   <div class="diagnostico" id="diagnostico" hidden></div>
 </div>
 
+<!-- ================================================================ CONTEÚDO PRINCIPAL (GERAL) -->
+<div id="conteudo-geral">
 <main class="miolo">
 
   <!-- parceiros -->
@@ -240,6 +242,19 @@
   </section>
 
 </main>
+</div>
+
+<!-- ================================================================ CONTEÚDO DETALHE DA FESTA -->
+<div id="conteudo-detalhe-festa" hidden>
+  <main class="miolo" style="padding-top: 1rem; padding-bottom: 2rem;">
+    <div style="margin-bottom: 1rem;">
+      <a href="#" id="btn-voltar-inicio" class="festa__link" style="display: inline-flex; width: auto; align-items: center; gap: 0.5rem; font-weight: 700;">
+        <span>←</span> Voltar para o início
+      </a>
+    </div>
+    <div id="detalhe-festa-container"></div>
+  </main>
+</div>
 
 <footer class="rodape">
   <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">

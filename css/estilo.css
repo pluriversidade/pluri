@@ -1384,3 +1384,23 @@ a { color: inherit; }
 .modal-comissario__btn-form:hover {
   opacity: .9;
 }
+
+/* Estilos adicionais para a página detalhada da festa */
+.festa-detalhe-card {
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-left: 6px solid var(--cor, var(--terracota));
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+}
+
+.festa-detalhe-midia {
+  width: 100%;
+  max-height: 450px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #111;
+  margin: 1rem 0;
+  cursor: pointer;
+}
