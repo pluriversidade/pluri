@@ -2,7 +2,10 @@
   "use strict";
 
   // Garantir estruturas globais
+  if (!window.ESTADOS) window.ESTADOS = {};
+  if (!window.CIDADES) window.CIDADES = {};
   if (!window.UNIVERSIDADES) window.UNIVERSIDADES = {};
+  if (!window.CATEGORIAS) window.CATEGORIAS = {};
   if (!window.GRUPOS) window.GRUPOS = [];
   if (!window.FESTAS) window.FESTAS = [];
 
@@ -77,6 +80,8 @@
         var gData = {
           nome: document.getElementById("adm-g-nome").value,
           uni: document.getElementById("adm-g-uni").value,
+          estado: document.getElementById("adm-g-estado").value,
+          cidade: document.getElementById("adm-g-cidade").value,
           cat: document.getElementById("adm-g-cat").value,
           url: document.getElementById("adm-g-url").value,
           membros: Number(document.getElementById("adm-g-membros").value) || 0,
@@ -140,13 +145,18 @@
         var idx = Number(document.getElementById("admin-festa-index").value);
 
         var fData = {
+          id: idx >= 0 && window.FESTAS[idx].id ? window.FESTAS[idx].id : "festa-" + Date.now(),
           titulo: document.getElementById("adm-f-titulo").value,
           data: document.getElementById("adm-f-data").value,
           hora: document.getElementById("adm-f-hora").value,
           uni: document.getElementById("adm-f-uni").value,
+          estado: document.getElementById("adm-f-estado").value,
+          cidade: document.getElementById("adm-f-cidade").value,
           ingresso: document.getElementById("adm-f-ingresso").value,
-          instagram: document.getElementById("adm-f-instagram").value,
-          flyer: document.getElementById("adm-f-flyer").value,
+          perfil: document.getElementById("adm-f-perfil").value,
+          grupo: document.getElementById("adm-f-grupo").value,
+          midia: document.getElementById("adm-f-midia").value,
+          descricao: document.getElementById("adm-f-desc").value,
           comissarios: document.getElementById("adm-f-comissarios").checked
         };
 
@@ -176,7 +186,7 @@
     var selUniAdmGroup = document.getElementById("adm-g-uni");
     var selUniAdmFesta = document.getElementById("adm-f-uni");
     var optionsUni = Object.keys(window.UNIVERSIDADES || {}).map(function (k) {
-      return '<option value="' + k + '">' + k + '</option>';
+      return '<option value="' + k + '">' + (window.UNIVERSIDADES[k].nome || k) + '</option>';
     }).join("");
 
     if (selUniAdmGroup) selUniAdmGroup.innerHTML = optionsUni;
@@ -213,7 +223,9 @@
     if (tbGrupos && window.GRUPOS) {
       tbGrupos.innerHTML = window.GRUPOS.map(function (g, i) {
         var uniData = window.UNIVERSIDADES[g.uni] || {};
-        var localStr = (uniData.cidade || "") + (uniData.estado ? " - " + uniData.estado : "");
+        var cid = g.cidade || uniData.cidade || "";
+        var est = g.estado || uniData.estado || "";
+        var localStr = cid + (est ? " - " + est : "");
         var linkCard = "index.html#grupo-" + i;
 
         return (
@@ -240,6 +252,8 @@
           document.getElementById("admin-grupo-index").value = idx;
           document.getElementById("adm-g-nome").value = g.nome || "";
           document.getElementById("adm-g-uni").value = g.uni || "";
+          document.getElementById("adm-g-estado").value = g.estado || "";
+          document.getElementById("adm-g-cidade").value = g.cidade || "";
           document.getElementById("adm-g-cat").value = g.cat || "";
           document.getElementById("adm-g-url").value = g.url || "";
           document.getElementById("adm-g-membros").value = g.membros || 0;
@@ -275,7 +289,7 @@
         var localStr = (u.cidade || "") + (u.estado ? " - " + u.estado : "");
         return (
           '<tr>' +
-            '<td><strong>' + u.nome + '</strong></td>' +
+            '<td><strong>' + (u.nome || k) + '</strong></td>' +
             '<td>' + (localStr || "-") + '</td>' +
             '<td>' + (u.site ? '<a href="' + u.site + '" target="_blank" style="color:#10b981;">Site</a>' : '-') + '</td>' +
             '<td>' + (u.tel1 || "-") + '</td>' +
@@ -294,7 +308,7 @@
           var u = window.UNIVERSIDADES[key];
 
           document.getElementById("admin-uni-key").value = key;
-          document.getElementById("adm-u-nome").value = u.nome || "";
+          document.getElementById("adm-u-nome").value = u.nome || key;
           document.getElementById("adm-u-estado").value = u.estado || "";
           document.getElementById("adm-u-cidade").value = u.cidade || "";
           document.getElementById("adm-u-site").value = u.site || "";
@@ -303,7 +317,7 @@
           document.getElementById("adm-u-tel1").value = u.tel1 || "";
           document.getElementById("adm-u-tel2").value = u.tel2 || "";
 
-          document.getElementById("titulo-form-uni").textContent = "Editar Universidade: " + u.nome;
+          document.getElementById("titulo-form-uni").textContent = "Editar Universidade: " + (u.nome || key);
           document.getElementById("btn-salvar-uni").textContent = "Atualizar Universidade";
           document.getElementById("btn-cancelar-uni").hidden = false;
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -313,7 +327,7 @@
       document.querySelectorAll(".btn-del-u").forEach(function (b) {
         b.addEventListener("click", function () {
           var key = b.getAttribute("data-key");
-          if (confirm("Tem certeza de que deseja excluir a universidade '" + key + "'? Isso pode impactar os grupos vinculados.")) {
+          if (confirm("Tem certeza de que deseja excluir a universidade '" + key + "'?")) {
             delete window.UNIVERSIDADES[key];
             atualizarSelects();
             renderizarTabelas();
@@ -327,12 +341,15 @@
     if (tbFestas && window.FESTAS) {
       tbFestas.innerHTML = window.FESTAS.map(function (f, i) {
         var uniData = window.UNIVERSIDADES[f.uni] || {};
-        var localStr = (uniData.cidade || "") + (uniData.estado ? " - " + uniData.estado : "");
+        var cid = f.cidade || uniData.cidade || "";
+        var est = f.estado || uniData.estado || "";
+        var localStr = cid + (est ? " - " + est : "");
 
         var botoesLinks = [];
         if (f.ingresso) botoesLinks.push('<a href="' + f.ingresso + '" target="_blank" style="color:#10b981;">Ingresso</a>');
-        if (f.instagram) botoesLinks.push('<a href="' + f.instagram + '" target="_blank" style="color:#e1306c;">Insta</a>');
-        if (f.flyer) botoesLinks.push('<a href="' + f.flyer + '" target="_blank" style="color:#6366f1;">Flyer</a>');
+        if (f.perfil) botoesLinks.push('<a href="' + f.perfil + '" target="_blank" style="color:#e1306c;">Instagram</a>');
+        if (f.grupo) botoesLinks.push('<a href="' + f.grupo + '" target="_blank" style="color:#25d366;">Whats</a>');
+        if (f.midia) botoesLinks.push('<a href="' + f.midia + '" target="_blank" style="color:#6366f1;">Mídia</a>');
 
         return (
           '<tr>' +
@@ -359,9 +376,13 @@
           document.getElementById("adm-f-data").value = f.data || "";
           document.getElementById("adm-f-hora").value = f.hora || "";
           document.getElementById("adm-f-uni").value = f.uni || "";
+          document.getElementById("adm-f-estado").value = f.estado || "";
+          document.getElementById("adm-f-cidade").value = f.cidade || "";
           document.getElementById("adm-f-ingresso").value = f.ingresso || "";
-          document.getElementById("adm-f-instagram").value = f.instagram || "";
-          document.getElementById("adm-f-flyer").value = f.flyer || "";
+          document.getElementById("adm-f-perfil").value = f.perfil || "";
+          document.getElementById("adm-f-grupo").value = f.grupo || "";
+          document.getElementById("adm-f-midia").value = f.midia || "";
+          document.getElementById("adm-f-desc").value = f.descricao || "";
           document.getElementById("adm-f-comissarios").checked = !!f.comissarios;
 
           document.getElementById("titulo-form-festa").textContent = "Editar Festa: " + f.titulo;
@@ -396,7 +417,10 @@
     }
 
     if (areaFestas) {
-      areaFestas.value = "var FESTAS = " + JSON.stringify(window.FESTAS || [], null, 2) + ";";
+      areaFestas.value = "var ESTADOS = " + JSON.stringify(window.ESTADOS || {}, null, 2) + ";\n\n" +
+        "var CIDADES = " + JSON.stringify(window.CIDADES || {}, null, 2) + ";\n\n" +
+        "var UNIVERSIDADES = " + JSON.stringify(window.UNIVERSIDADES || {}, null, 2) + ";\n\n" +
+        "var FESTAS = " + JSON.stringify(window.FESTAS || [], null, 2) + ";";
     }
   }
 

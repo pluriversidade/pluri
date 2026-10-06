@@ -66,6 +66,14 @@
             <select id="adm-g-uni" required></select>
           </div>
           <div class="campo-grupo">
+            <label>Estado (UF):</label>
+            <input type="text" id="adm-g-estado" placeholder="Ex: MG">
+          </div>
+          <div class="campo-grupo">
+            <label>Cidade:</label>
+            <input type="text" id="adm-g-cidade" placeholder="Ex: Belo Horizonte">
+          </div>
+          <div class="campo-grupo">
             <label>Categoria *:</label>
             <select id="adm-g-cat" required></select>
           </div>
@@ -186,12 +194,20 @@
             <input type="date" id="adm-f-data" required>
           </div>
           <div class="campo-grupo">
-            <label>Horário (HH:MM):</label>
-            <input type="time" id="adm-f-hora">
+            <label>Horário (ex: 22h, 23h30):</label>
+            <input type="text" id="adm-f-hora" placeholder="22h ou 22:00">
           </div>
           <div class="campo-grupo">
             <label>Universidade *:</label>
             <select id="adm-f-uni" required></select>
+          </div>
+          <div class="campo-grupo">
+            <label>Estado (UF):</label>
+            <input type="text" id="adm-f-estado" placeholder="Ex: MG">
+          </div>
+          <div class="campo-grupo">
+            <label>Cidade:</label>
+            <input type="text" id="adm-f-cidade" placeholder="Ex: Belo Horizonte">
           </div>
           <div class="campo-grupo">
             <label>Link do Ingresso:</label>
@@ -199,11 +215,19 @@
           </div>
           <div class="campo-grupo">
             <label>Instagram (@ ou link):</label>
-            <input type="text" id="adm-f-instagram" placeholder="@perfil ou link">
+            <input type="text" id="adm-f-perfil" placeholder="@perfil ou link">
           </div>
           <div class="campo-grupo">
-            <label>Link do Flyer/Imagem:</label>
-            <input type="url" id="adm-f-flyer" placeholder="https://...">
+            <label>Link do Grupo WhatsApp:</label>
+            <input type="url" id="adm-f-grupo" placeholder="https://chat.whatsapp.com/...">
+          </div>
+          <div class="campo-grupo">
+            <label>Link do Flyer/Mídia:</label>
+            <input type="text" id="adm-f-midia" placeholder="img/flyer.jpg ou URL">
+          </div>
+          <div class="campo-grupo col-full">
+            <label>Descrição:</label>
+            <textarea id="adm-f-desc" rows="2"></textarea>
           </div>
           <div class="campo-grupo checkbox-linha">
             <label><input type="checkbox" id="adm-f-comissarios"> Permite cadastro de comissários?</label>
@@ -236,14 +260,14 @@
       <!-- ABA EXPORTAR -->
       <div id="painel-sub-exportar" class="subpainel-admin" hidden>
         <h3>Exportar Dados para JS</h3>
-        <p>Copie os códigos gerados abaixo e cole nos ficheiros correspondentes da sua pasta <code>js/</code>:</p>
+        <p>Copie os códigos completos gerados abaixo e cole nos ficheiros correspondentes da sua pasta <code>js/</code>:</p>
         <div class="caixa-exportar">
           <h4><code>js/dados-grupos.js</code></h4>
-          <textarea id="codigo-grupos-js" readonly class="codigo-textarea"></textarea>
+          <textarea id="codigo-grupos-js" readonly class="codigo-textarea" style="height: 350px;"></textarea>
         </div>
-        <div class="caixa-exportar">
+        <div class="caixa-exportar" style="margin-top: 20px;">
           <h4><code>js/dados-festas.js</code></h4>
-          <textarea id="codigo-festas-js" readonly class="codigo-textarea"></textarea>
+          <textarea id="codigo-festas-js" readonly class="codigo-textarea" style="height: 350px;"></textarea>
         </div>
       </div>
 
