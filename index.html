@@ -1,295 +1,339 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pluriversidade — grupos de WhatsApp e festas universitárias</title>
-<meta name="description" content="Lista atualizada dos grupos de WhatsApp da comunidade UFMG e a agenda das festas universitárias de Belo Horizonte.">
-<meta name="theme-color" content="#1F3347">
-<meta property="og:title" content="PLURIVERSIDADE.COM.BR">
-<meta property="og:description" content="Repositório de Grupos e Festas das maiores universidades do Brasil!">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
-<meta property="og:image:secure_url" content="https://pluriversidade.github.io/pluri/img/flyer-pluri-site.jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<!-- Ícone do Navegador -->
-<link rel="icon" type="image/png" href="https://pluriversidade.github.io/pluri/img/icone-pluri.png">
-<link rel="stylesheet" href="css/estilo.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluriversidade — Grupos de WhatsApp e Festas Universitárias</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/admin.css">
+  
+  <!-- Arquivos de Dados JS -->
+  <script src="js/dados-textos.js"></script>
+  <script src="js/dados-grupos.js"></script>
+  <script src="js/dados-festas.js"></script>
+  <script src="js/dados-parceiros.js"></script>
 </head>
-
 <body>
 
-<!-- ================================================================ capa -->
-<header class="capa">
-  <div class="topo-video-container">
-    <video class="topo-video" src="https://pluriversidade.github.io/pluri/img/video-topo-site.mp4" autoplay muted loop playsinline></video>
-    <div class="efeito-tv" aria-hidden="true"></div>
-  </div>
-
-  <div class="miolo marca">
-    <svg class="emblema" viewBox="-100 -100 200 200" role="img" aria-label="Emblema com comunidade em volta">
-      <defs>
-        <g id="pessoa">
-          <circle cy="-9.5" r="6.4"/>
-          <path d="M0 -1.5 a9.2 9.2 0 0 1 9.2 9.2 v3.8 h-18.4 v-3.8 a9.2 9.2 0 0 1 9.2 -9.2 z"/>
-        </g>
-      </defs>
-      <circle r="96" fill="#FBF5E9" stroke="#E2DCCC" stroke-width="2"/>
+  <header class="cabecalho">
+    <div class="container">
+      <p class="tarja-topo" data-texto="tarja">Uma página oferecida por CEDER</p>
+      <h1 class="titulo-principal" data-texto="titulo">PLURIVERSIDADE</h1>
+      <p class="subtitulo" data-texto="subtitulo">Repositório de Festas e Grupos das maiores universidades do Brasil!</p>
       
-      <g opacity="0.9">
-        <use href="#pessoa" fill="#2E7D53" transform="translate(0, -74) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(52, -52) rotate(45) scale(0.95)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="translate(74, 0) rotate(90) scale(0.95)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="translate(52, 52) rotate(135) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(0, 74) rotate(180) scale(0.95)"/>
-        <use href="#pessoa" fill="#C08A1E" transform="translate(-52, 52) rotate(225) scale(0.95)"/>
-        <use href="#pessoa" fill="#2E7D53" transform="translate(-74, 0) rotate(270) scale(0.95)"/>
-        <use href="#pessoa" fill="#B24232" transform="translate(-52, -52) rotate(315) scale(0.95)"/>
-      </g>
+      <nav class="abas-navegacao">
+        <button id="aba-grupos" class="btn-aba" aria-selected="true" type="button">
+          GRUPOS (<span id="aba-grupos-conta">0</span>)
+        </button>
+        <button id="aba-festas" class="btn-aba" aria-selected="false" type="button">
+          FESTAS (<span id="aba-festas-conta">0</span>)
+        </button>
+        <button id="aba-admin" class="btn-aba btn-aba--admin" type="button">
+          🔒 ADMINISTRAÇÃO
+        </button>
+      </nav>
+    </div>
+  </header>
 
-      <circle r="54" fill="#FFFFFF" stroke="#E2DCCC" stroke-width="1.5"/>
-      <image href="https://pluriversidade.github.io/pluri/img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
-    </svg>
+  <main class="container">
+    <div id="diagnostico" class="diagnostico" hidden></div>
 
-    <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
-    <p class="subtitulo" data-texto="subtitulo">Brechó, sebo, bandeco, caronas, idiomas e o que mais a comunidade inventar.</p>
-    <p class="atualizado" id="atualizado" hidden></p>
+    <!-- SEÇÃO DE PARCEIROS -->
+    <section class="secao-parceiros">
+      <div id="parceiros" class="trilho-parceiros"></div>
+    </section>
+
+    <!-- SEÇÃO GRUPOS -->
+    <section id="secao-grupos" class="secao-conteudo">
+      <div class="filtros-box">
+        <div class="filtros-linha">
+          <select id="select-estado" class="select-filtro"></select>
+          <select id="select-cidade" class="select-filtro"></select>
+          <select id="select-uni" class="select-filtro"></select>
+        </div>
+        <input type="search" id="busca" class="campo-busca" placeholder="Buscar grupo: república, bandeco, estágio…">
+      </div>
+
+      <div id="chips" class="chips-container"></div>
+      <p id="contagem" class="contagem-resultados"></p>
+
+      <ul id="lista" class="lista-cards"></ul>
+      <p id="vazio" class="msg-vazio" hidden>Nenhum grupo encontrado com estes filtros.</p>
+
+      <div id="grupos-paginas" class="paginacao" hidden>
+        <button id="grupos-voltar" class="btn-paginacao" type="button">anterior</button>
+        <span id="grupos-onde" class="onde-paginacao">página 1 de 1</span>
+        <button id="grupos-avancar" class="btn-paginacao" type="button">próxima</button>
+      </div>
+    </section>
+
+    <!-- SEÇÃO FESTAS -->
+    <section id="secao-festas" class="secao-conteudo" hidden>
+      <div class="filtros-box">
+        <div class="filtros-linha">
+          <select id="select-estado-festas" class="select-filtro"></select>
+          <select id="select-cidade-festas" class="select-filtro"></select>
+          <select id="select-uni-festas" class="select-filtro"></select>
+        </div>
+        <div class="filtro-data-linha">
+          <label for="festas-dia">Achar festa por dia:</label>
+          <input type="date" id="festas-dia" class="campo-data">
+          <button id="festas-limpar" class="btn-limpar" type="button" hidden>Limpar Data</button>
+        </div>
+      </div>
+
+      <ul id="festas-lista" class="lista-cards"></ul>
+      <p id="festas-vazio" class="msg-vazio" hidden>Nenhuma festa encontrada.</p>
+
+      <div id="festas-paginas" class="paginacao" hidden>
+        <button id="festas-voltar" class="btn-paginacao" type="button">anterior</button>
+        <span id="festas-onde" class="onde-paginacao">página 1 de 1</span>
+        <button id="festas-avancar" class="btn-paginacao" type="button">próxima</button>
+      </div>
+    </section>
+
+    <!-- SEÇÃO PAINEL ADMINISTRAÇÃO -->
+    <section id="secao-admin" class="secao-conteudo" hidden>
+      <div id="admin-login-box" class="admin-card">
+        <h2>Área Restrita — Login do Administrador</h2>
+        <form id="form-login-admin" class="form-admin">
+          <div class="campo-grupo">
+            <label for="login-usuario">Usuário:</label>
+            <input type="text" id="login-usuario" required placeholder="Digite seu usuário">
+          </div>
+          <div class="campo-grupo">
+            <label for="login-senha">Senha:</label>
+            <input type="password" id="login-senha" required placeholder="Digite sua senha">
+          </div>
+          <button type="submit" class="btn-acao btn-acao--primary">Entrar no Painel</button>
+          <p id="login-erro" class="msg-erro-login" hidden>Usuário ou senha incorretos!</p>
+        </form>
+      </div>
+
+      <div id="admin-painel-box" class="admin-card" hidden>
+        <div class="admin-header">
+          <h2>⚙️ Painel de Gerenciamento do Site</h2>
+          <button id="btn-admin-logout" class="btn-acao btn-acao--danger" type="button">Sair do Painel</button>
+        </div>
+
+        <nav class="subabas-admin">
+          <button id="subaba-grupos" class="btn-subaba ativa" type="button">Gerenciar Grupos</button>
+          <button id="subaba-festas" class="btn-subaba" type="button">Gerenciar Festas</button>
+          <button id="subaba-config" class="btn-subaba" type="button">Configurações e Textos</button>
+          <button id="subaba-exportar" class="btn-subaba btn-subaba--destaque" type="button">💾 Copiar / Baixar Dados JS</button>
+        </nav>
+
+        <!-- SUBABA GRUPOS -->
+        <div id="painel-sub-grupos" class="subpainel-admin">
+          <h3>Adicionar / Editar Grupo</h3>
+          <form id="form-admin-grupo" class="grid-form">
+            <input type="hidden" id="admin-grupo-index" value="-1">
+            
+            <div class="campo-grupo">
+              <label>Nome do Grupo:</label>
+              <input type="text" id="adm-g-nome" required>
+            </div>
+            <div class="campo-grupo">
+              <label>Universidade (ex: ufmg, puc, etc):</label>
+              <input type="text" id="adm-g-uni" required>
+            </div>
+            <div class="campo-grupo">
+              <label>Categoria:</label>
+              <select id="adm-g-cat" required></select>
+            </div>
+            <div class="campo-grupo">
+              <label>Link do WhatsApp:</label>
+              <input type="url" id="adm-g-url" required>
+            </div>
+            <div class="campo-grupo">
+              <label>Qtd Membros:</label>
+              <input type="number" id="adm-g-membros" value="0">
+            </div>
+            <div class="campo-grupo">
+              <label>Descrição:</label>
+              <input type="text" id="adm-g-desc">
+            </div>
+            <div class="campo-grupo checkbox-linha">
+              <label><input type="checkbox" id="adm-g-lotado"> Grupo Lotado?</label>
+              <label><input type="checkbox" id="adm-g-novo"> Marcar como Novo?</label>
+            </div>
+
+            <div class="botoes-form">
+              <button type="submit" class="btn-acao btn-acao--primary">Salvar Grupo</button>
+              <button type="button" id="btn-cancelar-grupo" class="btn-acao btn-acao--secondary">Cancelar</button>
+            </div>
+          </form>
+
+          <hr class="divisor">
+
+          <h3>Grupos Cadastrados</h3>
+          <div class="tabela-wrapper">
+            <table class="tabela-admin">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Uni</th>
+                  <th>Cat</th>
+                  <th>Membros</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tb-admin-grupos"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUBABA FESTAS -->
+        <div id="painel-sub-festas" class="subpainel-admin" hidden>
+          <h3>Adicionar / Editar Festa</h3>
+          <form id="form-admin-festa" class="grid-form">
+            <input type="hidden" id="admin-festa-index" value="-1">
+            
+            <div class="campo-grupo">
+              <label>Título da Festa:</label>
+              <input type="text" id="adm-f-titulo" required>
+            </div>
+            <div class="campo-grupo">
+              <label>ID / Slug (ex: pip-ufmg):</label>
+              <input type="text" id="adm-f-id" required>
+            </div>
+            <div class="campo-grupo">
+              <label>Data (AAAA-MM-DD):</label>
+              <input type="date" id="adm-f-data" required>
+            </div>
+            <div class="campo-grupo">
+              <label>Horário (ex: 22h):</label>
+              <input type="text" id="adm-f-hora">
+            </div>
+            <div class="campo-grupo">
+              <label>Universidade:</label>
+              <select id="adm-f-uni" required></select>
+            </div>
+            <div class="campo-grupo">
+              <label>Caminho da Imagem/Vídeo (Mídia):</label>
+              <input type="text" id="adm-f-midia" placeholder="ex: img/banner.jpg">
+            </div>
+            <div class="campo-grupo">
+              <label>Link do Ingresso:</label>
+              <input type="url" id="adm-f-ingresso">
+            </div>
+            <div class="campo-grupo">
+              <label>Link do Instagram:</label>
+              <input type="url" id="adm-f-perfil">
+            </div>
+            <div class="campo-grupo col-2">
+              <label>Descrição / Local:</label>
+              <input type="text" id="adm-f-desc">
+            </div>
+
+            <div class="botoes-form col-2">
+              <button type="submit" class="btn-acao btn-acao--primary">Salvar Festa</button>
+              <button type="button" id="btn-cancelar-festa" class="btn-acao btn-acao--secondary">Cancelar</button>
+            </div>
+          </form>
+
+          <hr class="divisor">
+
+          <h3>Festas Cadastradas</h3>
+          <div class="tabela-wrapper">
+            <table class="tabela-admin">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Título</th>
+                  <th>Uni</th>
+                  <th>Horário</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tb-admin-festas"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUBABA CONFIGURAÇÕES -->
+        <div id="painel-sub-config" class="subpainel-admin" hidden>
+          <h3>Configurações de Textos e Contatos</h3>
+          <form id="form-admin-config" class="grid-form">
+            <div class="campo-grupo col-2">
+              <label>Título do Site:</label>
+              <input type="text" id="adm-c-titulo">
+            </div>
+            <div class="campo-grupo col-2">
+              <label>Subtítulo do Cabeçalho:</label>
+              <input type="text" id="adm-c-subtitulo">
+            </div>
+            <div class="campo-grupo">
+              <label>Chave PIX:</label>
+              <input type="text" id="adm-c-pix">
+            </div>
+            <div class="campo-grupo">
+              <label>WhatsApp Suporte / Moderação:</label>
+              <input type="text" id="adm-c-suporte">
+            </div>
+
+            <div class="botoes-form col-2">
+              <button type="submit" class="btn-acao btn-acao--primary">Atualizar Configurações</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- SUBABA EXPORTAR -->
+        <div id="painel-sub-exportar" class="subpainel-admin" hidden>
+          <h3>Exportar Alterações para o VSCode / GitHub Pages</h3>
+          <p>Copie o conteúdo gerado abaixo e cole nos arquivos correspondentes na pasta <code>js/</code> antes do seu commit/push no GitHub:</p>
+
+          <div class="caixa-exportar">
+            <h4>1. Arquivo <code>js/dados-grupos.js</code></h4>
+            <button type="button" class="btn-acao btn-acao--secondary btn-copiar-js" data-target="codigo-grupos-js">Copiar Código</button>
+            <textarea id="codigo-grupos-js" readonly class="codigo-textarea"></textarea>
+          </div>
+
+          <div class="caixa-exportar">
+            <h4>2. Arquivo <code>js/dados-festas.js</code></h4>
+            <button type="button" class="btn-acao btn-acao--secondary btn-copiar-js" data-target="codigo-festas-js">Copiar Código</button>
+            <textarea id="codigo-festas-js" readonly class="codigo-textarea"></textarea>
+          </div>
+
+          <div class="caixa-exportar">
+            <h4>3. Arquivo <code>js/dados-textos.js</code></h4>
+            <button type="button" class="btn-acao btn-acao--secondary btn-copiar-js" data-target="codigo-textos-js">Copiar Código</button>
+            <textarea id="codigo-textos-js" readonly class="codigo-textarea"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BLOCO DE PIX / APOIO -->
+    <section class="secao-apoio">
+      <h2 data-texto="apoioTitulo">Ajude a manter os grupos</h2>
+      <p data-texto="apoioTexto">Qualquer valor ajuda a manter a comunidade viva.</p>
+      <div class="caixa-pix">
+        <span id="pix-rotulo" class="pix-rotulo" data-texto="pixNota">Chave PIX</span>
+        <strong id="pix-numero" class="pix-numero"></strong>
+        <button id="copiar-pix" class="btn-pix" type="button">Copiar Chave Pix</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      <p data-texto="rodapeAviso">www.pluriversidade.com.br</p>
+      <p data-texto="rodapeIsencao">Página independente.</p>
+      <a id="suporte" href="#" target="_blank" rel="noopener">Suporte</a>
+    </div>
+  </footer>
+
+  <!-- MODAL DE MÍDIA -->
+  <div id="modal-midia" class="modal-midia" hidden>
+    <div class="modal-midia__conteudo">
+      <button id="modal-fechar" class="modal-midia__fechar" type="button">&times;</button>
+      <div id="modal-container-midia"></div>
+    </div>
   </div>
-</header>
 
-<div class="miolo">
-  <div class="diagnostico" id="diagnostico" hidden></div>
-</div>
-
-<main class="miolo">
-
-  <!-- parceiros -->
-  <section class="secao-parceiros" id="secao-parceiros" aria-label="Parceiros">
-    <div class="carrossel" id="parceiros"></div>
-    <div class="bolinhas" id="parceiros-bolinhas" role="tablist" aria-label="Escolher parceiro"></div>
-  </section>
-
-  <!-- abas -->
-  <nav class="abas" id="abas" role="tablist" aria-label="Escolher o que ver">
-    <button class="aba" type="button" role="tab" id="aba-grupos" aria-controls="secao-grupos" aria-selected="true">
-      <span class="aba__nome" data-texto="abaGrupos">Grupos</span>
-      <span class="aba__conta" id="aba-grupos-conta"></span>
-    </button>
-    <button class="aba" type="button" role="tab" id="aba-festas" aria-controls="secao-festas" aria-selected="false" tabindex="-1">
-      <span class="aba__nome" data-texto="abaFestas">Festas</span>
-      <span class="aba__conta" id="aba-festas-conta"></span>
-    </button>
-  </nav>
-
-  <!-- festas -->
-  <section class="secao" id="secao-festas" role="tabpanel" aria-labelledby="aba-festas" tabindex="-1" hidden>
-    
-    <!-- CARD FIXO COMISSÁRIO PLURI -->
-    <div class="card-comissario">
-      <h3 class="card-comissario__titulo">QUER SER UM COMISSÁRIO PLURI?</h3>
-      <p class="card-comissario__desc">Clique no botão abaixo e saiba como se tornar um comissário de vendas de ingressos das festas universitárias! Você pode garantir seu ingresso na faixa e não pagar nada para ir nas festas em que estiver vendendo.</p>
-      <button type="button" class="card-comissario__btn" id="btn-comissario-info">QUERO SABER MAIS INFORMAÇÕES..</button>
-    </div>
-
-    <h2 class="secao__titulo" id="festas-titulo" data-texto="festasTitulo">Festas universitárias</h2>
-    <p class="secao__nota" data-texto="festasSubtitulo">As próximas primeiro.</p>
-
-    <div class="localizacao">
-      <select class="seletor-local" id="select-estado-festas" aria-label="Filtrar por Estado">
-        <option value="">Selecione o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-cidade-festas" aria-label="Filtrar por Cidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-uni-festas" aria-label="Filtrar por Universidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-    </div>
-
-    <div class="chips" id="festas-chips" role="group" aria-label="Universidades"></div>
-
-    <div class="linha-data">
-      <label class="rotulo-data" for="festas-dia" data-texto="festasFiltroDia">Ver um dia específico</label>
-      <span class="linha-data__campos">
-        <input class="campo-data" type="date" id="festas-dia">
-        <button class="limpar-data" type="button" id="festas-limpar" hidden>limpar</button>
-      </span>
-    </div>
-
-    <!-- BOTÃO INCLUIR FESTA -->
-    <a class="btn-incluir-festa" href="https://wa.me/5531991579687?text=Oi!%20Quero%20incluir%20uma%20festa%20que%20estou%20organizando%20na%20lista%20de%20festas%20do%20site%20da%20Pluriversidade!%0A%0ANome%20da%20Festa%3A%0A%0ADia%20da%20Festa%3A%0A%0AHora%20do%20in%C3%ADcio%20da%20festa%3A%0A%0AQuantidade%20de%20p%C3%BAblico%20esperado%3A%0A%0AQual%20universidade%2Ffaculdade%3A%0A%0AEstado%3A%0A%0ACidade%3A%0A%0AInsta%20da%20Festa%3A%0A%0AA%20festa%20%C3%A9%20Open%20Bar%3F" target="_blank" rel="noopener">
-      <span>🎉 Quer incluir sua festa aqui? Clique para enviar os dados no WhatsApp</span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <ul class="festas" id="festas-lista"></ul>
-    <p class="vazio" id="festas-vazio" hidden></p>
-
-    <nav class="paginas" id="festas-paginas" aria-label="Páginas das festas" hidden>
-      <button class="pagina" type="button" id="festas-voltar">
-        <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
-      </button>
-      <span class="paginas__onde" id="festas-onde" aria-live="polite"></span>
-      <button class="pagina" type="button" id="festas-avancar">
-        <span data-texto="paginaProxima">próxima</span> <span aria-hidden="true">→</span>
-      </button>
-    </nav>
-  </section>
-
-  <!-- grupos -->
-  <section class="secao" id="secao-grupos" role="tabpanel" aria-labelledby="aba-grupos" tabindex="-1">
-    <h2 class="secao__titulo" id="grupos-titulo" data-texto="gruposTitulo">Todos os grupos</h2>
-    <p class="secao__nota" data-texto="gruposSubtitulo">Toque no grupo para entrar direto no WhatsApp.</p>
-
-    <div class="painel">
-      <div class="dado"><b id="painel-grupos">—</b><span>grupos na lista</span></div>
-      <div class="dado"><b id="painel-membros">—</b><span>membros somados</span></div>
-      <div class="dado"><b id="painel-media">—</b><span>média por grupo</span></div>
-    </div>
-
-    <div class="localizacao">
-      <select class="seletor-local" id="select-estado" aria-label="Filtrar por Estado">
-        <option value="">Selecione o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-cidade" aria-label="Filtrar por Cidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-
-      <select class="seletor-local" id="select-uni" aria-label="Filtrar por Universidade" disabled>
-        <option value="">Selecione primeiro o Estado</option>
-      </select>
-    </div>
-
-    <input class="busca" id="busca" type="search" autocomplete="off"
-           aria-label="Buscar grupo pelo nome"
-           data-texto-dica="gruposBusca"
-           placeholder="Buscar grupo…">
-
-    <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
-    <p class="contagem" id="contagem"></p>
-
-    <ul class="lista" id="lista"></ul>
-    <p class="vazio" id="vazio" data-texto="gruposVazio" hidden></p>
-
-    <nav class="paginas" id="grupos-paginas" aria-label="Páginas dos grupos" hidden>
-      <button class="pagina" type="button" id="grupos-voltar">
-        <span aria-hidden="true">←</span> <span data-texto="paginaAnterior">anterior</span>
-      </button>
-      <span class="paginas__onde" id="grupos-onde" aria-live="polite"></span>
-      <button class="pagina" type="button" id="grupos-avancar">
-        <span data-texto="paginaProxima">próxima</span> <span aria-hidden="true">→</span>
-      </button>
-    </nav>
-  </section>
-
-  <!-- blocos adicionais -->
-  <section class="bloco">
-    <h2>A PLURIVERSIDADE É DE TODOS NÓS!</h2>
-    <p>Alimente-nos!</p>
-
-    <!-- Quer incluir sua festa aqui? -->
-    <a class="botao" id="festa-incluir" href="https://wa.me/5531991579687?text=Oi!%20Gostaria%20de%20adicionar%20minha%20festa%20no%20reposit%C3%B3rio%20da%20Pluriversidade." target="_blank" rel="noopener">
-      <span>
-        <span>Quer incluir sua festa aqui?</span>
-        <small>Clique aqui para saber como adicionar sua festa em nosso repositório.</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <!-- Quer indicar um grupo já existente? -->
-    <a class="botao" id="grupo-indicar" href="https://wa.me/5531991579687?text=Oi!%20Gostaria%20de%20indicar%20um%20grupo%20j%C3%A1%20existente%20da%20minha%20universidade." target="_blank" rel="noopener">
-      <span>
-        <span>Quer indicar um grupo já existente?</span>
-        <small>Clique aqui para saber como adicionar um grupo já existente da sua universidade em nosso repositório.</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <!-- Cadastrar meu grupo -->
-    <a class="botao" id="grupo-cadastrar" href="https://wa.me/5531991579687?text=Oi!%20Gostaria%20de%20cadastrar%20o%20meu%20grupo%20para%20divulgar%20no%20site%20da%20Pluri." target="_blank" rel="noopener">
-      <span>
-        <span>Cadastrar meu grupo</span>
-        <small>divulgar no site da Pluri</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-
-    <!-- Seja Administrador(a) -->
-    <a class="botao" id="grupo-admin" href="https://wa.me/5531991579687?text=Oi!%20Tenho%20interesse%20em%20ser%20administrador(a)%20para%20ajudar%20a%20moderar%20a%20comunidade." target="_blank" rel="noopener">
-      <span>
-        <span>Seja Administrador(a)</span>
-        <small>ajude a moderar a comunidade</small>
-      </span>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
-  <section class="bloco">
-    <h2 data-texto="apoioTitulo">Ajude a manter os grupos</h2>
-    <p data-texto="apoioTexto">Administrar mais de cem grupos toma tempo e paciência.</p>
-
-    <button class="botao" id="copiar-pix" type="button">
-      <span class="pix"><span id="pix-numero">caronas.ufmg@gmail.com</span><small id="pix-rotulo">Chave pix</small></span>
-      <span aria-hidden="true">⧉</span>
-    </button>
-
-    <a class="botao" id="sugerir-novo-grupo" href="https://wa.me/5531991579687?text=EI%20GALERA%20DA%20PLURIVERSIDADE%2C%20QUERO%20SUGERIR%20A%20CRIA%C3%87%C3%83O%20DE%20UM%20GRUPO%21" target="_blank" rel="noopener">
-      <span><span>Sugerir a criação de um grupo novo</span><small>falar no privado</small></span>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
-</main>
-
-<footer class="rodape">
-  <svg class="cena" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
-    <rect width="1200" height="300" fill="#1F3347"/>
-    <path d="M0 188 L120 160 L210 176 L330 132 L420 158 L520 120 L610 150 L720 128 L830 162 L940 140 L1060 170 L1200 148 L1200 300 L0 300 Z" fill="#17232E"/>
-  </svg>
-
-  <div class="rodape__texto">
-    <p>
-      <span data-texto="rodapeAviso">Grupo lotado ou link quebrado? Avise no WhatsApp</span>
-      <a id="suporte" href="https://wa.me/5531991579687?text=Oi!%20Encontrei%20um%20link%20quebrado%20ou%20grupo%20lotado." target="_blank" rel="noopener">Falar com o Suporte</a>
-    </p>
-    <p class="rodape__isencao" data-texto="rodapeIsencao">
-      Página independente, mantida pela comunidade.
-    </p>
-  </div>
-</footer>
-
-<!-- Modais -->
-<div class="modal-midia" id="modal-midia" hidden>
-  <div class="modal-midia__conteudo">
-    <button class="modal-midia__fechar" id="modal-fechar" aria-label="Fechar">&times;</button>
-    <div id="modal-container-midia"></div>
-  </div>
-</div>
-
-<div class="modal-comissario" id="modal-comissario" hidden>
-  <div class="modal-comissario__conteudo">
-    <button class="modal-comissario__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
-    <div class="modal-comissario__corpo">
-      <video class="modal-comissario__video" id="video-comissario" src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" controls autoplay playsinline></video>
-      <p class="modal-comissario__texto">
-        Ter vários comissários é essencial para o sucesso de uma festa universitária! Os comissários arrecadam a grana inicial necessária para viabilizar todo o evento, permitindo que a comissão organize a estrutura, contrate DJs de peso, alugue o espaço e invista pesado no marketing. Nós da Pluriversidade somos a ponte oficial entre os organizadores (comissão) e os vendedores de ingressos (comissários).
-      </p>
-      <a class="modal-comissario__btn-form" href="https://wa.me/5531991579687?text=Oi!%20Quero%20me%20cadastrar%20como%20comiss%C3%A1rio(a)%20de%20festas!" target="_blank" rel="noopener">PREENCHER FORMULÁRIO</a>
-    </div>
-  </div>
-</div>
-
-<script src="js/dados-textos.js"></script>
-<script src="js/dados-grupos.js"></script>
-<script src="js/dados-festas.js"></script>
-<script src="js/dados-parceiros.js"></script>
-<script src="js/app.js"></script>
-
+  <script src="js/app.js"></script>
 </body>
 </html>
