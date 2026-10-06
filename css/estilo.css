@@ -534,11 +534,12 @@ a { color: inherit; }
 .contagem {
   margin: 1.2rem 0 .4rem;
   font-family: var(--sans);
-  font-size: 2.22rem;
+  font-size: 1.66rem;
   font-weight: 500;
   letter-spacing: -.01em;
   color: var(--tinta);
   line-height: 1.2;
+  text-align: center;
 }
 
 .contagem strong {
@@ -847,6 +848,27 @@ a { color: inherit; }
 }
 
 .rodape__texto p { margin: 0 0 .5rem; }
+
+.rodape__direitos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  margin-bottom: .8rem !important;
+}
+
+.rodape__marca {
+  font-weight: 700;
+  font-size: .95rem;
+  color: #E8D9A8;
+  letter-spacing: .04em;
+}
+
+.rodape__subdireitos {
+  font-size: .72rem;
+  color: #9AA697;
+  letter-spacing: .06em;
+}
 
 .rodape__texto a {
   color: #E8D9A8;
