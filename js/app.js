@@ -103,24 +103,13 @@
     return g && g.nome && pareceLink(g.url) && categorias[g.cat];
   });
 
-  var festasBoas = [];
+  var festasBoas = festas.filter(function (f) {
+    return f && f.titulo && partesDaData(f.data) && (window.UNIVERSIDADES || {})[f.uni];
+  });
 
   var parceirosBons = parceiros.filter(function (p) {
     return p && p.nome && pareceLink(p.link);
   });
-
-  /* -------------------------------------------------------------------------
-     DIAGNOSTICO DE ERROS DE PREENCHIMENTO
-     ------------------------------------------------------------------------- */
-  function mostrarProblemas() {
-    var caixa = document.getElementById("diagnostico");
-    if (!caixa || !editando || problemas.length === 0) return;
-    var html = "<strong>" + problemas.length + " coisas para arrumar</strong><ul>";
-    problemas.forEach(function (p) { html += "<li>" + p.texto + "</li>"; });
-    html += "</ul>";
-    caixa.innerHTML = html;
-    caixa.hidden = false;
-  }
 
   /* -------------------------------------------------------------------------
      CONFIGURAR BOTÃO DE PIX
@@ -277,7 +266,7 @@
   }
 
   /* -------------------------------------------------------------------------
-     SEÇÃO DE FESTAS
+     SEÇÃO DE FESTAS (INDEX)
      ------------------------------------------------------------------------- */
   var paginasFestas;
 
@@ -293,10 +282,6 @@
     var estadosData = window.ESTADOS || {};
     var cidadesData = window.CIDADES || {};
     var unisData    = window.UNIVERSIDADES || {};
-
-    festasBoas = festas.filter(function (f) {
-      return f && f.titulo && partesDaData(f.data) && unisData[f.uni];
-    });
 
     function simples(texto) {
       return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -486,6 +471,8 @@
         var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
         var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
+        var urlPaginaFesta = "festa.html#" + slugFesta;
+
         return (
           '<li class="festa" id="festa-' + slugFesta + '" style="--cor:' + corFesta + '">' +
             '<div class="festa__conteudo-principal">' +
@@ -498,11 +485,12 @@
                 '</div>' +
                 '<div class="festa__corpo">' +
                   '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • <span class="festa__hora">' + escapar(f.hora) + '</span>' : '') + '</p>' +
-                  '<h3 class="festa__titulo">' + escapar(f.titulo) + '</h3>' +
+                  '<h3 class="festa__titulo"><a class="festa__titulo-link" href="' + urlPaginaFesta + '">' + escapar(f.titulo) + '</a></h3>' +
                 '</div>' +
               '</div>' +
               '<p class="festa__descricao">' + escapar(f.descricao || f.desc || "") + '</p>' +
               '<div class="festa__links">' +
+                '<a class="festa__link" href="' + urlPaginaFesta + '">Ver Informações Completas</a>' +
                 (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
                 (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram</a>' : '') +
                 '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Seja Comissário</a>' +
@@ -534,7 +522,7 @@
         btn.addEventListener("click", function (e) {
           e.stopPropagation();
           var slug = btn.getAttribute("data-slug");
-          var urlCard = location.origin + location.pathname + "#festas/" + slug;
+          var urlCard = location.origin + location.pathname.replace("index.html", "") + "festa.html#" + slug;
 
           var f = festasBoas.find(function (festa) {
             return slugify(festa.titulo) === slug;
@@ -544,7 +532,7 @@
 
           var d = partesDaData(f.data);
           var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : f.data;
-          var horaFormatada = f.hora ? " : " + f.hora : "";
+          var horaFormatada = f.hora ? " às " + f.hora : "";
           var descricaoFesta = f.descricao || f.desc || "";
 
           var linhaIngresso = pareceLink(f.ingresso)
@@ -558,15 +546,12 @@
           var textoCompartilhamento =
             "*Ei*, achei essa festa e resolvi *compartilhar* a informação útil!\n" +
             urlCard + "\n\n" +
-            "#############\n\n" +
             "*" + f.titulo.toUpperCase() + "*\n" +
             "*" + dataFormatada + "*" + horaFormatada +
             (descricaoFesta ? "\n\n" + descricaoFesta : "") +
             linhaIngresso +
             linhaRevenda + "\n\n" +
-            "*Pluriversidade.com.br*\n" +
-            "31991579687 - Whatsapp\n\n" +
-            "#############";
+            "*Pluriversidade.com.br*";
 
           var urlWhatsapp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoCompartilhamento);
           window.open(urlWhatsapp, "_blank");
@@ -580,6 +565,81 @@
     desenhar();
 
     return festasBoas.length;
+  }
+
+  /* -------------------------------------------------------------------------
+     NOVA FUNÇÃO: MONTAGEM DA PÁGINA INDIVIDUAL DA FESTA E OPEN GRAPH DINÂMICO
+     ------------------------------------------------------------------------- */
+  function montarDetalheFesta() {
+    var container = document.getElementById("detalhe-festa-container");
+    if (!container) return;
+
+    var hash = location.hash ? location.hash.replace("#", "") : "";
+    if (!hash && festasBoas.length > 0) {
+      hash = slugify(festasBoas[0].titulo);
+    }
+
+    var f = festasBoas.find(function (festa) {
+      return slugify(festa.titulo) === hash;
+    });
+
+    if (!f) {
+      container.innerHTML = '<div class="detalhe-festa"><p>Festa não encontrada ou link inválido.</p></div>';
+      return;
+    }
+
+    var d = partesDaData(f.data);
+    var u = (window.UNIVERSIDADES || {})[f.uni] || { nome: f.uni || "" };
+    var corFesta = f.cor || "var(--terracota)";
+    var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+    var dataFormatada = d ? dois(d.dia) + " de " + MESES[d.mes - 1] + " de " + d.ano : f.data;
+
+    // ATUALIZAÇÃO DINÂMICA DAS METATAGS OPEN GRAPH
+    var tituloPagina = f.titulo + " — Pluriversidade";
+    var descPagina = f.descricao || f.desc || "Confira os detalhes desta festa universitária.";
+    var imagemFlyer = (f.midia && !/\.(mp4|webm|ogg)$/i.test(f.midia)) ? location.origin + "/" + f.midia : "";
+
+    document.title = tituloPagina;
+    var metaTitle = document.getElementById("meta-title");
+    var metaDesc = document.getElementById("meta-desc");
+    var ogTitle = document.getElementById("og-title");
+    var ogDesc = document.getElementById("og-desc");
+    var ogImage = document.getElementById("og-image");
+
+    if (metaTitle) metaTitle.textContent = tituloPagina;
+    if (metaDesc) metaDesc.setAttribute("content", descPagina);
+    if (ogTitle) ogTitle.setAttribute("content", tituloPagina);
+    if (ogDesc) ogDesc.setAttribute("content", descPagina);
+    if (ogImage && imagemFlyer) ogImage.setAttribute("content", imagemFlyer);
+
+    var temMidia = Boolean(f.midia);
+    var ehVideo = temMidia && /\.(mp4|webm|ogg)$/i.test(f.midia);
+    var midiaHtml = "";
+
+    if (temMidia) {
+      if (ehVideo) {
+        midiaHtml = '<video class="detalhe-festa__midia-grande" src="' + f.midia + '" controls autoplay playsinline></video>';
+      } else {
+        midiaHtml = '<img class="detalhe-festa__midia-grande" src="' + f.midia + '" alt="Flyer ' + escapar(f.titulo) + '">';
+      }
+    }
+
+    var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+    var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
+
+    container.innerHTML =
+      '<article class="detalhe-festa" style="--cor:' + corFesta + '">' +
+        '<p class="festa__uni">' + escapar(u.nome) + (f.hora ? ' • ' + escapar(f.hora) : '') + '</p>' +
+        '<h2 class="secao__titulo" style="font-size: 1.8rem; margin: .3rem 0 .5rem;">' + escapar(f.titulo) + '</h2>' +
+        '<p style="font-family: var(--mono); font-size: .9rem; color: var(--tinta-fraca); margin-bottom: 1rem;">📅 ' + dataFormatada + '</p>' +
+        '<p style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.2rem;">' + escapar(f.descricao || f.desc || "") + '</p>' +
+        midiaHtml +
+        '<div class="festa__links" style="margin-top: 1.5rem;">' +
+          (pareceLink(f.ingresso) ? '<a class="festa__link festa__link--ingresso" href="' + f.ingresso + '" target="_blank" rel="noopener">Comprar Ingresso</a>' : '') +
+          (pareceLink(f.perfil) ? '<a class="festa__link festa__link--perfil" href="' + f.perfil + '" target="_blank" rel="noopener">Instagram da Festa</a>' : '') +
+          '<a class="festa__link festa__link--grupo" href="' + linkComissario + '" target="_blank" rel="noopener">Quero ser Comissário</a>' +
+        '</div>' +
+      '</article>';
   }
 
   /* -------------------------------------------------------------------------
@@ -1015,7 +1075,6 @@
     var modalComissario = document.getElementById("modal-comissario");
     var btnFecharComissario = document.getElementById("modal-comissario-fechar");
 
-    // Garante que o vídeo dentro do modal comissário esteja pausado e com preload desativado
     pausarVideoComissario();
 
     if (btnComissarioInfo && modalComissario) {
@@ -1053,13 +1112,13 @@
 
     function ativarAba(abaNome) {
       if (abaNome === "festas") {
-        if (abaFestas) { abaFestas.setAttribute("aria-selected", "true"); abaFestas.removeAttribute("tabindex"); }
-        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "false"); abaGrupos.setAttribute("tabindex", "-1"); }
+        if (abaFestas) { abaFestas.setAttribute("aria-selected", "true"); abaFestas.tabIndex = 0; }
+        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "false"); abaGrupos.tabIndex = -1; }
         if (secFestas) secFestas.hidden = false;
         if (secGrupos) secGrupos.hidden = true;
       } else {
-        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "true"); abaGrupos.removeAttribute("tabindex"); }
-        if (abaFestas) { abaFestas.setAttribute("aria-selected", "false"); abaFestas.setAttribute("tabindex", "-1"); }
+        if (abaGrupos) { abaGrupos.setAttribute("aria-selected", "true"); abaGrupos.tabIndex = 0; }
+        if (abaFestas) { abaFestas.setAttribute("aria-selected", "false"); abaFestas.tabIndex = -1; }
         if (secGrupos) secGrupos.hidden = false;
         if (secFestas) secFestas.hidden = true;
       }
@@ -1068,51 +1127,33 @@
     if (abaGrupos) {
       abaGrupos.addEventListener("click", function () {
         ativarAba("grupos");
-        location.hash = "grupos";
+        history.pushState(null, "", "#grupos");
       });
     }
 
     if (abaFestas) {
       abaFestas.addEventListener("click", function () {
         ativarAba("festas");
-        location.hash = "festas";
+        history.pushState(null, "", "#festas");
       });
     }
 
-    function processarHash() {
-      var hash = unescape(location.hash.replace(/^#/, "")).trim();
-      if (!hash) {
-        ativarAba("grupos");
-        return;
-      }
-
-      var partes = hash.split("/");
-      var rotaPai = partes[0];
-      var parametro = partes[1] || "";
-
-      if (rotaPai === "festas") {
+    function lerHash() {
+      var h = location.hash;
+      if (h.indexOf("#festas") === 0) {
         ativarAba("festas");
-        if (parametro) {
-          setTimeout(function () {
-            var elFesta = document.getElementById("festa-" + parametro);
-            if (elFesta) {
-              elFesta.scrollIntoView({ behavior: "smooth", block: "center" });
-              elFesta.style.transition = "outline 0.3s ease";
-              elFesta.style.outline = "3px solid var(--terracota)";
-              setTimeout(function () { elFesta.style.outline = "none"; }, 3000);
-            }
-          }, 300);
+        var partes = h.split("/");
+        if (partes.length > 1 && partes[1] && typeof irParaFestaPeloSlug === "function") {
+          irParaFestaPeloSlug(partes[1]);
         }
-      } else if (rotaPai === "grupos") {
+      } else if (h.indexOf("#grupos") === 0) {
         ativarAba("grupos");
-        if (parametro) {
-          if (parametro.indexOf("grupo-") === 0) {
-            var slugApenas = parametro.replace("grupo-", "");
-            if (typeof irParaGrupoPeloSlug === "function") {
-              irParaGrupoPeloSlug(slugApenas);
-            }
+        var partes = h.split("/");
+        if (partes.length > 1 && partes[1]) {
+          if (partes[1].indexOf("grupo-") === 0 && typeof irParaGrupoPeloSlug === "function") {
+            irParaGrupoPeloSlug(partes[1].replace("grupo-", ""));
           } else if (typeof selecionarCategoriaExternamente === "function") {
-            selecionarCategoriaExternamente(parametro);
+            selecionarCategoriaExternamente(partes[1]);
           }
         }
       } else {
@@ -1120,21 +1161,23 @@
       }
     }
 
-    window.addEventListener("hashchange", processarHash);
-    processarHash();
+    window.addEventListener("popstate", lerHash);
+    lerHash();
   }
 
   /* -------------------------------------------------------------------------
-     INICIALIZAÇÃO
+     INICIALIZAÇÃO GERAL
      ------------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
     aplicarTextos();
-    mostrarProblemas();
     configurarPix();
     montarParceiros();
-    montarFestas();
     montarGrupos();
+    montarFestas();
     configurarModais();
     configurarAbasERotas();
   });
+
+  window.montarDetalheFesta = montarDetalheFesta;
+
 })();
