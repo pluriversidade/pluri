@@ -73,7 +73,7 @@ var FESTAS = [
     "ingresso": "https://www.ingressolive.com/catchos-o-chamado-do-grifo-71406?codigo_desconto=RolesUni",
     "perfil": "https://www.instagram.com/p/DeK_iQHlh44/",
     "grupo": "",
-    "midia": "img/flyers-festas/ATRACAO1.mp4",
+    "midia": "https://pluriversidade.github.io/pluri/img/flyers-festas/ATRACAO1.mp4",
     "descricao": "O Grifo chamou! Serão 8 horas de Open Bar para você viver o extraordinário, perder a hora e celebrar a vida no maior e mais insano evento universitário de BH. Prepare-se para deixar o mundo comum para trás e ascender ao topo, onde apenas os imortais celebram. Afinal, todos nós somos loucos por aqui! A Associação Atlética da Escola de Engenharia da UFMG convoca você para viver uma noite histórica no banquete dos deuses.",
     "comissarios": true
   }
