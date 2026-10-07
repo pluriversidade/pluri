@@ -70,7 +70,7 @@ var FESTAS = [
     "uni": "ufmg",
     "estado": "MG",
     "cidade": "Belo Horionte",
-    "ingresso": "",
+    "ingresso": "https://www.ingressolive.com/catchos-o-chamado-do-grifo-71406?codigo_desconto=RolesUni",
     "perfil": "https://www.instagram.com/p/DeK_iQHlh44/",
     "grupo": "",
     "midia": "img/flyers-festas/chamado-grifo-01.mp4",
