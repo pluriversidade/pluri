@@ -6,6 +6,11 @@
   "use strict";
 
   /* -------------------------------------------------------------------------
+     RECUPERAÇÃO DA CHAVE DE API SEGURA (CONFIG.JS)
+     ------------------------------------------------------------------------- */
+  var GEMINI_API_KEY = (typeof CONFIG !== "undefined" && CONFIG.GEMINI_API_KEY) ? CONFIG.GEMINI_API_KEY : "";
+
+  /* -------------------------------------------------------------------------
      MODO EDIÇÃO / LOCAL
      ------------------------------------------------------------------------- */
   var editando =
@@ -110,6 +115,114 @@
   var parceirosBons = parceiros.filter(function (p) {
     return p && p.nome && pareceLink(p.link);
   });
+
+  /* -------------------------------------------------------------------------
+     BUSCA INTELIGENTE COM IA (GEMINI)
+     ------------------------------------------------------------------------- */
+  async function buscarGrupoComIA(termoUsuario) {
+    var resultadoDiv = document.getElementById("resultado-ia");
+    if (!resultadoDiv) return;
+
+    if (!GEMINI_API_KEY) {
+      resultadoDiv.hidden = false;
+      resultadoDiv.innerHTML = '<div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px;">⚠️ <strong>Erro:</strong> Chave de API não configurada no arquivo <code>js/config.js</code>.</div>';
+      return;
+    }
+
+    resultadoDiv.hidden = false;
+    resultadoDiv.innerHTML = '<p style="text-align: center; padding: 1rem; color: var(--tinta);">🤖 Analisando os melhores grupos no repositório nacional...</p>';
+
+    var listaGruposPrompt = gruposBons.map(function (g) {
+      var u = unis[g.uni] ? unis[g.uni].nome : (g.uni || "Geral");
+      return {
+        nome: g.nome,
+        universidade: u,
+        descricao: g.desc,
+        url: g.url
+      };
+    });
+
+    var prompt = `
+      Você é um assistente inteligente do repositório nacional de grupos de WhatsApp de universidades do Brasil.
+      
+      ATENÇÃO: Como o site atende diversas universidades do país, o usuário DEVE especificar qual é a universidade/faculdade dele e o que deseja publicar.
+
+      Lista de grupos cadastrados:
+      ${JSON.stringify(listaGruposPrompt)}
+
+      O usuário digitou: "${termoUsuario}"
+
+      Instruções:
+      1. Se o usuário NÃO informou a universidade/faculdade ou o assunto está vago demais, retorne um JSON puro com: { "precisa_detalhar": true, "mensagem": "Por favor, explique melhor o que deseja enviar e informe qual é a sua universidade (ex: UFMG, USP, UFRJ) para encontrarmos o grupo certo!" }
+      2. Se ele especificou corretamente, escolha até os 3 melhores grupos correspondentes e retorne um JSON com: { "precisa_detalhar": false, "grupos": [{ "nome": "...", "url": "...", "motivo": "Explicação curta" }] }
+      
+      Retorne estritamente o JSON sem blocos de markdown adicionais.
+    `;
+
+    try {
+      var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+
+      var data = await response.json();
+      var textoResposta = data.candidates[0].content.parts[0].text;
+      textoResposta = textoResposta.replace(/```json/g, "").replace(/```/g, "").trim();
+
+      var res = JSON.parse(textoResposta);
+
+      if (res.precisa_detalhar) {
+        resultadoDiv.innerHTML = '<div style="background: #fff3cd; color: #856404; padding: 1rem; border-radius: 8px; border: 1px solid #ffeeba;">⚠️ <strong>Atenção:</strong> ' + escapar(res.mensagem) + '</div>';
+        return;
+      }
+
+      if (!res.grupos || res.grupos.length === 0) {
+        resultadoDiv.innerHTML = '<p style="text-align: center; padding: 1rem;">Nenhum grupo encontrado para essa busca. Tente detalhar melhor a universidade e o assunto!</p>';
+        return;
+      }
+
+      var html = '<div style="background: #fff; padding: 1rem; border-radius: 8px; border: 1px solid #ddd;"><h4 style="margin-bottom: 0.8rem; color: var(--tinta);">💡 Melhores grupos indicados para você:</h4><ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem;">';
+      
+      res.grupos.forEach(function (g) {
+        html += '<li style="background: #fdfbf7; padding: 0.8rem; border-radius: 6px; border-left: 4px solid var(--terracota, #B24232);">' +
+                  '<strong>' + escapar(g.nome) + '</strong>' +
+                  '<p style="font-size: 0.9rem; margin: 0.3rem 0; color: #555;">' + escapar(g.motivo) + '</p>' +
+                  '<a href="' + g.url + '" target="_blank" rel="noopener" class="grupo__btn-entrar" style="display: inline-block; margin-top: 0.4rem; padding: 0.4rem 0.8rem; font-size: 0.85rem; text-decoration: none;">ENTRAR NO GRUPO 🚀</a>' +
+                '</li>';
+      });
+      
+      html += '</ul></div>';
+      resultadoDiv.innerHTML = html;
+
+    } catch (err) {
+      console.error("Erro na IA:", err);
+      resultadoDiv.innerHTML = '<p style="color: red; text-align: center;">Erro ao consultar a IA. Verifique sua chave e tente novamente.</p>';
+    }
+  }
+
+  function configurarBuscaIA() {
+    var btnIa = document.getElementById("btn-busca-ia");
+    var buscaInput = document.getElementById("busca");
+
+    if (btnIa && buscaInput) {
+      btnIa.addEventListener("click", function () {
+        var texto = buscaInput.value.trim();
+        if (texto) {
+          buscarGrupoComIA(texto);
+        } else {
+          alert("Por favor, digite o que você quer compartilhar e de qual universidade você é!");
+        }
+      });
+
+      buscaInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          btnIa.click();
+        }
+      });
+    }
+  }
 
   /* -------------------------------------------------------------------------
      CONFIGURAR BOTÃO DE PIX
@@ -564,7 +677,7 @@
 
         var DIAS_SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 
-        var mensagemComissario = encodeURIComponent("*Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
+        var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + f.titulo + "*, como faço?");
         var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
         var urlPaginaFesta = "festa.html#" + slugFesta;
@@ -664,7 +777,7 @@
   }
 
   /* -------------------------------------------------------------------------
-     SEÇÃO DE DETALHES DA FESTA (FESTA.HTML) COM DADOS OG E BOTÃO DE COMPARTILHAMENTO
+     SEÇÃO DE DETALHES DA FESTA (FESTA.HTML)
      ------------------------------------------------------------------------- */
   window.montarDetalheFesta = function () {
     var container = document.getElementById("detalhe-festa-container");
@@ -690,7 +803,6 @@
     var dataFormatada = d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : festa.data;
     var corFesta = festa.cor || "var(--terracota)";
 
-    // Atualizar meta tags Open Graph dinamicamente
     var metaTitle = document.getElementById("meta-title");
     var metaDesc = document.getElementById("meta-desc");
     var ogTitle = document.getElementById("og-title");
@@ -720,7 +832,6 @@
     var mensagemComissario = encodeURIComponent("Oi galera da Pluri*, quero ser comissário de venda de ingressos da festa *" + festa.titulo + "*, como faço?");
     var linkComissario = "https://wa.me/5531991579687?text=" + mensagemComissario;
 
-    // Montar texto de compartilhamento via WhatsApp com os dados OG da festa
     var urlPaginaAtual = window.location.href;
     var textoWhatsApp = 
       "*🎉 " + festa.titulo.toUpperCase() + " *\n\n" +
@@ -896,15 +1007,6 @@
       var chavesCats = Object.keys(categorias);
       var html = '';
 
-      var totalGeral = gruposBons.filter(function(g) {
-        var uniDoGrupo = unisData[g.uni];
-        var cidDoGrupo = uniDoGrupo ? cidadesData[uniDoGrupo.cidade] : null;
-        var bateEstado = !estadoSel || (cidDoGrupo && cidDoGrupo.estado === estadoSel);
-        var bateCidade = !cidadeSel || (uniDoGrupo && uniDoGrupo.cidade === cidadeSel);
-        var bateUni = !uniSel || g.uni === uniSel || simples(g.uni) === simples(uniSel);
-        return bateEstado && bateCidade && bateUni;
-      }).length;
-
       html +=
         '<div class="chip-grupo chip-grupo--todas" aria-pressed="' + (catSel === "todas") + '">' +
           '<button class="chip-conteudo" type="button" data-cat="todas">' +
@@ -976,7 +1078,6 @@
         var cat = categorias[g.cat] || { nome: g.cat, cor: "var(--verde)" };
         var lotado = Boolean(g.lotado);
         var novo = Boolean(g.novo);
-        var slugGrupo = slugify(g.nome);
 
         return (
           '<li class="item" style="--cor: ' + cat.cor + '">' +
@@ -1067,6 +1168,7 @@
     montarParceiros();
     configurarAbas();
     configurarModalComissario();
+    configurarBuscaIA();
 
     var fecharModalBtn = document.getElementById("modal-fechar");
     var modalMidiaDiv = document.getElementById("modal-midia");

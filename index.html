@@ -54,7 +54,7 @@
       <image href="https://pluriversidade.github.io/pluri/img/LOGO-PLURI-02.png" x="-65" y="-65" width="130" height="130" preserveAspectRatio="xMidYMid meet"/>
     </svg>
 
-    <h1 class="titulo" data-texto="titulo">PLURIVERSIDADE</h1>
+    <h1 class="titulo" data-texto="titulo">Grupos da UFMG</h1>
     <p class="subtitulo" data-texto="subtitulo">Brechó, sebo, bandeco, caronas, idiomas e o que mais a comunidade inventar.</p>
     <p class="atualizado" id="atualizado" hidden></p>
   </div>
@@ -160,10 +160,27 @@
       </select>
     </div>
 
-    <input class="busca" id="busca" type="search" autocomplete="off"
-           aria-label="Buscar grupo pelo nome"
-           data-texto-dica="gruposBusca"
-           placeholder="Buscar grupo…">
+    <!-- CAMPO DE BUSCA INTELIGENTE COM IA -->
+    <div class="bloco-busca-ia" style="margin: 1.5rem 0; padding: 1.2rem; background: var(--fundo-card, #f7f3e8); border-radius: 12px; border: 2px dashed var(--terracota, #B24232);">
+      <label for="busca" style="display: block; font-weight: bold; margin-bottom: 0.5rem; color: var(--tinta, #1F3347);">
+        🤖 O QUE VOCÊ QUER COMPARTILHAR NOS GRUPOS? DIGITE AQUI QUE TE INDICO O MELHOR GRUPO:
+      </label>
+      <p style="font-size: 0.9rem; color: var(--tinta-fraca, #555); margin-bottom: 0.8rem; line-height: 1.4;">
+        *Atenção: Nosso site reúne repositórios de grupos de universidades do Brasil todo! Por favor, explique direitinho o que deseja enviar e mencione **qual é a sua universidade** (ex: <em>"Quero vender livro de cálculo na UFMG"</em> ou <em>"Procuro vaga de república na USP"</em>).*
+      </p>
+      
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <input class="busca" id="busca" type="search" autocomplete="off"
+               aria-label="Pesquisar com IA"
+               placeholder="Digite aqui o que deseja publicar e sua universidade..." style="flex: 1; min-width: 250px; margin: 0;">
+        <button type="button" id="btn-busca-ia" class="grupo__btn-entrar" style="padding: 0.8rem 1.5rem; cursor: pointer; border-radius: 8px; border: none; font-weight: bold;">
+          Indicar Grupo 🚀
+        </button>
+      </div>
+
+      <!-- Área onde a resposta da IA aparece -->
+      <div id="resultado-ia" class="resultado-ia" style="margin-top: 1rem;" hidden></div>
+    </div>
 
     <div class="chips" id="chips" role="group" aria-label="Categorias"></div>
     <p class="contagem" id="contagem"></p>
@@ -270,7 +287,7 @@
   <div class="modal-comissario__conteudo">
     <button class="modal-comissario__fechar" id="modal-comissario-fechar" aria-label="Fechar">&times;</button>
     <div class="modal-comissario__corpo">
-      <video class="modal-comissario__video" id="video-comissario" src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" controls playsinline></video>
+      <video class="modal-comissario__video" id="video-comissario" src="https://pluriversidade.github.io/pluri/img/sandrinho-comissario-01.mp4" controls autoplay playsinline></video>
       <p class="modal-comissario__texto">
         Ter vários comissários é essencial para o sucesso de uma festa universitária! Os comissários arrecadam a grana inicial necessária para viabilizar todo o evento, permitindo que a comissão organize a estrutura, contrate DJs de peso, alugue o espaço e invista pesado no marketing. Nós da Pluriversidade somos a ponte oficial entre os organizadores (comissão) e os vendedores de ingressos (comissários).
       </p>
@@ -279,6 +296,7 @@
   </div>
 </div>
 
+<script src="js/config.js"></script>
 <script src="js/dados-textos.js"></script>
 <script src="js/dados-grupos.js"></script>
 <script src="js/dados-festas.js"></script>
