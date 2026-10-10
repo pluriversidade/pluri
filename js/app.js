@@ -479,13 +479,23 @@
      ------------------------------------------------------------------------- */
   var paginasFestas;
 
-  renderEstadosFesta();
-    atualizarSelectCidadesFesta();
-    atualizarSelectUnisFesta();
-    desenhar();
+  function montarFestas() {
+    var lista = document.getElementById("festas-lista");
+    if (!lista) return 0;
 
-    return festasBoas.length;
-  }
+    var selEstadoFesta = document.getElementById("select-estado-festas");
+    var selCidadeFesta = document.getElementById("select-cidade-festas");
+    var selUniFesta    = document.getElementById("select-uni-festas");
+    var buscaFesta     = document.getElementById("festas-dia");
+
+    var estadosData = window.ESTADOS || {};
+    var cidadesData = window.CIDADES || {};
+    var unisData    = window.UNIVERSIDADES || {};
+
+    function simples(texto) {
+      return String(texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+    
 
     var estadoSel = Object.keys(estadosData).find(function(k) {
       return k === "MG" || simples(k) === "mg" || simples(estadosData[k].nome) === "minas gerais";
@@ -764,7 +774,7 @@
     atualizarSelectUnisFesta();
     desenhar();
 
-    return visiveis.length;
+    return festasBoas.length;
   }
 
   /* -------------------------------------------------------------------------
